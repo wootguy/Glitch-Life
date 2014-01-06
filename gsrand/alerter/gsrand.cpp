@@ -951,6 +951,7 @@ void tallyMonsters(Entity** ents, string mapname)
 
 	string monsterModels[MONSTER_TYPES];
 
+	/*
 	for (int i = 0; i < MONSTER_TYPES; i++)
 	{
 		if (mdlMode == MDL_CRAZY)
@@ -960,7 +961,7 @@ void tallyMonsters(Entity** ents, string mapname)
 		}
 		monsters[i] = 0;
 	}
-
+	*/
 	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 	{
 		if (ents[i] == NULL) 
@@ -2566,8 +2567,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else if (choice == '4')
 		{
-			if (++mdlMode >= MDL_MODES)
-				mdlMode = 0;			
+			//if (++mdlMode >= MDL_MODES)
+				//mdlMode = 0;			
 		}
 		else if (choice == '5')
 		{
