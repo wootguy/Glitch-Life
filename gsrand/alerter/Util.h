@@ -119,6 +119,8 @@ void remove(string& str, char c);
 // Attempts to convert a string to a number
 int toInt(const string& str);
 
+string toLowerCase(string str);
+
 /*
 	Returns true if the file could be found.
 	file - absolute path to the file (Ex: "C:\Project\thing.png")
@@ -166,3 +168,5 @@ void winPath(string& path);
 vector<string> getDirFiles(string path, string extension);
 
 vector<string> getSubdirs(string path);
+
+char * loadFile( string file );

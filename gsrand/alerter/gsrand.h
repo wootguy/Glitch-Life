@@ -10,6 +10,8 @@
 #include "Entity.h"
 #include "sentences.h"
 #include "masterList.h"
+#include "modelList.h"
+#include "spriteList.h"
 #include "Wad.h"
 
 
@@ -117,6 +119,7 @@ std::string default_wads[NUM_DEFAULT_WADS] =
 
 #define MAX_MAP_TEXTURES     512
 #define MAX_MAP_ENTITIES     8192		// increased from 1024
+#define MAX_MAP_MODELS       512 // Really more like 511
 
 #define LUMP_ENTITIES      0
 #define LUMP_PLANES        1
@@ -155,12 +158,29 @@ struct BSPTEXDATA
 	WADTEX ** tex;
 };
 
+#define BSP_MODEL_BYTES 64 // size of a BSP model in bytes
+
 struct BSP
 {
 	std::string name;
 	BSPHEADER header;
 	byte ** lumps;
 	BSPTEXDATA * texdata;
+};
+
+struct SPRHEADER
+{
+	int ident;			  // should always be "IDSP"
+	int version;	  // should be 2
+	int mode;		  // see sprite_modes enum
+	int format;	  // see sprite_formats enum
+	float radius;
+	int width;
+	int height;
+	int frames;
+	float beamLength;
+	int syncType;    // 0 = synchronized, 1 = random
+	//short paletteSz; // always 256??
 };
 
 struct MDLHEADER 
@@ -315,6 +335,25 @@ std::string * mlists[MONSTER_TYPES];
 std::string mdirs[MONSTER_TYPES];
 
 int monsters[MONSTER_TYPES];
+int total_map_models = 0;
+
+enum model_types
+{
+	MODEL_TYPE_MONSTER,
+	MODEL_TYPE_WEAPON,
+	MODEL_TYPE_GENERIC, // also means "I don't know"
+	MODEL_TYPE_PROP,
+	MODEL_TYPE_P_WEAPON,
+	MODEL_TYPE_V_WEAPON,
+	MODEL_TYPE_W_WEAPON,
+};
+
+enum sprite_types
+{
+	SPRITE_TYPE_STATIC,
+	SPRITE_TYPE_ANIMATED,
+	SPRITE_TYPE_GENERIC
+};
 
 void getAllSounds();
 
@@ -365,3 +404,11 @@ void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname);
 BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad> wads, BSP * map);
 
 int makeMapWad(BSP * map, vector<Wad>& wads);
+
+// find out what kind of model the entitiy use
+int getModelType(string entity_name);
+
+string_hashmap random_monster_models;
+string_hashmap random_weapon_models;
+
+void init_random_monster_models();

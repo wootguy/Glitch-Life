@@ -1,3 +1,6 @@
+// this is auto-generated (thank god)
+// the commented out functions in main() make this
+
 #define NUM_MASTER_sound 1
 string MASTER_sound[NUM_MASTER_sound] =
 {

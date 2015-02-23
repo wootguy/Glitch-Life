@@ -1,0 +1,12 @@
+glitch-life todo:
+
+detailtextures?
+bsp model swapping
+skybox
+player weapon v_ match p_ if super random
+map prefixes
+global only model replacement (stability?)
+doors are auto-triggered in Blueshift causing crashes
+
+bypass elevator people
+bypass all players must be inside  c1a4b c2a5b (c3a1a?) c3a1b

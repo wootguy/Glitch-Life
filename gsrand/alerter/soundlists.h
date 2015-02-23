@@ -1,3 +1,6 @@
+// Wow why did I decide to hardcode all of this stuff in here.
+// Way to go making it a chore to add new sounds and whatnot
+
 #define NUM_SND_DIRS 144
 struct sound
 {
@@ -61,11 +64,34 @@ enum breakable_types
 };
 
 enum weapon_types
-{
-	PIPEWRENCH,
-	CROWBAR,
-	MINE,
-	EGON,
+{	
+	WEP_357,
+	WEP_9MMAR,
+	WEP_9MMHANDGUN,
+	WEP_CROSSBOW,
+	WEP_EAGLE,
+	WEP_GAUSS,
+	WEP_GRAPPLE,
+	WEP_GRENADE,
+	WEP_HORNET,
+	WEP_M16,
+	WEP_SAW,
+	WEP_MEDKIT,
+	WEP_MINIGUN,
+	WEP_RPG,
+	WEP_SATCHEL,
+	WEP_SHOTGUN,
+	WEP_SNARK,
+	WEP_SNIPER,
+	WEP_SPORE,
+	WEP_UZI,
+	WEP_UZIAKIMBO,
+
+	// The following have replacable sounds
+	WEP_PIPEWRENCH,
+	WEP_CROWBAR,
+	WEP_MINE,
+	WEP_EGON,
 	WEAPON_TYPES,
 };
 

@@ -58,6 +58,15 @@
     <ClInclude Include="modelList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MDL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="studio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spriteList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -79,6 +88,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Wad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MDL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

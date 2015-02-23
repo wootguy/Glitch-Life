@@ -1,0 +1,23 @@
+model replacement bugs:
+
+Nihilanth and cockroach can only be replaced with GMR
+
+Replacing models for the following will cause a crash:
+ - Nihilanth (immediate crash with many models, cause unknown)
+ - controller (immediate crash with most models, cause unknown)
+ - Apache (crashes when attacking enemy, model must have enough bone controllers)
+ - Sentry (crashes when killed, model must have enough bone controllers)
+ - player.mdl (many models work, switching certain weapons and going thirdperson causes it)
+ - Kingpin (cause unknown, crash isn't immediate)
+ - Tentacle (cause unknown, crash isn't immediate)
+ - Any Monster (immediate crash if using a w_ model, probably due to w_svencoop_pickup.mdl)
+
+GMR can cause a crash if a replacement model has been replaced in the same file. Example:
+	"models/zombie.mdl" "models/rat.mdl"
+        "models/barney.mdl" "models/zombie.mdl" ("Host no precache" error)
+That example doesn't actually work, I forgot to write down the few cases where this happened
+
+The game will crash if you are 1 model under the model limit (won't give you the 512 models error)
+
+
+  

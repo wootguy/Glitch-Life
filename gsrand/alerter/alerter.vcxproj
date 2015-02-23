@@ -88,11 +88,14 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Keyvalue.h" />
+    <ClInclude Include="MDL.h" />
     <ClInclude Include="modelList.h" />
     <ClInclude Include="sentences.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="soundlists.h" />
+    <ClInclude Include="spriteList.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="studio.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Wad.h" />
@@ -101,6 +104,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="gsrand.cpp" />
     <ClCompile Include="Keyvalue.cpp" />
+    <ClCompile Include="MDL.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

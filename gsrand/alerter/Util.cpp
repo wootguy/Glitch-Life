@@ -7,6 +7,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "Globals.h"
+#include <algorithm>
 
 #include <direct.h>
 #define GetCurrentDir _getcwd
@@ -184,7 +185,7 @@ string getSubStr(const string& s, int beginIndex)
     string result = "";
     int max = s.size();
     if (beginIndex < 0 || beginIndex >= max)
-        println("getSubStr: Invalid begin index " + str(beginIndex));
+        println("getSubStr: Invalid begin index " + str(beginIndex) + " " + s);
 
     for (int i = beginIndex; i < max; i++)
         result += s.at(i);
@@ -312,6 +313,12 @@ int toInt(const string& str)
     if (negative)
         num *= -1;
     return num;
+}
+
+string toLowerCase(string str)
+{
+	transform(str.begin(), str.end(), str.begin(), ::tolower);
+	return str;
 }
 
 bool fileExists(const string& file)
@@ -549,4 +556,23 @@ vector<string> getSubdirs( string path )
 		FindClose(hFind);
 	}
 	return results;
+}
+
+char * loadFile( string file )
+{
+	if (!fileExists(file))
+	{
+		err("file does not exist " + file);
+		return NULL;
+	}
+	ifstream fin(file.c_str(), ifstream::in|ios::binary);
+	int begin = fin.tellg();
+	fin.seekg (0, ios::end);
+	int size = (int)fin.tellg() - begin;
+	char * buffer = new char[size];
+	fin.seekg(0);
+	fin.read(buffer, size);
+	fin.close();
+	//println("read " + str(size));
+	return buffer;
 }
