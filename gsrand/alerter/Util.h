@@ -4,6 +4,8 @@
 
 using namespace std;
 
+typedef unsigned int uint;
+
 extern vector<string> printlog;
 
 enum read_dir
@@ -170,3 +172,23 @@ vector<string> getDirFiles(string path, string extension);
 vector<string> getSubdirs(string path);
 
 char * loadFile( string file );
+
+void recurseSubdirs(std::string path, vector<std::string>& dirs);
+
+vector<std::string> getAllSubdirs(std::string path);
+
+string relative_path_to_absolute(string start_dir, string path);
+
+struct DateTime
+{
+	int year, month, day;
+	int hour, minute, second;
+
+	DateTime() : year(0),  month(0), day(0), hour(0), minute(0), second(0) {}
+	DateTime(int year, int month, int day, int hour, int minute, int second) 
+	: year(year),  month(month), day(day), hour(hour), minute(minute), second(second) {}
+	
+	static DateTime now();
+	string str();
+	string compact_str();
+};

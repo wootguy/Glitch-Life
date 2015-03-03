@@ -1,33 +1,35 @@
+#pragma once
 #include <string>
 #include <set>
+#include <unordered_map>
 
 using namespace std;
 
-typedef std::tr1::unordered_map< std::string, std::string > string_hashmap;
+typedef tr1::unordered_map< string, string > string_hashmap;
 
-string_hashmap default_monster_models;
-string_hashmap default_friendly_monster_models;
-string_hashmap default_weapon_models;
-string_hashmap default_ammo_models;
-string_hashmap default_item_models;
+static string_hashmap default_monster_models;
+static string_hashmap default_friendly_monster_models;
+static string_hashmap default_weapon_models;
+static string_hashmap default_ammo_models;
+static string_hashmap default_item_models;
 
-vector<string> default_gib_models;
+static vector<string> default_gib_models;
 
-vector<string> default_precache_models; // models that are precached by default
-vector<string> gmr_replace_only; // models only replacable through GMR
+static vector<string> default_precache_models; // models that are precached by default
+static vector<string> gmr_replace_only; // models only replacable through GMR
 
 // set of models that would crash the game if they were used to replace w_satchel
-vector<string> satchel_blacklist;
+static vector<string> satchel_blacklist;
 
 // set of models that are tested to be working for the monster (others likely cause a crash)
-vector<string> nih_whitelist; // w_ and player models are ok but not in this list
-vector<string> controller_whitelist; // w_ and player models also ok
+static vector<string> nih_whitelist; // w_ and player models are ok but not in this list
+static vector<string> controller_whitelist; // w_ and player models also ok
 
-vector<string> monster_sprites;
+static vector<string> monster_sprites;
 
-vector<string> dont_replace; // shouldn't be replaced
+static vector<string> dont_replace; // shouldn't be replaced
 
-std::vector<string> weapon_types;
+static vector<string> weapon_types;
 
 // to regenerate:
 // run "mcache" command
@@ -36,7 +38,7 @@ std::vector<string> weapon_types;
 // find and replace regex "\(.*$" with ""\);"
 // select all text, right click, set to lowercase
 // remove the entries that aren't actually models (e.g. "(!P)" or "maps/mapname.bsp")
-void init_default_precache_list()
+static void init_default_precache_list()
 {
 	default_precache_models.clear();
 	default_precache_models.push_back("models/v_shotgun.mdl");
@@ -146,7 +148,7 @@ void init_default_precache_list()
 	default_precache_models.push_back("sprites/muzzleflash_saw.spr");
 }
 
-void init_black_lists()
+static void init_black_lists()
 {
 	satchel_blacklist.clear();
 	nih_whitelist.clear();
@@ -408,7 +410,7 @@ void init_black_lists()
 	
 }
 
-void init_default_model_lists()
+static void init_default_model_lists()
 {
 	default_gib_models.clear();
 	gmr_replace_only.clear();
@@ -615,7 +617,7 @@ void init_default_model_lists()
 }
 
 #define NUM_APACHE_MODELS 183
-string APACHE_MODELS[NUM_APACHE_MODELS] =
+static string APACHE_MODELS[NUM_APACHE_MODELS] =
 {
 	"apache",
 	"apachef",
@@ -803,7 +805,7 @@ string APACHE_MODELS[NUM_APACHE_MODELS] =
 };
 
 #define NUM_MODEL_V 124
-string MODEL_V[NUM_MODEL_V] =
+static string MODEL_V[NUM_MODEL_V] =
 {
 	"v_357",
 	"v_9mmar",
@@ -932,7 +934,7 @@ string MODEL_V[NUM_MODEL_V] =
 };
 
 #define NUM_MODEL_P 81
-string MODEL_P[NUM_MODEL_P] =
+static string MODEL_P[NUM_MODEL_P] =
 {
 	"p_2uzis",
 	"p_2uzis_gold",
@@ -1018,7 +1020,7 @@ string MODEL_P[NUM_MODEL_P] =
 };
 
 #define NUM_MODEL_W 107
-string MODEL_W[NUM_MODEL_W] =
+static string MODEL_W[NUM_MODEL_W] =
 {
 	"w_2uzis",
 	"w_2uzis_gold",
@@ -1130,7 +1132,7 @@ string MODEL_W[NUM_MODEL_W] =
 };
 
 #define NUM_MODEL_PROPS 239
-string MODEL_PROPS[NUM_MODEL_PROPS] =
+static string MODEL_PROPS[NUM_MODEL_PROPS] =
 {
 	"abone_template1",
 	"agibs",
@@ -1374,7 +1376,7 @@ string MODEL_PROPS[NUM_MODEL_PROPS] =
 };
 
 #define NUM_MODEL_MONSTERS 419
-string MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
+static string MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
 {
 	"aflock",
 	"agrunt",

@@ -1,5 +1,8 @@
+#pragma once
 // Wow why did I decide to hardcode all of this stuff in here.
 // Way to go making it a chore to add new sounds and whatnot
+#include <string>
+using namespace std;
 
 #define NUM_SND_DIRS 144
 struct sound
@@ -96,7 +99,7 @@ enum weapon_types
 };
 
 #define NUM_VOICE_DIRS 33
-string voice_dirs[NUM_VOICE_DIRS] = 
+static string voice_dirs[NUM_VOICE_DIRS] = 
 {
 	"aslave",		 
 	"barney",		
@@ -135,7 +138,7 @@ string voice_dirs[NUM_VOICE_DIRS] =
 };
 
 #define NUM_SQUEEK 6
-string squeek[NUM_SQUEEK] =
+static string squeek[NUM_SQUEEK] =
 {
 	"sqk_blast1",
 	"sqk_deploy1",
@@ -146,7 +149,7 @@ string squeek[NUM_SQUEEK] =
 };
 
 #define NUM_HORNET 6
-string hornet[NUM_HORNET] =
+static string hornet[NUM_HORNET] =
 {
 	"ag_buzz1",
 	"ag_buzz2",
@@ -157,7 +160,7 @@ string hornet[NUM_HORNET] =
 };
 
 #define NUM_SPARKS 6
-string spark[NUM_SPARKS] =
+static string spark[NUM_SPARKS] =
 {
 	"spark1",
 	"spark2",
@@ -168,7 +171,7 @@ string spark[NUM_SPARKS] =
 };
 
 #define NUM_EGON 3
-string egon[NUM_EGON] =
+static string egon[NUM_EGON] =
 {
 	"egon_off1",
 	"egon_run3",
@@ -176,7 +179,7 @@ string egon[NUM_EGON] =
 };
 
 #define NUM_MINE 3
-string mine[NUM_MINE] =
+static string mine[NUM_MINE] =
 {
 	"mine_activate",
 	"mine_charge",
@@ -184,7 +187,7 @@ string mine[NUM_MINE] =
 };
 
 #define NUM_CROWBAR 6
-string crowbar[NUM_CROWBAR] =
+static string crowbar[NUM_CROWBAR] =
 {
 	"cbar_hit1",
 	"cbar_hit2",
@@ -195,7 +198,7 @@ string crowbar[NUM_CROWBAR] =
 };
 
 #define NUM_WRENCH 10
-string wrench[NUM_WRENCH] =
+static string wrench[NUM_WRENCH] =
 {
 	"pwrench_big_hitbod1",
 	"pwrench_big_hitbod2",
@@ -210,7 +213,7 @@ string wrench[NUM_WRENCH] =
 };
 
 #define NUM_FANS 5
-string fans[NUM_FANS] =
+static string fans[NUM_FANS] =
 {
 	"fan1",
 	"fan2",
@@ -220,7 +223,7 @@ string fans[NUM_FANS] =
 };
 
 #define NUM_ROT_BUTTONS 5
-string rbuttons[NUM_ROT_BUTTONS] =
+static string rbuttons[NUM_ROT_BUTTONS] =
 {
 	"lever1",
 	"lever2",
@@ -230,7 +233,7 @@ string rbuttons[NUM_ROT_BUTTONS] =
 };
 
 #define NUM_BUTTONS 14
-string buttons[NUM_BUTTONS] =
+static string buttons[NUM_BUTTONS] =
 {
 	"button1",
 	"button2",
@@ -249,7 +252,7 @@ string buttons[NUM_BUTTONS] =
 };
 
 #define NUM_DOOR_STOPS 10
-string doorstops[NUM_DOOR_STOPS] =
+static string doorstops[NUM_DOOR_STOPS] =
 {
 	"doorstop1",
 	"doorstop2",
@@ -264,7 +267,7 @@ string doorstops[NUM_DOOR_STOPS] =
 };
 
 #define NUM_DOOR_MOVES 10
-string doormoves[NUM_DOOR_MOVES] =
+static string doormoves[NUM_DOOR_MOVES] =
 {
 	"doormove1",
 	"doormove2",
@@ -279,7 +282,7 @@ string doormoves[NUM_DOOR_MOVES] =
 };
 
 #define NUM_TRACK_TRAINS 6
-string tracktrains[NUM_TRACK_TRAINS] =
+static string tracktrains[NUM_TRACK_TRAINS] =
 {
 	"ttrain1",
 	"ttrain2",
@@ -290,7 +293,7 @@ string tracktrains[NUM_TRACK_TRAINS] =
 };
 
 #define NUM_TRAIN_STOPS 8
-string trainstops[NUM_TRAIN_STOPS] =
+static string trainstops[NUM_TRAIN_STOPS] =
 {
 	"bigstop1",
 	"bigstop2",
@@ -303,7 +306,7 @@ string trainstops[NUM_TRAIN_STOPS] =
 };
 
 #define NUM_TRAIN_MOVES 13
-string trainmoves[NUM_TRAIN_MOVES] =
+static string trainmoves[NUM_TRAIN_MOVES] =
 {
 	"bigmove1",
 	"bigmove2",
@@ -323,7 +326,7 @@ string trainmoves[NUM_TRAIN_MOVES] =
 
 
 #define NUM_ITEMS 13
-string items[NUM_ITEMS] =
+static string items[NUM_ITEMS] =
 {
 	"9mmclip1",
 	"flashlight1",
@@ -341,7 +344,7 @@ string items[NUM_ITEMS] =
 };
 
 #define NUM_SPECIAL 4
-string special[NUM_SPECIAL] =
+static string special[NUM_SPECIAL] =
 {
 	"!HEV_DEAD0",
 	"!HEV_DEAD1",
@@ -353,7 +356,7 @@ string special[NUM_SPECIAL] =
 
 
 #define NUM_GLASS 6
-string glass[NUM_GLASS] =
+static string glass[NUM_GLASS] =
 {
 	"bustglass1",
 	"bustglass2",
@@ -364,7 +367,7 @@ string glass[NUM_GLASS] =
 };
 
 #define NUM_WOOD 5
-string wood[NUM_WOOD] =
+static string wood[NUM_WOOD] =
 {
 	"bustcrate1",
 	"bustcrate2",
@@ -374,7 +377,7 @@ string wood[NUM_WOOD] =
 };
 
 #define NUM_METAL 5
-string metal[NUM_METAL] =
+static string metal[NUM_METAL] =
 {
 	"bustmetal1",
 	"bustmetal2",
@@ -385,7 +388,7 @@ string metal[NUM_METAL] =
 };
 
 #define NUM_FLESH 8
-string flesh[NUM_FLESH] =
+static string flesh[NUM_FLESH] =
 {
 	"bustflesh1",
 	"bustflesh2",
@@ -399,7 +402,7 @@ string flesh[NUM_FLESH] =
 };
 
 #define NUM_CONCRETE 5
-string concrete[NUM_CONCRETE] =
+static string concrete[NUM_CONCRETE] =
 {
 	"bustconcrete1",
 	"bustconcrete2",
@@ -409,14 +412,14 @@ string concrete[NUM_CONCRETE] =
 };
 
 #define NUM_TILE 1
-string tile[NUM_TILE] =
+static string tile[NUM_TILE] =
 {
 	"bustceiling",
 };
 
 // 5 of 60
 #define NUM_DEBRIS 5
-string debris[NUM_DEBRIS] =
+static string debris[NUM_DEBRIS] =
 {
 	"metal2", // crowbar drop
 	"flesh5", // spore drop
@@ -427,7 +430,7 @@ string debris[NUM_DEBRIS] =
 
 // 5 of 25 TODO: npc_step changeable?
 #define NUM_COMMON 5
-string common[NUM_COMMON] = 
+static string common[NUM_COMMON] = 
 {
 	"bodydrop3",
 	"npc_step1",
@@ -438,7 +441,7 @@ string common[NUM_COMMON] =
 
 // 9 of 384
 #define NUM_SCIENTIST 14
-string scientist[NUM_SCIENTIST] =
+static string scientist[NUM_SCIENTIST] =
 {
 	"sci_die1",
 	"sci_die2",
@@ -459,7 +462,7 @@ string scientist[NUM_SCIENTIST] =
 // 29 out of 178
 // Otis also uses these sounds
 #define NUM_BARNEY 6
-string barney[NUM_BARNEY] = 
+static string barney[NUM_BARNEY] = 
 {
 	"ba_die1",
 	"ba_die2",
@@ -471,7 +474,7 @@ string barney[NUM_BARNEY] =
 
 // 5 out of 65
 #define NUM_PLAYER 5
-string player[NUM_PLAYER] =
+static string player[NUM_PLAYER] =
 {
 	"pl_swim1",
 	"pl_swim2",
@@ -482,7 +485,7 @@ string player[NUM_PLAYER] =
 
 // 17 out of 71
 #define NUM_WEAPONS 27
-string weapons[NUM_WEAPONS] =
+static string weapons[NUM_WEAPONS] =
 {
 	"rocket1",
 	"grenade_hit1",
@@ -514,7 +517,7 @@ string weapons[NUM_WEAPONS] =
 };
 
 #define NUM_AGRUNT 26
-string agrunt[NUM_AGRUNT] =
+static string agrunt[NUM_AGRUNT] =
 {
 	"ag_alert1",
 	"ag_alert2",
@@ -545,7 +548,7 @@ string agrunt[NUM_AGRUNT] =
 };
 
 #define NUM_ASLAVE 18
-string aslave[NUM_ASLAVE] =
+static string aslave[NUM_ASLAVE] =
 {
 	"aslave/slv_alert1",
 	"aslave/slv_alert3",
@@ -568,7 +571,7 @@ string aslave[NUM_ASLAVE] =
 };
 
 #define NUM_APACHE 5
-string apache[NUM_APACHE] =
+static string apache[NUM_APACHE] =
 {
 	"ap_rotor1",
 	"ap_rotor2",
@@ -578,7 +581,7 @@ string apache[NUM_APACHE] =
 };
 
 #define NUM_BARNACLE 8
-string barnacle[NUM_BARNACLE] =
+static string barnacle[NUM_BARNACLE] =
 {
 	"bcl_alert2",
 	"bcl_bite3",
@@ -591,7 +594,7 @@ string barnacle[NUM_BARNACLE] =
 };
 
 #define NUM_BULLCHICKEN 26
-string bullchicken[NUM_BULLCHICKEN] =
+static string bullchicken[NUM_BULLCHICKEN] =
 {
 	"bc_acid1",
 	"bc_acid2",
@@ -622,7 +625,7 @@ string bullchicken[NUM_BULLCHICKEN] =
 };
 
 #define NUM_CONTROLLER 16
-string controller[NUM_CONTROLLER] =
+static string controller[NUM_CONTROLLER] =
 {
 	"con_alert1",
 	"con_alert2",
@@ -643,7 +646,7 @@ string controller[NUM_CONTROLLER] =
 };
 
 #define NUM_GARG 25
-string garg[NUM_GARG] =
+static string garg[NUM_GARG] =
 {
 	"gar_alert1",
 	"gar_alert2",
@@ -673,7 +676,7 @@ string garg[NUM_GARG] =
 };
 
 #define NUM_GONARCH 22
-string gonarch[NUM_GONARCH] =
+static string gonarch[NUM_GONARCH] =
 {
 	"gon_alert1",
 	"gon_alert2",
@@ -700,7 +703,7 @@ string gonarch[NUM_GONARCH] =
 };
 
 #define NUM_HEADCRAB 16
-string headcrab[NUM_HEADCRAB] =
+static string headcrab[NUM_HEADCRAB] =
 {
 	"hc_alert1",
 	"hc_alert2",
@@ -721,7 +724,7 @@ string headcrab[NUM_HEADCRAB] =
 };
 
 #define NUM_ZOMBIE 16
-string zombie[NUM_ZOMBIE] =
+static string zombie[NUM_ZOMBIE] =
 {
 	"claw_miss1",
 	"claw_miss2",
@@ -742,7 +745,7 @@ string zombie[NUM_ZOMBIE] =
 };
 
 #define NUM_HOUNDEYE 25
-string houndeye[NUM_HOUNDEYE] =
+static string houndeye[NUM_HOUNDEYE] =
 {
 	"he_alert1",
 	"he_alert2",
@@ -772,7 +775,7 @@ string houndeye[NUM_HOUNDEYE] =
 };
 
 #define NUM_ICHY 19
-string ichy[NUM_ICHY] =
+static string ichy[NUM_ICHY] =
 {
 	"ichy_alert1",
 	"ichy_alert2",
@@ -796,7 +799,7 @@ string ichy[NUM_ICHY] =
 };
 
 #define NUM_LEECH 5
-string leech[NUM_LEECH] =
+static string leech[NUM_LEECH] =
 {
 	"leech_alert1",
 	"leech_alert2",
@@ -806,7 +809,7 @@ string leech[NUM_LEECH] =
 };
 
 #define NUM_ROACH 3
-string roach[NUM_ROACH] =
+static string roach[NUM_ROACH] =
 {
 	"rch_die",
 	"rch_smash",
@@ -814,7 +817,7 @@ string roach[NUM_ROACH] =
 };
 
 #define NUM_PITDRONE 26
-string pitdrone[NUM_PITDRONE] =
+static string pitdrone[NUM_PITDRONE] =
 {
 	"pit_drone_alert1",
 	"pit_drone_alert2",
@@ -845,7 +848,7 @@ string pitdrone[NUM_PITDRONE] =
 };
 
 #define NUM_BODYGUARD 45
-string bodyguard[NUM_BODYGUARD] =
+static string bodyguard[NUM_BODYGUARD] =
 {
 	"ashestoashes",
 	"attack2",
@@ -895,7 +898,7 @@ string bodyguard[NUM_BODYGUARD] =
 };
 
 #define NUM_SHOCKROACH 10
-string shockroach[NUM_SHOCKROACH] =
+static string shockroach[NUM_SHOCKROACH] =
 {
 	"shock_angry",
 	"shock_bite",
@@ -910,7 +913,7 @@ string shockroach[NUM_SHOCKROACH] =
 };
 
 #define NUM_SHOCKTROOPER 28
-string shocktrooper[NUM_SHOCKTROOPER] =
+static string shocktrooper[NUM_SHOCKTROOPER] =
 {
 	"blis",
 	"dit",
@@ -943,7 +946,7 @@ string shocktrooper[NUM_SHOCKTROOPER] =
 };
 
 #define NUM_KINGPIN 19
-string kingpin[NUM_KINGPIN] =
+static string kingpin[NUM_KINGPIN] =
 {
 	"kingpin_alert1",
 	"kingpin_alert2",
@@ -967,7 +970,7 @@ string kingpin[NUM_KINGPIN] =
 };
 
 #define NUM_TOR 14
-string tor[NUM_TOR] =
+static string tor[NUM_TOR] =
 {
 	"tor-alerted",
 	"tor-attack1",
@@ -986,7 +989,7 @@ string tor[NUM_TOR] =
 };
 
 #define NUM_VOLTIGORE 25
-string voltigore[NUM_VOLTIGORE] =
+static string voltigore[NUM_VOLTIGORE] =
 {
 	"voltigore_alert1",
 	"voltigore_alert2",
@@ -1016,7 +1019,7 @@ string voltigore[NUM_VOLTIGORE] =
 };
 
 #define NUM_GONOME 15
-string gonome[NUM_GONOME] =
+static string gonome[NUM_GONOME] =
 {
 	"gonome_death2",
 	"gonome_death3",
@@ -1036,7 +1039,7 @@ string gonome[NUM_GONOME] =
 };
 
 #define NUM_GRUNT 108 // ACK, TOO MANY
-string grunt[NUM_GRUNT] =
+static string grunt[NUM_GRUNT] =
 {
 	"alert",
 	"allclear",
@@ -1149,7 +1152,7 @@ string grunt[NUM_GRUNT] =
 };
 
 #define NUM_TURRET 13
-string turret[NUM_TURRET] =
+static string turret[NUM_TURRET] =
 {
 	"tu_active",
 	"tu_active2",
@@ -1167,7 +1170,7 @@ string turret[NUM_TURRET] =
 };
 
 #define NUM_NIH 15
-string nih[NUM_NIH] =
+static string nih[NUM_NIH] =
 {
 	"nil_alone",
 	"nil_comes",
@@ -1186,7 +1189,7 @@ string nih[NUM_NIH] =
 };
 
 #define NUM_ROBOGRUNT 40
-string robogrunt[NUM_ROBOGRUNT] =
+static string robogrunt[NUM_ROBOGRUNT] =
 {
 	"danger",
 	"bizwarn",

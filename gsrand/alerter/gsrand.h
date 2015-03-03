@@ -14,15 +14,6 @@
 #include "spriteList.h"
 #include "Wad.h"
 
-
-bool verbose = false;
-bool superRandom = false;
-int texMode = 0;
-int entMode = 0;
-int sndMode = 0;
-int mdlMode = 0;
-bool usePrefix = false;
-
 enum mdl_modes
 {
 	MDL_NONE,
@@ -57,11 +48,37 @@ enum tex_modes
 	TEX_MODES,
 };
 
+enum prefix_modes
+{
+	PREFIX_NONE,
+	PREFIX_GSRAND,
+	PREFIX_TIME,
+	PREFIX_CUSTOM,
+	PREFIX_MODES,
+};
+
+enum content_modes
+{
+	CONTENT_EVERYTHING, // anything the program can find
+	CONTENT_DEFAULT, // default SC 4.8 content only
+	CONTENT_CUSTOM, // only non-default SC 4.8 content
+	CONTENT_MODES,
+};
+
+static bool verbose = false;
+static bool superRandom = false;
+static int texMode = 0;
+static int entMode = 0;
+static int sndMode = 0;
+static int mdlMode = 0;
+static int prefixMode = 0;
+static int contentMode = 0;
+
 //string wadPath = "wad/";
-string wadPath = "";
+static string wadPath = "";
 
 #define NUM_DEFAULT_WADS 48
-std::string default_wads[NUM_DEFAULT_WADS] = 
+static string default_wads[NUM_DEFAULT_WADS] = 
 {
 	"afrikakorps",
 	"afrikakorps2",
@@ -290,52 +307,58 @@ struct membuf : std::streambuf
 	}
 };
 
-const int num_exts = 16;
-std::string exts[num_exts] = {"AIFF", "ASF", "DLS", "FLAC", "IT", "M3U", "MID", "MOD", 
-						 "MP2",	 "MP3", "OGG", "S3M", "VAG", "WAV", "WMA", "XM"};
-
 #define MAX_REPLACEMENTS 256
 #define MAX_SENTENCES 2048
 
 // will only be replaced with sounds from this group id
 
-vector<string> masterWadTex;
+static vector<string> masterWadTex;
 
-int numOverflow = 0;
+static int numOverflow = 0;
 
-bool sparks;
+static bool sparks;
 
-bool weaps[WEAPON_TYPES];
-int wsize[WEAPON_TYPES];
-std::string * wlists[WEAPON_TYPES];
+static bool weaps[WEAPON_TYPES];
+static int wsize[WEAPON_TYPES];
+static string * wlists[WEAPON_TYPES];
 
-std::string * voice[NUM_VOICE_DIRS];
-int vsize[NUM_VOICE_DIRS];
+static string * voice[NUM_VOICE_DIRS];
+static int vsize[NUM_VOICE_DIRS];
 
-vector<std::string> ambients;
-bool ftypes[NUM_FANS];
+static vector<string> ambients;
+static bool ftypes[NUM_FANS];
 
-bool rbutts[NUM_ROT_BUTTONS];
-bool butts[NUM_BUTTONS]; // lol butts..
+static bool rbutts[NUM_ROT_BUTTONS];
+static bool butts[NUM_BUTTONS]; // lol butts..
 
-bool dmove[NUM_DOOR_MOVES];
-bool dstop[NUM_DOOR_STOPS];
+static bool dmove[NUM_DOOR_MOVES];
+static bool dstop[NUM_DOOR_STOPS];
 
-bool ttrain[NUM_TRACK_TRAINS];
-bool tmove[NUM_TRAIN_MOVES];
-bool tstop[NUM_TRAIN_STOPS];
+static bool ttrain[NUM_TRACK_TRAINS];
+static bool tmove[NUM_TRAIN_MOVES];
+static bool tstop[NUM_TRAIN_STOPS];
 
-bool btypes[BREAKABLE_TYPES];
-int bsize[BREAKABLE_TYPES];
-std::string * blists[BREAKABLE_TYPES];
+static bool btypes[BREAKABLE_TYPES];
+static int bsize[BREAKABLE_TYPES];
+static string * blists[BREAKABLE_TYPES];
 
-string mname[MONSTER_TYPES];
-int msize[MONSTER_TYPES];
-std::string * mlists[MONSTER_TYPES];
-std::string mdirs[MONSTER_TYPES];
+static string mname[MONSTER_TYPES];
+static int msize[MONSTER_TYPES];
+static string * mlists[MONSTER_TYPES];
+static string mdirs[MONSTER_TYPES];
 
-int monsters[MONSTER_TYPES];
-int total_map_models = 0;
+static int monsters[MONSTER_TYPES];
+static int total_map_models = 0;
+
+static string_hashmap random_monster_models;
+static string_hashmap random_weapon_models;
+
+static vector<string> user_sounds; // a list of every sound the program could find
+static vector<string> user_models; // a list of every model the program could find
+static vector<string> user_skies; // a list of every sky the program could find
+
+static bool barnacle_grapple_hook = true; // renames all textures to "xeno_grapple"
+static string MAP_PREFIX = "gsrand_";
 
 enum model_types
 {
@@ -355,16 +378,6 @@ enum sprite_types
 	SPRITE_TYPE_GENERIC
 };
 
-void getAllSounds();
-
-void getAllVoices();
-
-vector<sound> generateWritable(bool printInfo);
-
-void writeGSR(std::string filename, vector<sound> writeList);
-
-int updateCFG(std::string path, std::string mapname, bool addNotRemove, std::string wadstring);
-
 Keyvalue extractKeyvalue(std::string line);
 
 BSP * loadBSP(std::string mapname);
@@ -373,42 +386,6 @@ void loadLumpBackup(BSP * map, int lump, std::string suffix);
 
 void saveLumpBackup(BSP * map, int lump, std::string suffix);
 
-void ripent(BSP * map, Entity** entData);
-
-bool needsRipent(Entity** ents);
-
-Entity** getMapEnts(BSP * map, bool printInfo, int& numEnts);
-
-void tallyMonsters(Entity** ents, string mapname);
-
-std::string constructSentence();
-
-void writeSentences(std::string mapName);
-
-int checkBSPs();
-
-void formatSentences();
+int randomize_maps(); // where it all begins
 
 void undoEverything();
-
-void recurseSubdirs(std::string path, vector<std::string>& dirs);
-
-vector<std::string> getAllSubdirs(std::string path);
-
-void genSoundList();
-
-vector<Wad> getWads(bool defaultOnly);
-
-void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname);
-
-BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad> wads, BSP * map);
-
-int makeMapWad(BSP * map, vector<Wad>& wads);
-
-// find out what kind of model the entitiy use
-int getModelType(string entity_name);
-
-string_hashmap random_monster_models;
-string_hashmap random_weapon_models;
-
-void init_random_monster_models();

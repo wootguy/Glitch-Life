@@ -576,3 +576,79 @@ char * loadFile( string file )
 	//println("read " + str(size));
 	return buffer;
 }
+
+DateTime DateTime::now()
+{
+	SYSTEMTIME t;
+	GetLocalTime(&t);
+	return DateTime(t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond);
+}
+
+string DateTime::str()
+{
+	string suffix = "AM";
+	int s_hour = hour;
+	string s_min = minute < 10 ? ("0" + ::str(minute)) : ::str(minute);
+	string s_sec = second < 10 ? ("0" + ::str(second)) : ::str(second);
+	if (hour > 12)
+	{
+		s_hour -= 12;
+		suffix = "PM";
+	}
+	return ::str(month) + "/" + ::str(day) + "/" + ::str(year) + " " + ::str(s_hour) + ":" + s_min + ":" + s_sec + " " + suffix;
+}
+
+string DateTime::compact_str()
+{
+	string s_min = minute < 10 ? ("0" + ::str(minute)) : ::str(minute);
+	string s_hour = hour < 10 ? ("0" + ::str(hour)) : ::str(hour);
+	string s_day = day < 10 ? ("0" + ::str(day)) : ::str(day);
+	string s_month = month < 10 ? ("0" + ::str(month)) : ::str(month);
+	string s_year = year < 10 ? ("0" + ::str(year % 100)) : ::str(year % 100);
+
+	return s_year + s_month + s_day + s_hour + s_min;
+}
+
+void recurseSubdirs(string path, vector<string>& dirs)
+{
+	dirs.push_back(path);
+	vector<string> files = getSubdirs(path);
+	for (uint i = 0; i < files.size(); i++)
+		recurseSubdirs(path + files[i] + '/', dirs);
+}
+
+vector<string> getAllSubdirs(string path)
+{
+	vector<string> dirs;
+	recurseSubdirs(path, dirs);
+	return dirs;
+}
+
+// no slashes allowed at the end of start_dir
+string relative_path_to_absolute(string start_dir, string path)
+{
+	int up = path.find("../");
+	if (up == string::npos)
+		return start_dir + "/" + path;
+	
+	while (up != string::npos)
+	{
+		int up_dir = start_dir.find_last_of("\\/");
+		if (up_dir == string::npos)
+		{
+			print("Could not convert '" + path + "' to absolute path using root dir: " + start_dir); 
+			return start_dir + "/" + path;
+		}
+		if (up > 0) // some crazy person went back down a directory before going up
+		{
+			start_dir += getSubStr(path, 0, up-1);
+			path = getSubStr(path, up);
+			up = 0;
+		}
+		start_dir = getSubStr(start_dir, 0, up_dir);
+		path = getSubStr(path, 3);
+		up = path.find("../");
+	}
+	
+	return start_dir + "/" + path;	
+}

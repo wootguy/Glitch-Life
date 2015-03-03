@@ -83,6 +83,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ent_util.h" />
     <ClInclude Include="gsrand.h" />
     <ClInclude Include="masterList.h" />
     <ClInclude Include="Entity.h" />
@@ -90,26 +91,33 @@
     <ClInclude Include="Keyvalue.h" />
     <ClInclude Include="MDL.h" />
     <ClInclude Include="modelList.h" />
+    <ClInclude Include="model_util.h" />
     <ClInclude Include="sentences.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="soundlists.h" />
+    <ClInclude Include="sound_util.h" />
     <ClInclude Include="spriteList.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="studio.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="tex_util.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Wad.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="ent_util.cpp" />
     <ClCompile Include="gsrand.cpp" />
     <ClCompile Include="Keyvalue.cpp" />
     <ClCompile Include="MDL.cpp" />
+    <ClCompile Include="model_util.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="sound_util.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="tex_util.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Wad.cpp" />
   </ItemGroup>

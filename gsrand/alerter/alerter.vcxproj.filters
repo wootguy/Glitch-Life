@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{2413161c-631c-487e-9bc7-56fef3c92dc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Content Lists">
+      <UniqueIdentifier>{07ff055d-f333-4129-84bc-bafbd61723b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{0f059b52-95fc-4d9f-b4d1-146dba6b15e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -34,19 +43,10 @@
     <ClInclude Include="Sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="soundlists.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Keyvalue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sentences.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="masterList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Wad.h">
@@ -55,17 +55,38 @@
     <ClInclude Include="gsrand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modelList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MDL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="studio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="model_util.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="tex_util.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="sound_util.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="masterList.h">
+      <Filter>Header Files\Content Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="modelList.h">
+      <Filter>Header Files\Content Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="sentences.h">
+      <Filter>Header Files\Content Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="soundlists.h">
+      <Filter>Header Files\Content Lists</Filter>
+    </ClInclude>
     <ClInclude Include="spriteList.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Content Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="ent_util.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +113,18 @@
     </ClCompile>
     <ClCompile Include="MDL.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="model_util.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="sound_util.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="tex_util.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ent_util.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

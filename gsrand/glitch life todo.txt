@@ -1,12 +1,33 @@
 glitch-life todo:
 
+skybox replacement
+player weapon v_ match p_  and w_ if super random?
+global only model replacement (stability?)
+allow non-default models/sounds/skyboxes (content selection option)
+update help pages
+read from map list instead of randomizing EVERYTHING
+grapple hook if entity mode enabled but not texture mode
+
+p_crowbar crash (sc_royals/pharoah.mdl)
+hwgrunt crash ("models/hunger/thehand.mdl")
+scientist crash ("doctor.mdl")
+probably should just do thorough testing on each monster type...
+
+
+Nice-to-haves:
+
 detailtextures?
 bsp model swapping
-skybox
-player weapon v_ match p_ if super random
-map prefixes
-global only model replacement (stability?)
-doors are auto-triggered in Blueshift causing crashes
-
-bypass elevator people
+make sure "specimen" in test chamber doesn't get jammed
 bypass all players must be inside  c1a4b c2a5b (c3a1a?) c3a1b
+c1a2e (how did this changelevel ever work?)
+multiplayer packer (include non-default sounds/models/etc.)
+res file generator for non-default stuff
+dont make spinning things and doors take forever
+player-model entites get shifted hull
+equally random wad textrues
+sometimes gsrand files not generated?
+MOTD with useful tips and commands (cl_Stopsound, grapple gibbing)
+better osprey replacements?
+load textures from maps
+user-defined voice directories
