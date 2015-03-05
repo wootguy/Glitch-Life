@@ -9,12 +9,9 @@ read from map list instead of randomizing EVERYTHING
 grapple hook if entity mode enabled but not texture mode
 monster models aren't all actually monsters
 external model blacklists/whitelists
-separate player models from monster models
 
 p_crowbar crash (sc_royals/pharoah.mdl)
-hwgrunt crash ("models/hunger/thehand.mdl")
 probably should just do thorough testing on each monster type...
-37 -> 3 second compile from converting strings to char * (LOL wow..)
 
 Nice-to-haves:
 

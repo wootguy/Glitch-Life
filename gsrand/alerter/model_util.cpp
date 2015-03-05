@@ -42,7 +42,11 @@ string get_random_model(int request_model_type)
 	else if (request_model_type == MODEL_TYPE_PROP)
 		return MODEL_PROPS[rand() % NUM_MODEL_PROPS];
 	else if (request_model_type == MODEL_TYPE_MONSTER)
-		return MODEL_MONSTERS[rand() % NUM_MODEL_MONSTERS];
+	{
+		r = rand() % 4;
+		if (r) return MODEL_MONSTERS[rand() % NUM_MODEL_MONSTERS];
+		return MODEL_PLAYERS[rand() % NUM_MODEL_PLAYERS]; 
+	}
 	else if (request_model_type == MODEL_TYPE_P_WEAPON)
 		return MODEL_P[rand() % NUM_MODEL_P];
 	else if (request_model_type == MODEL_TYPE_W_WEAPON)
@@ -453,7 +457,7 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 			continue;
 		string second;
 		do { second = get_random_replacement(first, replaced, replace_models); }
-		while(is_safe_model_replacement("", first, second));
+		while(!is_safe_model_replacement("", first, second));
 		if (!second.length())
 			continue;
 		replaced.push_back(second);
@@ -674,7 +678,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 			}
 
 			if (find(replaced.begin(), replaced.end(), it->second) != replaced.end() ||
-				is_safe_model_replacement(cname, it->first, it->second))
+				!is_safe_model_replacement(cname, it->first, it->second))
 			{
 				it->second = cname;
 				it--; // do it again. We can't use a replacement model that's been replaced
@@ -783,7 +787,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				{
 					int mtype = cname.find("monster_") == 0 ? MODEL_TYPE_MONSTER : MODEL_TYPE_GENERIC;
 					do { replace_entity_model(ents[i], custom_monster_model_key, mtype, potential_additions); }
-					while (is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]));
+					while (!is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]));
 				}
 
 				if (cname.find("monster_") == 0)
@@ -794,9 +798,17 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 					while (ents[i]->keyvalues[custom_monster_model_key].find("/w_") != string::npos ||
 							ents[i]->keyvalues[custom_monster_model_key].find("/p_") != string::npos ||
 							ents[i]->keyvalues[custom_monster_model_key].find("/v_") != string::npos ||
-							find(replace_models.begin(), replace_models.end(), ents[i]->keyvalues[custom_monster_model_key]) != replace_models.end())
+							find(replace_models.begin(), replace_models.end(), ents[i]->keyvalues[custom_monster_model_key]) != replace_models.end() ||
+							!is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]))
 						replace_entity_model(ents[i], custom_monster_model_key, MODEL_TYPE_MONSTER, ++potential_additions);
 
+					if (!ents[i]->keyvalues[custom_monster_model_key].length())
+					{
+						println("WHAT WHY: ");
+						if (!replace_entity_model(ents[i], custom_monster_model_key, MODEL_TYPE_MONSTER, ++potential_additions))
+							println("OH THATS WHY");
+						println("DETAILS: " + cname + " " + ents[i]->keyvalues[custom_monster_model_key]);
+					}
 					// rename monster to "model_name monster_name"
 					string raw_model_name = ents[i]->keyvalues[custom_monster_model_key];
 					raw_model_name = getSubStr(raw_model_name, 0, raw_model_name.length()-4); // strip .mdl
@@ -951,59 +963,53 @@ void genModelList()
 	}
 
 	println("#define NUM_APACHE_MODELS " + str(apache_models.size()));
-	println("static string APACHE_MODELS[NUM_APACHE_MODELS] =");
+	println("static const char * APACHE_MODELS[NUM_APACHE_MODELS] =");
 	println("{");
 	for (uint s = 0; s < apache_models.size(); s++)
 		println("\t\"" + apache_models[s] + "\",");
 	println("};\n");
 
 	println("#define NUM_MODEL_V " + str(v_models.size()));
-	println("static string MODEL_V[NUM_MODEL_V] =");
+	println("static const char * MODEL_V[NUM_MODEL_V] =");
 	println("{");
 	for (uint s = 0; s < v_models.size(); s++)
 		println("\t\"" + v_models[s] + "\",");
 	println("};\n");
 
 	println("#define NUM_MODEL_P " + str(p_models.size()));
-	println("static string MODEL_P[NUM_MODEL_P] =");
+	println("static const char * MODEL_P[NUM_MODEL_P] =");
 	println("{");
 	for (uint s = 0; s < p_models.size(); s++)
 		println("\t\"" + p_models[s] + "\",");
 	println("};\n");
 
 	println("#define NUM_MODEL_W " + str(w_models.size()));
-	println("static string MODEL_W[NUM_MODEL_W] =");
+	println("static const char * MODEL_W[NUM_MODEL_W] =");
 	println("{");
 	for (uint s = 0; s < w_models.size(); s++)
 		println("\t\"" + w_models[s] + "\",");
 	println("};\n");
 
 	println("#define NUM_MODEL_PROPS " + str(props.size()));
-	println("static string MODEL_PROPS[NUM_MODEL_PROPS] =");
+	println("static const char * MODEL_PROPS[NUM_MODEL_PROPS] =");
 	println("{");
 	for (uint s = 0; s < props.size(); s++)
 		println("\t\"" + props[s] + "\",");
 	println("};\n");
 
 	println("#define NUM_MODEL_MONSTERS " + str(monster.size()));
-	println("static string MODEL_MONSTERS[NUM_MODEL_MONSTERS] =");
+	println("static const char * MODEL_MONSTERS[NUM_MODEL_MONSTERS] =");
 	println("{");
 	for (uint s = 0; s < monster.size(); s++)
 		println("\t\"" + monster[s] + "\",");
 	println("};\n");
 
 	println("#define NUM_MODEL_PLAYERS " + str(player_models.size()));
-	println("static string MODEL_PLAYERS[NUM_MODEL_PLAYERS] =");
+	println("static const char * MODEL_PLAYERS[NUM_MODEL_PLAYERS] =");
 	println("{");
 	for (uint s = 0; s < player_models.size(); s++)
 		println("\t\"" + player_models[s] + "\",");
 	println("};\n");
-
-	println("V_: " + str(v_models.size()));
-	println("P_: " + str(p_models.size()));
-	println("W_: " + str(w_models.size()));
-	println("Prop: " + str(props.size()));
-	println("Monster: " + str(monster.size()));
 
 	writeLog();
 }
@@ -1040,22 +1046,18 @@ void genSpriteList()
 	}
 
 	println("#define NUM_ANIMATED_SPRITES " + str(animated.size()));
-	println("string ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =");
+	println("static const char * ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =");
 	println("{");
 	for (uint s = 0; s < animated.size(); s++)
 		println("\t\"" + animated[s] + "\",");
 	println("};\n");
 
 	println("#define NUM_STATIC_SPRITES " + str(singleframe.size()));
-	println("string STATIC_SPRITES[NUM_STATIC_SPRITES] =");
+	println("static const char * STATIC_SPRITES[NUM_STATIC_SPRITES] =");
 	println("{");
 	for (uint s = 0; s < singleframe.size(); s++)
 		println("\t\"" + singleframe[s] + "\",");
 	println("};\n");
-
-	
-	println("Animated sprites: " + str(animated.size()));
-	println("Static sprites: " + str(singleframe.size()));
 
 	writeLog();
 }

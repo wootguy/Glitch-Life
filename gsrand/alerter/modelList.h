@@ -7,30 +7,30 @@ using namespace std;
 
 typedef tr1::unordered_map< string, string > string_hashmap;
 
-static string_hashmap default_monster_models;
-static string_hashmap default_friendly_monster_models;
-static string_hashmap default_weapon_models;
-static string_hashmap default_ammo_models;
-static string_hashmap default_item_models;
+extern string_hashmap default_monster_models;
+extern string_hashmap default_friendly_monster_models;
+extern string_hashmap default_weapon_models;
+extern string_hashmap default_ammo_models;
+extern string_hashmap default_item_models;
 
-static vector<string> default_gib_models;
+extern vector<string> default_gib_models;
 
-static vector<string> default_precache_models; // models that are precached by default
-static vector<string> gmr_replace_only; // models only replacable through GMR
+extern vector<string> default_precache_models; // models that are precached by default
+extern vector<string> gmr_replace_only; // models only replacable through GMR
 
 // set of models that would crash the game if they were used as replacements
-static vector<string> satchel_blacklist;
-static vector<string> hwgrunt_blacklist;
+extern vector<string> satchel_blacklist;
+extern vector<string> hwgrunt_blacklist;
 
 // set of models that are tested to be working for the monster (others likely cause a crash)
-static vector<string> nih_whitelist; // w_ and player models are ok but not in this list
-static vector<string> controller_whitelist; // w_ and player models also ok
+extern vector<string> nih_whitelist; // w_ and player models are ok but not in this list
+extern vector<string> controller_whitelist; // w_ and player models also ok
 
-static vector<string> monster_sprites;
+extern vector<string> monster_sprites;
 
-static vector<string> dont_replace; // shouldn't be replaced
+extern vector<string> dont_replace; // shouldn't be replaced
 
-static vector<string> weapon_types;
+extern vector<string> weapon_types;
 
 // to regenerate:
 // run "mcache" command
@@ -649,7 +649,7 @@ static void init_default_model_lists()
 	init_default_precache_list();
 }
 
-#define NUM_APACHE_MODELS 128
+#define NUM_APACHE_MODELS 124
 static const char * APACHE_MODELS[NUM_APACHE_MODELS] =
 {
 	"apache",
@@ -776,13 +776,9 @@ static const char * APACHE_MODELS[NUM_APACHE_MODELS] =
 	"valve_hd/barney",
 	"valve_hd/gman",
 	"vger/demonotis",
-	"zelda/characters/Young_Link_equip0_B",
-	"zelda/characters/Young_Link_equip0_G",
-	"zelda/characters/Young_Link_equip0_P",
-	"zelda/characters/Young_Link_equip0_R",
 };
 
-#define NUM_MODEL_V 129
+#define NUM_MODEL_V 124
 static const char * MODEL_V[NUM_MODEL_V] =
 {
 	"v_357",
@@ -909,14 +905,9 @@ static const char * MODEL_V[NUM_MODEL_V] =
 	"svencooprpg2/v_warhammer",
 	"svencooprpg2/v_xbow",
 	"vger/v_357",
-	"zelda/weapons/v_satchel",
-	"zelda/weapons/v_satchel_radio",
-	"zelda/weapons/v_sling",
-	"zelda/weapons/v_stick",
-	"zelda/weapons/v_sword",
 };
 
-#define NUM_MODEL_P 86
+#define NUM_MODEL_P 81
 static const char * MODEL_P[NUM_MODEL_P] =
 {
 	"p_2uzis",
@@ -1000,14 +991,9 @@ static const char * MODEL_P[NUM_MODEL_P] =
 	"svencooprpg2/p_warhammer",
 	"svencooprpg2/p_xbow",
 	"vger/p_357",
-	"zelda/weapons/p_satchel",
-	"zelda/weapons/p_satchel_radio",
-	"zelda/weapons/p_sling",
-	"zelda/weapons/p_stick",
-	"zelda/weapons/p_sword",
 };
 
-#define NUM_MODEL_W 111
+#define NUM_MODEL_W 107
 static const char * MODEL_W[NUM_MODEL_W] =
 {
 	"w_2uzis",
@@ -1117,13 +1103,9 @@ static const char * MODEL_W[NUM_MODEL_W] =
 	"svencooprpg2/w_warhammer",
 	"vger/w_357",
 	"vhe-models/w_tripmine_hammer",
-	"zelda/weapons/w_satchel",
-	"zelda/weapons/w_sling",
-	"zelda/weapons/w_stick",
-	"zelda/weapons/w_sword",
 };
 
-#define NUM_MODEL_PROPS 272
+#define NUM_MODEL_PROPS 239
 static const char * MODEL_PROPS[NUM_MODEL_PROPS] =
 {
 	"abone_template1",
@@ -1365,42 +1347,9 @@ static const char * MODEL_PROPS[NUM_MODEL_PROPS] =
 	"sc_royals/rockgibsgold",
 	"toonrun/spleen",
 	"vhe-models/trigger_camera",
-	"zelda/characters/navi",
-	"zelda/characters/saria",
-	"zelda/enemies/baba_root",
-	"zelda/enemies/nut_spike",
-	"zelda/enemies/scrub_root",
-	"zelda/items/arrow",
-	"zelda/items/heart",
-	"zelda/items/heart_big",
-	"zelda/items/nut",
-	"zelda/items/rupee",
-	"zelda/items/seeds",
-	"zelda/items/shield",
-	"zelda/items/stick",
-	"zelda/items/token",
-	"zelda/props/leaf",
-	"zelda/props/leaf2",
-	"zelda/props/plant",
-	"zelda/props/plant2",
-	"zelda/props/pot",
-	"zelda/props/pot_gib",
-	"zelda/props/rock",
-	"zelda/props/rockgibs",
-	"zelda/props/statue",
-	"zelda/props/warp",
-	"zelda/props/warp2",
-	"zelda/props/kokiri/dekutree",
-	"zelda/props/kokiri/house1",
-	"zelda/props/kokiri/house2",
-	"zelda/props/kokiri/house3",
-	"zelda/props/kokiri/house4",
-	"zelda/props/kokiri/house5",
-	"zelda/props/kokiri/house6",
-	"zelda/weapons/seed",
 };
 
-#define NUM_MODEL_MONSTERS 381
+#define NUM_MODEL_MONSTERS 360
 static const char * MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
 {
 	"aflock",
@@ -1763,30 +1712,9 @@ static const char * MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
 	"vger/rvrobo",
 	"vger/vgergrunt",
 	"vhe-models/spore_ammo_hammer",
-	"zelda/characters/kokiri_boy",
-	"zelda/characters/kokiri_girl",
-	"zelda/characters/mido",
-	"zelda/characters/shopkeeper",
-	"zelda/characters/Young_Link_equip0_B",
-	"zelda/characters/Young_Link_equip0_G",
-	"zelda/characters/Young_Link_equip0_P",
-	"zelda/characters/Young_Link_equip0_R",
-	"zelda/enemies/baba",
-	"zelda/enemies/baba2",
-	"zelda/enemies/baba2_old",
-	"zelda/enemies/egg",
-	"zelda/enemies/gohma",
-	"zelda/enemies/jumper",
-	"zelda/enemies/scrub",
-	"zelda/enemies/scrub_whine",
-	"zelda/enemies/spider",
-	"zelda/enemies/spider_gold",
-	"zelda/enemies/spider_small",
-	"zelda/enemies/wolfos",
-	"zelda/props/gossip",
 };
 
-#define NUM_MODEL_PLAYERS 59
+#define NUM_MODEL_PLAYERS 60
 static const char * MODEL_PLAYERS[NUM_MODEL_PLAYERS] =
 {
 	"player/aswat/aswat",
@@ -1816,6 +1744,7 @@ static const char * MODEL_PLAYERS[NUM_MODEL_PLAYERS] =
 	"player/hevscientist3/hevscientist3",
 	"player/hevscientist4/hevscientist4",
 	"player/hevscientist5/hevscientist5",
+	"player/hgrunt/Hgrunt",
 	"player/junctionpunch/junctionpunch",
 	"player/kate/kate",
 	"player/madscientist/madscientist",

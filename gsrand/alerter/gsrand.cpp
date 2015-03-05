@@ -9,6 +9,71 @@
 #include "tex_util.h"
 #include "ent_util.h"
 
+bool verbose = false;
+bool superRandom = false;
+int texMode = 0;
+int entMode = 0;
+int sndMode = 0;
+int mdlMode = 0;
+int prefixMode = PREFIX_GSRAND;
+int contentMode = 0;
+
+bool barnacle_grapple_hook = true; 
+string MAP_PREFIX = "gsrand_";
+
+int numOverflow = 0;
+bool sparks;
+bool weaps[WEAPON_TYPES];
+int wsize[WEAPON_TYPES];
+const char ** wlists[WEAPON_TYPES];
+string * voice[NUM_VOICE_DIRS];
+int vsize[NUM_VOICE_DIRS];
+bool ftypes[NUM_FANS];
+bool rbutts[NUM_ROT_BUTTONS];
+bool butts[NUM_BUTTONS];
+bool dmove[NUM_DOOR_MOVES];
+bool dstop[NUM_DOOR_STOPS];
+bool ttrain[NUM_TRACK_TRAINS];
+bool tmove[NUM_TRAIN_MOVES];
+bool tstop[NUM_TRAIN_STOPS];
+bool btypes[BREAKABLE_TYPES];
+int bsize[BREAKABLE_TYPES];
+const char ** blists[BREAKABLE_TYPES];
+string mname[MONSTER_TYPES];
+int msize[MONSTER_TYPES];
+const char ** mlists[MONSTER_TYPES];
+string mdirs[MONSTER_TYPES];
+int monsters[MONSTER_TYPES];
+int total_map_models = 0;
+
+vector<string> user_sounds;
+vector<string> user_models;
+vector<string> user_skies;
+
+string wadPath = "";
+vector<string> masterWadTex;
+vector<string> ambients;
+
+string_hashmap random_monster_models;
+string_hashmap random_weapon_models;
+
+// model vars
+string_hashmap default_monster_models;
+string_hashmap default_friendly_monster_models;
+string_hashmap default_weapon_models;
+string_hashmap default_ammo_models;
+string_hashmap default_item_models;
+vector<string> default_gib_models;
+vector<string> default_precache_models; // models that are precached by default
+vector<string> gmr_replace_only; // models only replacable through GMR
+vector<string> satchel_blacklist;
+vector<string> hwgrunt_blacklist;
+vector<string> nih_whitelist; // w_ and player models are ok but not in this list
+vector<string> controller_whitelist; // w_ and player models also ok
+vector<string> monster_sprites;
+vector<string> dont_replace; // shouldn't be replaced
+vector<string> weapon_types;
+
 void readConfigFile()
 {
 	if (!fileExists("gsrand.cfg"))
@@ -424,13 +489,10 @@ int randomize_maps()
 	int sounds = 0;
 	if (sndMode != SND_NONE)
 	{
-		print("Found " + str(user_sounds.size()) + " sounds");
-		int voices = 0;
-		for (int i = 0; i < NUM_MASTER_DIRS; ++i)
-			sounds += masterSize[i];
-		for (int i = 0; i < NUM_VOICE_DIRS; ++i)
-			voices += vsize[i];
-		println("Using default SC 4.8 sounds (" + str(sounds) + " sounds)");
+		print("Found " + str(user_sounds.size()) + " ");
+		if (contentMode == CONTENT_EVERYTHING) println("sounds");
+		if (contentMode == CONTENT_DEFAULT) println("default sounds");
+		if (contentMode == CONTENT_CUSTOM) println("non-default sounds");
 	}
 
 	if (prefixMode == PREFIX_CUSTOM)

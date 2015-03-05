@@ -1169,7 +1169,7 @@ static const char * turret[NUM_TURRET] =
 	"tu_spinup",
 };
 
-#define NUM_NIH 15
+#define NUM_NIH 14
 static const char * nih[NUM_NIH] =
 {
 	"nil_alone",

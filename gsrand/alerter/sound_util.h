@@ -7,10 +7,10 @@ using namespace std;
 class Entity;
 
 const int num_exts = 16;
-static string exts[num_exts] = {"AIFF", "ASF", "DLS", "FLAC", "IT", "M3U", "MID", "MOD", 
+static const char * exts[num_exts] = {"AIFF", "ASF", "DLS", "FLAC", "IT", "M3U", "MID", "MOD", 
 						 "MP2",	 "MP3", "OGG", "S3M", "VAG", "WAV", "WMA", "XM"};
 
-string get_random_sound(string& rand_dir);
+string get_random_sound();
 
 void getAllSounds();
 

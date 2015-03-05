@@ -3,27 +3,9 @@
 #include "ent_util.h"
 #include "gsrand.h"
 
-string get_random_sound(string& rand_dir)
+string get_random_sound()
 {
-	int total_sounds = 0;
-	for (int i = 0; i < NUM_MASTER_DIRS; ++i)
-		total_sounds += masterSize[i];
-	// TODO: non-default sounds too
-
-	int r = rand() % total_sounds;
-
-	int pos = 0;
-	for (int i = 0; i < NUM_MASTER_DIRS; ++i)
-	{
-		if (r < pos + masterSize[i])
-		{
-			rand_dir = masterDirs[i];
-			return masterList[i][r - pos];
-		}
-		pos += masterSize[i];
-	}
-
-	println("FAILED TO GET CUSTOM SOUND WOW " + r);
+	return user_sounds[rand() % user_sounds.size()];
 	return "";
 }
 
@@ -55,7 +37,7 @@ void getAllSounds()
 
 	if (contentMode != CONTENT_EVERYTHING)
 	{
-		for (uint i = 0; i < user_sounds.size(); ++i)
+		for (uint i = 0, sz = user_sounds.size(); i < sz; ++i)
 		{
 			bool done = false;
 			for (uint d = 0; d < NUM_MASTER_DIRS; ++d)
@@ -79,8 +61,6 @@ void getAllSounds()
 			}
 		}
 	}
-
-	//writeLog();
 }
 
 void getAllVoices()
@@ -163,7 +143,7 @@ void genSoundList()
 			dirSizes.push_back(sounds.size());
 			string num_cnt = "NUM_" + formatted; 
 			println("#define " + num_cnt + " " + str(sounds.size()));
-			println("static string " + formatted + "[" + num_cnt + "] =\n{");
+			println("static const char * " + formatted + "[" + num_cnt + "] =\n{");
 			for (uint s = 0; s < sounds.size(); s++)
 			{
 				println("\t\"" + sounds[s] + "\",");
@@ -173,9 +153,9 @@ void genSoundList()
 	}
 
 	println("#define NUM_MASTER_DIRS " + str(validDirs.size()));
-	println("static string * masterList[NUM_MASTER_DIRS];");
-	println("static int      masterSize[NUM_MASTER_DIRS];");
-	println("static string   masterDirs[NUM_MASTER_DIRS];");
+	println("static const char ** masterList[NUM_MASTER_DIRS];");
+	println("static int           masterSize[NUM_MASTER_DIRS];");
+	println("static const char *  masterDirs[NUM_MASTER_DIRS];");
 	println("void initMasterList()\n{");
 	for (uint i = 0; i < validDirs.size(); i++)
 	{
@@ -384,8 +364,7 @@ void writeMonsterSoundLists(string mapname)
 
 			for (int k = 0; k < msize[i]; k++)
 			{
-				string rand_dir;
-				string randSnd = get_random_sound(rand_dir);
+				string randSnd = get_random_sound();
 				if (matchStr(randSnd, mlists[i][k]))
 				{
 					i--;
@@ -394,7 +373,7 @@ void writeMonsterSoundLists(string mapname)
 				myfile << '\"';
 				if (i != ASLAVE)
 					myfile << mdirs[i] << '/';
-				myfile << mlists[i][k] << ".wav\" \"" << rand_dir + '/' + randSnd << '\"' << '\n';
+				myfile << mlists[i][k] << ".wav\" \"" << randSnd << '\"' << '\n';
 			}
 			myfile.close();
 
@@ -412,15 +391,14 @@ void writeGSR(string filename, vector<sound> writeList)
 
 	for (uint i = 0; i < writeList.size(); i++)
 	{
-		string rand_dir;
-		string randSnd = get_random_sound(rand_dir);
+		string randSnd = get_random_sound();
 		if (matchStr(randSnd, writeList[i].filename))
 		{
 			i--;
 			continue;
 		}
 		
-		myfile << '\"' << writeList[i].filename << "\" \"" << rand_dir + '/' + randSnd << '\"' << '\n';
+		myfile << '\"' << writeList[i].filename << "\" \"" << randSnd << '\"' << '\n';
 	}
 	myfile.close();
 
@@ -430,7 +408,7 @@ void writeGSR(string filename, vector<sound> writeList)
 string constructSentence()
 {
 	int randVoice = rand() % NUM_VOICE_DIRS;
-	string sentence = voice_dirs[randVoice] + '/';
+	string sentence = string(voice_dirs[randVoice]) + '/';
 		
 	for (int i = 0, words = (rand() % 5) + 1; i < words; i++)
 	{
@@ -452,8 +430,6 @@ void writeSentences(string mapName)
 		fout << sentences[i] << " " << constructSentence() << endl;
 
 	fout.close();
-
-	//println("Wrote " + mapName + "_sentences.gsrand");
 }
 
 void formatSentences()

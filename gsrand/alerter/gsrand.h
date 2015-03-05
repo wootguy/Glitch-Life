@@ -65,20 +65,20 @@ enum content_modes
 	CONTENT_MODES,
 };
 
-static bool verbose = false;
-static bool superRandom = false;
-static int texMode = 0;
-static int entMode = 0;
-static int sndMode = 0;
-static int mdlMode = 0;
-static int prefixMode = 0;
-static int contentMode = 0;
+extern bool verbose;
+extern bool superRandom;
+extern int texMode;
+extern int entMode;
+extern int sndMode;
+extern int mdlMode;
+extern int prefixMode;
+extern int contentMode;
 
 //string wadPath = "wad/";
-static string wadPath = "";
+extern string wadPath;
 
 #define NUM_DEFAULT_WADS 48
-static string default_wads[NUM_DEFAULT_WADS] = 
+static const char * default_wads[NUM_DEFAULT_WADS] = 
 {
 	"afrikakorps",
 	"afrikakorps2",
@@ -312,53 +312,53 @@ struct membuf : std::streambuf
 
 // will only be replaced with sounds from this group id
 
-static vector<string> masterWadTex;
+extern vector<string> masterWadTex;
 
-static int numOverflow = 0;
+extern int numOverflow;
 
-static bool sparks;
+extern bool sparks;
 
-static bool weaps[WEAPON_TYPES];
-static int wsize[WEAPON_TYPES];
-static const char ** wlists[WEAPON_TYPES];
+extern bool weaps[WEAPON_TYPES];
+extern int wsize[WEAPON_TYPES];
+extern const char ** wlists[WEAPON_TYPES];
 
-static string * voice[NUM_VOICE_DIRS];
-static int vsize[NUM_VOICE_DIRS];
+extern string * voice[NUM_VOICE_DIRS];
+extern int vsize[NUM_VOICE_DIRS];
 
-static vector<string> ambients;
-static bool ftypes[NUM_FANS];
+extern vector<string> ambients;
+extern bool ftypes[NUM_FANS];
 
-static bool rbutts[NUM_ROT_BUTTONS];
-static bool butts[NUM_BUTTONS]; // lol butts..
+extern bool rbutts[NUM_ROT_BUTTONS];
+extern bool butts[NUM_BUTTONS]; // lol butts..
 
-static bool dmove[NUM_DOOR_MOVES];
-static bool dstop[NUM_DOOR_STOPS];
+extern bool dmove[NUM_DOOR_MOVES];
+extern bool dstop[NUM_DOOR_STOPS];
 
-static bool ttrain[NUM_TRACK_TRAINS];
-static bool tmove[NUM_TRAIN_MOVES];
-static bool tstop[NUM_TRAIN_STOPS];
+extern bool ttrain[NUM_TRACK_TRAINS];
+extern bool tmove[NUM_TRAIN_MOVES];
+extern bool tstop[NUM_TRAIN_STOPS];
 
-static bool btypes[BREAKABLE_TYPES];
-static int bsize[BREAKABLE_TYPES];
-static const char ** blists[BREAKABLE_TYPES];
+extern bool btypes[BREAKABLE_TYPES];
+extern int bsize[BREAKABLE_TYPES];
+extern const char ** blists[BREAKABLE_TYPES];
 
-static string mname[MONSTER_TYPES];
-static int msize[MONSTER_TYPES];
-static const char ** mlists[MONSTER_TYPES];
-static string mdirs[MONSTER_TYPES];
+extern string mname[MONSTER_TYPES];
+extern int msize[MONSTER_TYPES];
+extern const char ** mlists[MONSTER_TYPES];
+extern string mdirs[MONSTER_TYPES];
 
-static int monsters[MONSTER_TYPES];
-static int total_map_models = 0;
+extern int monsters[MONSTER_TYPES];
+extern int total_map_models;
 
-static string_hashmap random_monster_models;
-static string_hashmap random_weapon_models;
+extern string_hashmap random_monster_models;
+extern string_hashmap random_weapon_models;
 
-static vector<string> user_sounds; // a list of every sound the program could find
-static vector<string> user_models; // a list of every model the program could find
-static vector<string> user_skies; // a list of every sky the program could find
+extern vector<string> user_sounds; // a list of every sound the program could find
+extern vector<string> user_models; // a list of every model the program could find
+extern vector<string> user_skies; // a list of every sky the program could find
 
-static bool barnacle_grapple_hook = true; // renames all textures to "xeno_grapple"
-static string MAP_PREFIX = "gsrand_";
+extern bool barnacle_grapple_hook; // renames all textures to "xeno_grapple"
+extern string MAP_PREFIX;
 
 enum model_types
 {

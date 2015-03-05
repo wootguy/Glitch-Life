@@ -7,7 +7,7 @@ vector<Wad> getWads(bool defaultOnly)
 	vector<Wad> wads;
 	for (int i = 0; i < NUM_DEFAULT_WADS; i++)
 	{
-		string name = default_wads[i] + ".wad";
+		string name = string(default_wads[i]) + ".wad";
 		if (fileExists(name))
 			wads.push_back(Wad(name));
 		else if (fileExists(wadPath + name))
@@ -42,6 +42,11 @@ vector<Wad> getWads(bool defaultOnly)
 		//wads[i].loadCache();
 	}
 	return wads;
+}
+
+void make_grapple_textures(BSP * map)
+{
+	
 }
 
 WADTEX ** loadRandomTextures(vector<string> wadTextures, vector<Wad> wads)
