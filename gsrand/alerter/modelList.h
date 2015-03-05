@@ -18,8 +18,9 @@ static vector<string> default_gib_models;
 static vector<string> default_precache_models; // models that are precached by default
 static vector<string> gmr_replace_only; // models only replacable through GMR
 
-// set of models that would crash the game if they were used to replace w_satchel
+// set of models that would crash the game if they were used as replacements
 static vector<string> satchel_blacklist;
+static vector<string> hwgrunt_blacklist;
 
 // set of models that are tested to be working for the monster (others likely cause a crash)
 static vector<string> nih_whitelist; // w_ and player models are ok but not in this list
@@ -38,6 +39,7 @@ static vector<string> weapon_types;
 // find and replace regex "\(.*$" with ""\);"
 // select all text, right click, set to lowercase
 // remove the entries that aren't actually models (e.g. "(!P)" or "maps/mapname.bsp")
+// remove doctor.mdl (seems to be a broken model in HL?)
 static void init_default_precache_list()
 {
 	default_precache_models.clear();
@@ -154,6 +156,38 @@ static void init_black_lists()
 	nih_whitelist.clear();
 	controller_whitelist.clear();
 
+	hwgrunt_blacklist.push_back("models/big_mom.mdl");
+	hwgrunt_blacklist.push_back("models/friendly.mdl");
+	hwgrunt_blacklist.push_back("models/hassault.mdl");
+	hwgrunt_blacklist.push_back("models/headcrab.mdl");
+	hwgrunt_blacklist.push_back("models/kingheadcrab.mdl");
+	hwgrunt_blacklist.push_back("models/pit_drone.mdl");
+	hwgrunt_blacklist.push_back("models/stukabat.mdl");
+	hwgrunt_blacklist.push_back("models/bmt/aqua/bullsquid.mdl");
+	hwgrunt_blacklist.push_back("models/bshift/houndeye.mdl");
+	hwgrunt_blacklist.push_back("models/hunger/chicken.mdl");
+	hwgrunt_blacklist.push_back("models/hunger/hungercrab.mdl");
+	hwgrunt_blacklist.push_back("models/hunger/thehand.mdl");
+	hwgrunt_blacklist.push_back("models/hunger/zombie3.mdl");
+	hwgrunt_blacklist.push_back("models/mmm/bullgiant.mdl");
+	hwgrunt_blacklist.push_back("models/mmm/controllergiant.mdl");
+	hwgrunt_blacklist.push_back("models/mmm/crabgiant.mdl");
+	hwgrunt_blacklist.push_back("models/mmm/houndgiant.mdl");
+	hwgrunt_blacklist.push_back("models/sc_activist/chumcrab.mdl");
+	hwgrunt_blacklist.push_back("models/sc_activist/houndeye.mdl");
+	hwgrunt_blacklist.push_back("models/sc_mazing/pit_drone.mdl");
+	hwgrunt_blacklist.push_back("models/sc_psyko/pigdrone.mdl");
+	hwgrunt_blacklist.push_back("models/sc_royals/headcrabp.mdl");
+	hwgrunt_blacklist.push_back("models/sc_tetris/big_big_mom.mdl");
+	hwgrunt_blacklist.push_back("models/sc_tetris/mushroom_red_large.mdl");
+	hwgrunt_blacklist.push_back("models/sc_tetris/mushroom_red_small.mdl");
+	hwgrunt_blacklist.push_back("models/sc_tetris/panther.mdl");
+	hwgrunt_blacklist.push_back("models/sectore/glassdrone.mdl");
+	hwgrunt_blacklist.push_back("models/sp/green_headc.mdl");
+	hwgrunt_blacklist.push_back("models/svencooprpg2/rat.mdl");
+	hwgrunt_blacklist.push_back("models/turr/betty.mdl");
+	hwgrunt_blacklist.push_back("models/turretfortress/friendly.mdl");
+
 	satchel_blacklist.push_back("apache");
 	satchel_blacklist.push_back("apachef");
 	satchel_blacklist.push_back("babygarg");
@@ -231,7 +265,6 @@ static void init_black_lists()
 	nih_whitelist.push_back("models/chubby.mdl");
 	nih_whitelist.push_back("models/chumtoad.mdl");
 	nih_whitelist.push_back("models/crashed_osprey.mdl");
-	nih_whitelist.push_back("models/doctor.mdl");
 	nih_whitelist.push_back("models/drill.mdl");
 	nih_whitelist.push_back("models/flag.mdl");
 	nih_whitelist.push_back("models/forklift.mdl");
@@ -616,8 +649,8 @@ static void init_default_model_lists()
 	init_default_precache_list();
 }
 
-#define NUM_APACHE_MODELS 183
-static string APACHE_MODELS[NUM_APACHE_MODELS] =
+#define NUM_APACHE_MODELS 128
+static const char * APACHE_MODELS[NUM_APACHE_MODELS] =
 {
 	"apache",
 	"apachef",
@@ -715,65 +748,6 @@ static string APACHE_MODELS[NUM_APACHE_MODELS] =
 	"it_has_leaks/wizard",
 	"opfor/gman",
 	"opfor/scientist",
-	"player/aswat/aswat",
-	"player/barney/barney",
-	"player/barniel/barniel",
-	"player/beret/beret",
-	"player/betagordon/betagordon",
-	"player/boris/boris",
-	"player/cannibal/cannibal",
-	"player/cl_suit/cl_suit",
-	"player/colette/colette",
-	"player/dm_barney/dm_barney",
-	"player/dm_gina/dm_gina",
-	"player/dm_gordon/dm_gordon",
-	"player/dm_helmet/dm_helmet",
-	"player/etac/etac",
-	"player/fassn/fassn",
-	"player/gina/gina",
-	"player/gman/gman",
-	"player/gordon/gordon",
-	"player/grunt/grunt",
-	"player/helmet/helmet",
-	"player/hevbarney/hevbarney",
-	"player/hevbarney2/hevbarney2",
-	"player/hevscientist/hevscientist",
-	"player/hevscientist2/hevscientist2",
-	"player/hevscientist3/hevscientist3",
-	"player/hevscientist4/hevscientist4",
-	"player/hevscientist5/hevscientist5",
-	"player/junctionpunch/junctionpunch",
-	"player/kate/kate",
-	"player/madscientist/madscientist",
-	"player/mandalorian/mandalorian",
-	"player/massn/massn",
-	"player/obi09/obi09",
-	"player/otis/otis",
-	"player/punisher/punisher",
-	"player/recon/recon",
-	"player/rgrunt/rgrunt",
-	"player/robo/robo",
-	"player/scientist/scientist",
-	"player/selene/selene",
-	"player/shephard/shephard",
-	"player/sieni/sieni",
-	"player/th_cl_suit/th_cl_suit",
-	"player/th_dave/th_dave",
-	"player/th_einar/th_einar",
-	"player/th_gangster/th_gangster",
-	"player/th_jack/th_jack",
-	"player/th_neil/th_neil",
-	"player/th_nurse/th_nurse",
-	"player/th_nypdcop/th_nypdcop",
-	"player/th_orderly/th_orderly",
-	"player/th_patient/th_patient",
-	"player/th_paul/th_paul",
-	"player/th_worker/th_worker",
-	"player/tower/tower",
-	"player/trinityrage/trinityrage",
-	"player/unm_barney/unm_barney",
-	"player/uscm/uscm",
-	"player/zombie/zombie",
 	"richard_boderman/superrobo",
 	"rngstuff/ld_barnabus",
 	"sandstone/engineer",
@@ -802,10 +776,14 @@ static string APACHE_MODELS[NUM_APACHE_MODELS] =
 	"valve_hd/barney",
 	"valve_hd/gman",
 	"vger/demonotis",
+	"zelda/characters/Young_Link_equip0_B",
+	"zelda/characters/Young_Link_equip0_G",
+	"zelda/characters/Young_Link_equip0_P",
+	"zelda/characters/Young_Link_equip0_R",
 };
 
-#define NUM_MODEL_V 124
-static string MODEL_V[NUM_MODEL_V] =
+#define NUM_MODEL_V 129
+static const char * MODEL_V[NUM_MODEL_V] =
 {
 	"v_357",
 	"v_9mmar",
@@ -931,10 +909,15 @@ static string MODEL_V[NUM_MODEL_V] =
 	"svencooprpg2/v_warhammer",
 	"svencooprpg2/v_xbow",
 	"vger/v_357",
+	"zelda/weapons/v_satchel",
+	"zelda/weapons/v_satchel_radio",
+	"zelda/weapons/v_sling",
+	"zelda/weapons/v_stick",
+	"zelda/weapons/v_sword",
 };
 
-#define NUM_MODEL_P 81
-static string MODEL_P[NUM_MODEL_P] =
+#define NUM_MODEL_P 86
+static const char * MODEL_P[NUM_MODEL_P] =
 {
 	"p_2uzis",
 	"p_2uzis_gold",
@@ -1017,10 +1000,15 @@ static string MODEL_P[NUM_MODEL_P] =
 	"svencooprpg2/p_warhammer",
 	"svencooprpg2/p_xbow",
 	"vger/p_357",
+	"zelda/weapons/p_satchel",
+	"zelda/weapons/p_satchel_radio",
+	"zelda/weapons/p_sling",
+	"zelda/weapons/p_stick",
+	"zelda/weapons/p_sword",
 };
 
-#define NUM_MODEL_W 107
-static string MODEL_W[NUM_MODEL_W] =
+#define NUM_MODEL_W 111
+static const char * MODEL_W[NUM_MODEL_W] =
 {
 	"w_2uzis",
 	"w_2uzis_gold",
@@ -1129,10 +1117,14 @@ static string MODEL_W[NUM_MODEL_W] =
 	"svencooprpg2/w_warhammer",
 	"vger/w_357",
 	"vhe-models/w_tripmine_hammer",
+	"zelda/weapons/w_satchel",
+	"zelda/weapons/w_sling",
+	"zelda/weapons/w_stick",
+	"zelda/weapons/w_sword",
 };
 
-#define NUM_MODEL_PROPS 239
-static string MODEL_PROPS[NUM_MODEL_PROPS] =
+#define NUM_MODEL_PROPS 272
+static const char * MODEL_PROPS[NUM_MODEL_PROPS] =
 {
 	"abone_template1",
 	"agibs",
@@ -1183,7 +1175,7 @@ static string MODEL_PROPS[NUM_MODEL_PROPS] =
 	"gib_lung",
 	"gib_skull",
 	"glassgibs",
-	"hornet",
+	"grenade",
 	"hgibs",
 	"hornet",
 	"hvr",
@@ -1373,10 +1365,43 @@ static string MODEL_PROPS[NUM_MODEL_PROPS] =
 	"sc_royals/rockgibsgold",
 	"toonrun/spleen",
 	"vhe-models/trigger_camera",
+	"zelda/characters/navi",
+	"zelda/characters/saria",
+	"zelda/enemies/baba_root",
+	"zelda/enemies/nut_spike",
+	"zelda/enemies/scrub_root",
+	"zelda/items/arrow",
+	"zelda/items/heart",
+	"zelda/items/heart_big",
+	"zelda/items/nut",
+	"zelda/items/rupee",
+	"zelda/items/seeds",
+	"zelda/items/shield",
+	"zelda/items/stick",
+	"zelda/items/token",
+	"zelda/props/leaf",
+	"zelda/props/leaf2",
+	"zelda/props/plant",
+	"zelda/props/plant2",
+	"zelda/props/pot",
+	"zelda/props/pot_gib",
+	"zelda/props/rock",
+	"zelda/props/rockgibs",
+	"zelda/props/statue",
+	"zelda/props/warp",
+	"zelda/props/warp2",
+	"zelda/props/kokiri/dekutree",
+	"zelda/props/kokiri/house1",
+	"zelda/props/kokiri/house2",
+	"zelda/props/kokiri/house3",
+	"zelda/props/kokiri/house4",
+	"zelda/props/kokiri/house5",
+	"zelda/props/kokiri/house6",
+	"zelda/weapons/seed",
 };
 
-#define NUM_MODEL_MONSTERS 419
-static string MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
+#define NUM_MODEL_MONSTERS 381
+static const char * MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
 {
 	"aflock",
 	"agrunt",
@@ -1615,65 +1640,6 @@ static string MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
 	"opfor/islave",
 	"opfor/scientist",
 	"opfor/stretcher",
-	"player/aswat/aswat",
-	"player/barney/barney",
-	"player/barniel/barniel",
-	"player/beret/beret",
-	"player/betagordon/betagordon",
-	"player/boris/boris",
-	"player/cannibal/cannibal",
-	"player/cl_suit/cl_suit",
-	"player/colette/colette",
-	"player/dm_barney/dm_barney",
-	"player/dm_gina/dm_gina",
-	"player/dm_gordon/dm_gordon",
-	"player/dm_helmet/dm_helmet",
-	"player/etac/etac",
-	"player/fassn/fassn",
-	"player/gina/gina",
-	"player/gman/gman",
-	"player/gordon/gordon",
-	"player/grunt/grunt",
-	"player/helmet/helmet",
-	"player/hevbarney/hevbarney",
-	"player/hevbarney2/hevbarney2",
-	"player/hevscientist/hevscientist",
-	"player/hevscientist2/hevscientist2",
-	"player/hevscientist3/hevscientist3",
-	"player/hevscientist4/hevscientist4",
-	"player/hevscientist5/hevscientist5",
-	"player/junctionpunch/junctionpunch",
-	"player/kate/kate",
-	"player/madscientist/madscientist",
-	"player/mandalorian/mandalorian",
-	"player/massn/massn",
-	"player/obi09/obi09",
-	"player/otis/otis",
-	"player/punisher/punisher",
-	"player/recon/recon",
-	"player/rgrunt/rgrunt",
-	"player/robo/robo",
-	"player/scientist/scientist",
-	"player/selene/selene",
-	"player/shephard/shephard",
-	"player/sieni/sieni",
-	"player/th_cl_suit/th_cl_suit",
-	"player/th_dave/th_dave",
-	"player/th_einar/th_einar",
-	"player/th_gangster/th_gangster",
-	"player/th_jack/th_jack",
-	"player/th_neil/th_neil",
-	"player/th_nurse/th_nurse",
-	"player/th_nypdcop/th_nypdcop",
-	"player/th_orderly/th_orderly",
-	"player/th_patient/th_patient",
-	"player/th_paul/th_paul",
-	"player/th_worker/th_worker",
-	"player/tower/tower",
-	"player/trinityrage/trinityrage",
-	"player/unm_barney/unm_barney",
-	"player/uscm/uscm",
-	"player/zombie/zombie",
 	"puchi/mountainbase/dead_headcrab",
 	"puchi/spportal/chubby",
 	"puchi/spportal/construction",
@@ -1797,4 +1763,89 @@ static string MODEL_MONSTERS[NUM_MODEL_MONSTERS] =
 	"vger/rvrobo",
 	"vger/vgergrunt",
 	"vhe-models/spore_ammo_hammer",
+	"zelda/characters/kokiri_boy",
+	"zelda/characters/kokiri_girl",
+	"zelda/characters/mido",
+	"zelda/characters/shopkeeper",
+	"zelda/characters/Young_Link_equip0_B",
+	"zelda/characters/Young_Link_equip0_G",
+	"zelda/characters/Young_Link_equip0_P",
+	"zelda/characters/Young_Link_equip0_R",
+	"zelda/enemies/baba",
+	"zelda/enemies/baba2",
+	"zelda/enemies/baba2_old",
+	"zelda/enemies/egg",
+	"zelda/enemies/gohma",
+	"zelda/enemies/jumper",
+	"zelda/enemies/scrub",
+	"zelda/enemies/scrub_whine",
+	"zelda/enemies/spider",
+	"zelda/enemies/spider_gold",
+	"zelda/enemies/spider_small",
+	"zelda/enemies/wolfos",
+	"zelda/props/gossip",
+};
+
+#define NUM_MODEL_PLAYERS 59
+static const char * MODEL_PLAYERS[NUM_MODEL_PLAYERS] =
+{
+	"player/aswat/aswat",
+	"player/barney/barney",
+	"player/barniel/barniel",
+	"player/beret/beret",
+	"player/betagordon/betagordon",
+	"player/boris/boris",
+	"player/cannibal/cannibal",
+	"player/cl_suit/cl_suit",
+	"player/colette/colette",
+	"player/dm_barney/dm_barney",
+	"player/dm_gina/dm_gina",
+	"player/dm_gordon/dm_gordon",
+	"player/dm_helmet/dm_helmet",
+	"player/etac/etac",
+	"player/fassn/fassn",
+	"player/gina/gina",
+	"player/gman/gman",
+	"player/gordon/gordon",
+	"player/grunt/grunt",
+	"player/helmet/helmet",
+	"player/hevbarney/hevbarney",
+	"player/hevbarney2/hevbarney2",
+	"player/hevscientist/hevscientist",
+	"player/hevscientist2/hevscientist2",
+	"player/hevscientist3/hevscientist3",
+	"player/hevscientist4/hevscientist4",
+	"player/hevscientist5/hevscientist5",
+	"player/junctionpunch/junctionpunch",
+	"player/kate/kate",
+	"player/madscientist/madscientist",
+	"player/mandalorian/mandalorian",
+	"player/massn/massn",
+	"player/obi09/obi09",
+	"player/otis/otis",
+	"player/punisher/punisher",
+	"player/recon/recon",
+	"player/rgrunt/rgrunt",
+	"player/robo/robo",
+	"player/scientist/scientist",
+	"player/selene/selene",
+	"player/shephard/shephard",
+	"player/sieni/sieni",
+	"player/th_cl_suit/th_cl_suit",
+	"player/th_dave/th_dave",
+	"player/th_einar/th_einar",
+	"player/th_gangster/th_gangster",
+	"player/th_jack/th_jack",
+	"player/th_neil/th_neil",
+	"player/th_nurse/th_nurse",
+	"player/th_nypdcop/th_nypdcop",
+	"player/th_orderly/th_orderly",
+	"player/th_patient/th_patient",
+	"player/th_paul/th_paul",
+	"player/th_worker/th_worker",
+	"player/tower/tower",
+	"player/trinityrage/trinityrage",
+	"player/unm_barney/unm_barney",
+	"player/uscm/uscm",
+	"player/zombie/zombie",
 };

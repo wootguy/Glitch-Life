@@ -424,6 +424,7 @@ int randomize_maps()
 	int sounds = 0;
 	if (sndMode != SND_NONE)
 	{
+		print("Found " + str(user_sounds.size()) + " sounds");
 		int voices = 0;
 		for (int i = 0; i < NUM_MASTER_DIRS; ++i)
 			sounds += masterSize[i];

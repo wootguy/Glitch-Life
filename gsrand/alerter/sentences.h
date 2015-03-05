@@ -1,7 +1,7 @@
 #pragma once
 
 #define NUM_SENTENCES 1965
-static string sentences[NUM_SENTENCES] =
+static const char * sentences[NUM_SENTENCES] =
 {
 	"RB_GREN0",
 	"RB_GREN1",

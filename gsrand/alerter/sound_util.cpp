@@ -34,6 +34,7 @@ void getAllSounds()
 	string soundPath = "sound/";
 	vector<string> dirs = getAllSubdirs(soundPath);
 
+	user_sounds.clear();
 	for (uint i = 0; i < dirs.size(); i++)
 	{
 		string prefix = "";
@@ -47,22 +48,35 @@ void getAllSounds()
 		for (int e = 0; e < num_exts; e++)
 		{
 			vector<string> results = getDirFiles(dirs[i], exts[e]);
-			if (results.size() > 0)
-			{				
-				for (uint k = 0; k < results.size(); k++)
-				{
-					user_sounds.push_back(prefix + results[k]);
-					println(prefix + results[k]);
-				}
-			}
+			for (uint k = 0; k < results.size(); k++)
+				user_sounds.push_back(prefix + results[k]);
 		}
 	}
 
-	if (contentMode == CONTENT_CUSTOM)
+	if (contentMode != CONTENT_EVERYTHING)
 	{
 		for (uint i = 0; i < user_sounds.size(); ++i)
 		{
-			
+			bool done = false;
+			for (uint d = 0; d < NUM_MASTER_DIRS; ++d)
+			{
+				for (uint s = 0; s < masterSize[d]; ++s)
+				{
+					string default_sound = masterDirs[d] + string("/") + masterList[d][s];
+					if (matchStr(user_sounds[i], default_sound) && contentMode == CONTENT_CUSTOM)
+					{
+						done = true;
+						user_sounds.erase(user_sounds.begin() + i--);
+					}
+					else if (contentMode == CONTENT_DEFAULT)
+					{
+						done = true;
+						user_sounds.erase(user_sounds.begin() + i--);
+					}
+					if (done) break;
+				}
+				if (done) break;
+			}
 		}
 	}
 
@@ -80,14 +94,14 @@ void getAllVoices()
 			{
 				voice[i] = new string[masterSize[k]];
 				for (int s = 0; s < masterSize[k]; s++)
-					voice[i][s] = getSubStr(masterList[k][s], 0, masterList[k][s].length()-4);
+					voice[i][s] = getSubStr(masterList[k][s], 0, strlen(masterList[k][s])-4);
 				vsize[i] = masterSize[k];
 				found = true;
 				break;
 			}
 		}
 		if (!found)
-			println("couldn't find " + voice_dirs[i]);
+			println("couldn't find " + string(voice_dirs[i]));
 	}
 }
 
@@ -191,28 +205,28 @@ vector<sound> getReplacableSounds(bool printInfo)
 	writable.reserve(256);
 	
 	for (int i = 0; i < NUM_SQUEEK; i++) 
-		writable.push_back(sound("squeek/" + squeek[i] + ".wav"));
+		writable.push_back(sound("squeek/" + string(squeek[i]) + ".wav"));
 
 	for (int i = 0; i < NUM_HORNET; i++) 
-		writable.push_back(sound("hornet/" + hornet[i] + ".wav"));
+		writable.push_back(sound("hornet/" + string(hornet[i]) + ".wav"));
 
 	for (int i = 0; i < NUM_COMMON; i++)
-		writable.push_back(sound("common/" + common[i] + ".wav"));
+		writable.push_back(sound("common/" + string(common[i]) + ".wav"));
 
 	for (int i = 0; i < NUM_PLAYER; i++)
-		writable.push_back(sound("player/" + player[i] + ".wav"));
+		writable.push_back(sound("player/" + string(player[i]) + ".wav"));
 
 	for (int i = 0; i < NUM_WEAPONS; i++)
-		writable.push_back(sound("weapons/" + weapons[i] + ".wav"));
+		writable.push_back(sound("weapons/" + string(weapons[i]) + ".wav"));
 
 	for (int i = 0; i < NUM_ITEMS; i++)
-		writable.push_back(sound("items/" + items[i] + ".wav"));
+		writable.push_back(sound("items/" + string(items[i]) + ".wav"));
 
 	for (int i = 0; i < NUM_SPECIAL; i++)
 		writable.push_back(sound(special[i]));
 
 	for (int i = 0; i < NUM_MASTER_buttons; i++)
-		writable.push_back(sound("buttons/" + MASTER_buttons[i]));
+		writable.push_back(sound("buttons/" + string(MASTER_buttons[i])));
 
 	//for (int i = 0; i < NUM_MASTER_plats; i++)
 		//writable.push_back(sound("plats/" + MASTER_plats[i] + ".wav"));
@@ -221,7 +235,7 @@ vector<sound> getReplacableSounds(bool printInfo)
 		//writable.push_back(sound("doors/" + MASTER_doors[i] + ".wav"));
 
 	for (int i = 0; i < NUM_MASTER_debris; i++)
-		writable.push_back(sound("debris/" + MASTER_debris[i]));
+		writable.push_back(sound("debris/" + string(MASTER_debris[i])));
 
 	if (printInfo) println("Wrote global sounds: " + str(writable.size()));
 
@@ -281,12 +295,12 @@ vector<sound> getReplacableSounds(bool printInfo)
 	for (int i = 0; i < NUM_TRAIN_MOVES; i++)
 	{
 		//if (tmove[i])
-			writable.push_back(sound("plats/" + trainmoves[i] + ".wav"));
+			writable.push_back(sound("plats/" + string(trainmoves[i]) + ".wav"));
 	}
 	for (int i = 0; i < NUM_TRAIN_STOPS; i++)
 	{
 		//if (tstop[i])
-			writable.push_back(sound("plats/" + trainstops[i] + ".wav"));
+			writable.push_back(sound("plats/" + string(trainstops[i]) + ".wav"));
 	}
 	
 	/*
@@ -303,12 +317,12 @@ vector<sound> getReplacableSounds(bool printInfo)
 	for (int i = 0; i < NUM_DOOR_MOVES; i++)
 	{
 		if (dmove[i])
-			writable.push_back(sound("doors/" + doormoves[i] + ".wav"));
+			writable.push_back(sound("doors/" + string(doormoves[i]) + ".wav"));
 	}
 	for (int i = 0; i < NUM_DOOR_STOPS; i++)
 	{
 		if (dstop[i])
-			writable.push_back(sound("doors/" + doorstops[i] + ".wav"));
+			writable.push_back(sound("doors/" + string(doorstops[i]) + ".wav"));
 	}
 
 	if (printInfo) println("Wrote door sounds: " + str(writable.size()));

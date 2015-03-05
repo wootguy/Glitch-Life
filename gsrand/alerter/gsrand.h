@@ -320,7 +320,7 @@ static bool sparks;
 
 static bool weaps[WEAPON_TYPES];
 static int wsize[WEAPON_TYPES];
-static string * wlists[WEAPON_TYPES];
+static const char ** wlists[WEAPON_TYPES];
 
 static string * voice[NUM_VOICE_DIRS];
 static int vsize[NUM_VOICE_DIRS];
@@ -340,11 +340,11 @@ static bool tstop[NUM_TRAIN_STOPS];
 
 static bool btypes[BREAKABLE_TYPES];
 static int bsize[BREAKABLE_TYPES];
-static string * blists[BREAKABLE_TYPES];
+static const char ** blists[BREAKABLE_TYPES];
 
 static string mname[MONSTER_TYPES];
 static int msize[MONSTER_TYPES];
-static string * mlists[MONSTER_TYPES];
+static const char ** mlists[MONSTER_TYPES];
 static string mdirs[MONSTER_TYPES];
 
 static int monsters[MONSTER_TYPES];

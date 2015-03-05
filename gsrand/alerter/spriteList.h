@@ -3,7 +3,7 @@
 using namespace std;
 
 #define NUM_ANIMATED_SPRITES 145
-static string ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =
+static const char * ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =
 {
 	"320_logo",
 	"320_pain",
@@ -153,7 +153,7 @@ static string ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =
 };
 
 #define NUM_STATIC_SPRITES 184
-static string STATIC_SPRITES[NUM_STATIC_SPRITES] =
+static const char * STATIC_SPRITES[NUM_STATIC_SPRITES] =
 {
 	"320hud1",
 	"320hud2",

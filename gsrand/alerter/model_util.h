@@ -28,6 +28,8 @@ bool replace_entity_model(Entity * ent, string model_key, int model_type, int& p
 
 bool replace_entity_sprite(Entity * ent, string model_key, int sprite_type, int& potential_additions);
 
+bool is_safe_model_replacement(string classname, string model, string replacement);
+
 void do_model_replacement(BSP * map, Entity** ents, string path);
 
 void genModelList();

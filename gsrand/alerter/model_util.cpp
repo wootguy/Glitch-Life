@@ -33,7 +33,11 @@ string get_random_model(int request_model_type)
 		else if (r == 1)
 			return MODEL_PROPS[rand() % NUM_MODEL_PROPS];
 		else
-			return MODEL_MONSTERS[rand() % NUM_MODEL_MONSTERS]; 
+		{
+			r = rand() % 4;
+			if (r) return MODEL_MONSTERS[rand() % NUM_MODEL_MONSTERS];
+			return MODEL_PLAYERS[rand() % NUM_MODEL_PLAYERS]; 
+		}
 	}
 	else if (request_model_type == MODEL_TYPE_PROP)
 		return MODEL_PROPS[rand() % NUM_MODEL_PROPS];
@@ -447,7 +451,9 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 		string first = replace_models[i];
 		if (find(dont_replace.begin(), dont_replace.end(), first) != dont_replace.end())
 			continue;
-		string second = get_random_replacement(first, replaced, replace_models);
+		string second;
+		do { second = get_random_replacement(first, replaced, replace_models); }
+		while(is_safe_model_replacement("", first, second));
 		if (!second.length())
 			continue;
 		replaced.push_back(second);
@@ -490,6 +496,25 @@ bool replace_entity_sprite(Entity * ent, string model_key, int sprite_type, int&
 	else
 		ent->keyvalues[model_key] = "sprites/" + get_random_sprite(SPRITE_TYPE_GENERIC) + ".spr";
 	potential_additions -= 1;
+	return true;
+}
+
+bool is_safe_model_replacement(string classname, string model, string replacement)
+{
+	if (classname.find("monster_hwgrunt") == 0)
+	{
+		for (uint i = 0; i < hwgrunt_blacklist.size(); ++i)
+			if (hwgrunt_blacklist[i].find(replacement) != string::npos)
+				return false;
+	}
+	if (model.find("w_satchel") == 0)
+	{
+		for (uint i = 0; i < satchel_blacklist.size(); ++i)
+			if (satchel_blacklist[i].find(replacement) != string::npos)
+				return false;
+	}
+	if (model.find("models/doctor.mdl") == 0)
+		return false; // problematic model
 	return true;
 }
 
@@ -557,13 +582,8 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				if (!r) it->second = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
 				else    it->second = "sprites/" + get_random_sprite(SPRITE_TYPE_GENERIC) + ".spr";
 			}
-			else if (cname.find("weapon_") == 0)
-			{
-				int r = rand() % 2;
-				it->second = random_model_replace(it->first);
-			}
 			else if (cname.find("monster_") == 0 || cname.find("ammo_") != string::npos || cname.find("item_") != string::npos 
-			    || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon")
+			    || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon") || cname.find("weapon_") == 0
 				||  matchStr(cname, "env_beverage") || matchStr(cname, "weaponbox"))
 			{
 				if (matchStr(cname, "monster_kingpin") || matchStr(cname, "monster_tentacle"))
@@ -587,12 +607,13 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				{
 					// crash if model has less than 2 bone controllers
 					int r = rand() % NUM_APACHE_MODELS;
-					it->second = "models/" + APACHE_MODELS[r] + ".mdl";
+					it->second = "models/" + string(APACHE_MODELS[r]) + ".mdl";
 				}
 				else
 				{
 					int mtype = cname.find("monster_") == 0 ? MODEL_TYPE_MONSTER : MODEL_TYPE_GENERIC;
-					it->second = "models/" + get_random_model(mtype) + ".mdl";
+					do { it->second = "models/" + get_random_model(mtype) + ".mdl"; }
+					while (!is_safe_model_replacement(cname, it->first, it->second));
 				
 					if (cname.find("monster_") == 0)
 					{
@@ -644,7 +665,6 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 						ents[i]->keyvalues["displayname"] = raw_model_name + " " + displayname; 
 					} 
 				}
-
 			}
 			else
 			{
@@ -653,8 +673,12 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				continue;
 			}
 
-			if (find(replaced.begin(), replaced.end(), it->second) != replaced.end())
+			if (find(replaced.begin(), replaced.end(), it->second) != replaced.end() ||
+				is_safe_model_replacement(cname, it->first, it->second))
+			{
+				it->second = cname;
 				it--; // do it again. We can't use a replacement model that's been replaced
+			}
 			else
 				replaced.push_back(it->first);
 		}
@@ -753,12 +777,13 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				{
 					// crash if model has less than 2 bone controllers
 					int r = rand() % NUM_APACHE_MODELS;
-					ents[i]->keyvalues[custom_monster_model_key] = "models/" + APACHE_MODELS[r] + ".mdl";
+					ents[i]->keyvalues[custom_monster_model_key] = "models/" + string(APACHE_MODELS[r]) + ".mdl";
 				}
 				else
 				{
 					int mtype = cname.find("monster_") == 0 ? MODEL_TYPE_MONSTER : MODEL_TYPE_GENERIC;
-					replace_entity_model(ents[i], custom_monster_model_key, mtype, potential_additions);
+					do { replace_entity_model(ents[i], custom_monster_model_key, mtype, potential_additions); }
+					while (is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]));
 				}
 
 				if (cname.find("monster_") == 0)
@@ -817,6 +842,7 @@ void genModelList()
 	vector<string> p_models;
 	vector<string> w_models;
 	vector<string> apache_models;
+	vector<string> player_models;
 
 	for (uint i = 0; i < dirs.size(); i++)
 	{
@@ -825,6 +851,11 @@ void genModelList()
 
 		for (uint k = 0; k < results.size(); k++)
 		{
+			if (cpath.find("player/") == 0)
+			{
+				player_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+				continue;
+			}
 			string name = getSubStr(results[k],0,results[k].length()-4);
 
 			// skip animation models
@@ -959,6 +990,13 @@ void genModelList()
 	println("{");
 	for (uint s = 0; s < monster.size(); s++)
 		println("\t\"" + monster[s] + "\",");
+	println("};\n");
+
+	println("#define NUM_MODEL_PLAYERS " + str(player_models.size()));
+	println("static string MODEL_PLAYERS[NUM_MODEL_PLAYERS] =");
+	println("{");
+	for (uint s = 0; s < player_models.size(); s++)
+		println("\t\"" + player_models[s] + "\",");
 	println("};\n");
 
 	println("V_: " + str(v_models.size()));

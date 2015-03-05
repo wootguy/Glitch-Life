@@ -3,13 +3,13 @@
 // the commented out functions in main() make this
 
 #define NUM_MASTER_sound 1
-static string MASTER_sound[NUM_MASTER_sound] =
+static const char * MASTER_sound[NUM_MASTER_sound] =
 {
 	"thunder.wav",
 };
 
 #define NUM_MASTER_adamr 3
-static string MASTER_adamr[NUM_MASTER_adamr] =
+static const char * MASTER_adamr[NUM_MASTER_adamr] =
 {
 	"bigexplode.wav",
 	"blipblipblip.wav",
@@ -17,19 +17,19 @@ static string MASTER_adamr[NUM_MASTER_adamr] =
 };
 
 #define NUM_MASTER_adamr_hgrunt 1
-static string MASTER_adamr_hgrunt[NUM_MASTER_adamr_hgrunt] =
+static const char * MASTER_adamr_hgrunt[NUM_MASTER_adamr_hgrunt] =
 {
 	"call_backup.wav",
 };
 
 #define NUM_MASTER_adamr_music 1
-static string MASTER_adamr_music[NUM_MASTER_adamr_music] =
+static const char * MASTER_adamr_music[NUM_MASTER_adamr_music] =
 {
 	"alec-eiffel.wav",
 };
 
 #define NUM_MASTER_adamr_polar_rescue 8
-static string MASTER_adamr_polar_rescue[NUM_MASTER_adamr_polar_rescue] =
+static const char * MASTER_adamr_polar_rescue[NUM_MASTER_adamr_polar_rescue] =
 {
 	"10_minutes_remaining.wav",
 	"15_minutes_remaining.wav",
@@ -42,7 +42,7 @@ static string MASTER_adamr_polar_rescue[NUM_MASTER_adamr_polar_rescue] =
 };
 
 #define NUM_MASTER_adamr_surround 14
-static string MASTER_adamr_surround[NUM_MASTER_adamr_surround] =
+static const char * MASTER_adamr_surround[NUM_MASTER_adamr_surround] =
 {
 	"centre.flac",
 	"front_left.flac",
@@ -61,13 +61,13 @@ static string MASTER_adamr_surround[NUM_MASTER_adamr_surround] =
 };
 
 #define NUM_MASTER_afrikakorps 1
-static string MASTER_afrikakorps[NUM_MASTER_afrikakorps] =
+static const char * MASTER_afrikakorps[NUM_MASTER_afrikakorps] =
 {
 	"afrikakorps_sfx.wav",
 };
 
 #define NUM_MASTER_agrunt 27
-static string MASTER_agrunt[NUM_MASTER_agrunt] =
+static const char * MASTER_agrunt[NUM_MASTER_agrunt] =
 {
 	"ag_alert1.wav",
 	"ag_alert2.wav",
@@ -99,7 +99,7 @@ static string MASTER_agrunt[NUM_MASTER_agrunt] =
 };
 
 #define NUM_MASTER_ambience 158
-static string MASTER_ambience[NUM_MASTER_ambience] =
+static const char * MASTER_ambience[NUM_MASTER_ambience] =
 {
 	"aliencave1.wav",
 	"alienclicker1.wav",
@@ -262,7 +262,7 @@ static string MASTER_ambience[NUM_MASTER_ambience] =
 };
 
 #define NUM_MASTER_apache 5
-static string MASTER_apache[NUM_MASTER_apache] =
+static const char * MASTER_apache[NUM_MASTER_apache] =
 {
 	"ap_rotor1.wav",
 	"ap_rotor2.wav",
@@ -272,7 +272,7 @@ static string MASTER_apache[NUM_MASTER_apache] =
 };
 
 #define NUM_MASTER_aslave 15
-static string MASTER_aslave[NUM_MASTER_aslave] =
+static const char * MASTER_aslave[NUM_MASTER_aslave] =
 {
 	"slv_alert1.wav",
 	"slv_alert3.wav",
@@ -292,13 +292,13 @@ static string MASTER_aslave[NUM_MASTER_aslave] =
 };
 
 #define NUM_MASTER_babygar 1
-static string MASTER_babygar[NUM_MASTER_babygar] =
+static const char * MASTER_babygar[NUM_MASTER_babygar] =
 {
 	"gar_breathe3.wav",
 };
 
 #define NUM_MASTER_babygarg 25
-static string MASTER_babygarg[NUM_MASTER_babygarg] =
+static const char * MASTER_babygarg[NUM_MASTER_babygarg] =
 {
 	"gar_alert1.wav",
 	"gar_alert2.wav",
@@ -328,7 +328,7 @@ static string MASTER_babygarg[NUM_MASTER_babygarg] =
 };
 
 #define NUM_MASTER_barnacle 8
-static string MASTER_barnacle[NUM_MASTER_barnacle] =
+static const char * MASTER_barnacle[NUM_MASTER_barnacle] =
 {
 	"bcl_alert2.wav",
 	"bcl_bite3.wav",
@@ -341,7 +341,7 @@ static string MASTER_barnacle[NUM_MASTER_barnacle] =
 };
 
 #define NUM_MASTER_barney 228
-static string MASTER_barney[NUM_MASTER_barney] =
+static const char * MASTER_barney[NUM_MASTER_barney] =
 {
 	"aghh.wav",
 	"aimforhead.wav",
@@ -574,7 +574,7 @@ static string MASTER_barney[NUM_MASTER_barney] =
 };
 
 #define NUM_MASTER_ba_barney 4
-static string MASTER_ba_barney[NUM_MASTER_ba_barney] =
+static const char * MASTER_ba_barney[NUM_MASTER_ba_barney] =
 {
 	"ba_pok0.wav",
 	"ba_pok1.wav",
@@ -583,7 +583,7 @@ static string MASTER_ba_barney[NUM_MASTER_ba_barney] =
 };
 
 #define NUM_MASTER_ba_holo 44
-static string MASTER_ba_holo[NUM_MASTER_ba_holo] =
+static const char * MASTER_ba_holo[NUM_MASTER_ba_holo] =
 {
 	"tr_holo_4jumps.wav",
 	"tr_holo_armor.wav",
@@ -632,7 +632,7 @@ static string MASTER_ba_holo[NUM_MASTER_ba_holo] =
 };
 
 #define NUM_MASTER_ba_scientist 7
-static string MASTER_ba_scientist[NUM_MASTER_ba_scientist] =
+static const char * MASTER_ba_scientist[NUM_MASTER_ba_scientist] =
 {
 	"sc_pok0.wav",
 	"sc_pok1.wav",
@@ -644,7 +644,7 @@ static string MASTER_ba_scientist[NUM_MASTER_ba_scientist] =
 };
 
 #define NUM_MASTER_blackmesaepf 4
-static string MASTER_blackmesaepf[NUM_MASTER_blackmesaepf] =
+static const char * MASTER_blackmesaepf[NUM_MASTER_blackmesaepf] =
 {
 	"track18.mp3",
 	"track2.mp3",
@@ -653,7 +653,7 @@ static string MASTER_blackmesaepf[NUM_MASTER_blackmesaepf] =
 };
 
 #define NUM_MASTER_bodyguard 48
-static string MASTER_bodyguard[NUM_MASTER_bodyguard] =
+static const char * MASTER_bodyguard[NUM_MASTER_bodyguard] =
 {
 	"ashestoashes.ogg",
 	"babysitter.ogg",
@@ -706,7 +706,7 @@ static string MASTER_bodyguard[NUM_MASTER_bodyguard] =
 };
 
 #define NUM_MASTER_boid 5
-static string MASTER_boid[NUM_MASTER_boid] =
+static const char * MASTER_boid[NUM_MASTER_boid] =
 {
 	"boid_alert1.wav",
 	"boid_alert2.wav",
@@ -716,20 +716,20 @@ static string MASTER_boid[NUM_MASTER_boid] =
 };
 
 #define NUM_MASTER_bootcamp 2
-static string MASTER_bootcamp[NUM_MASTER_bootcamp] =
+static const char * MASTER_bootcamp[NUM_MASTER_bootcamp] =
 {
 	"old_reveille.wav",
 	"reveille.wav",
 };
 
 #define NUM_MASTER_bshift_barney 1
-static string MASTER_bshift_barney[NUM_MASTER_bshift_barney] =
+static const char * MASTER_bshift_barney[NUM_MASTER_bshift_barney] =
 {
 	"ba_hello1.wav",
 };
 
 #define NUM_MASTER_bshift_rosenberg 131
-static string MASTER_bshift_rosenberg[NUM_MASTER_bshift_rosenberg] =
+static const char * MASTER_bshift_rosenberg[NUM_MASTER_bshift_rosenberg] =
 {
 	"ro_calhoun.wav",
 	"ro_cure0.wav",
@@ -865,7 +865,7 @@ static string MASTER_bshift_rosenberg[NUM_MASTER_bshift_rosenberg] =
 };
 
 #define NUM_MASTER_bullchicken 26
-static string MASTER_bullchicken[NUM_MASTER_bullchicken] =
+static const char * MASTER_bullchicken[NUM_MASTER_bullchicken] =
 {
 	"bc_acid1.wav",
 	"bc_acid2.wav",
@@ -896,7 +896,7 @@ static string MASTER_bullchicken[NUM_MASTER_bullchicken] =
 };
 
 #define NUM_MASTER_buttons 31
-static string MASTER_buttons[NUM_MASTER_buttons] =
+static const char * MASTER_buttons[NUM_MASTER_buttons] =
 {
 	"bell1.wav",
 	"blip1.wav",
@@ -932,7 +932,7 @@ static string MASTER_buttons[NUM_MASTER_buttons] =
 };
 
 #define NUM_MASTER_common 27
-static string MASTER_common[NUM_MASTER_common] =
+static const char * MASTER_common[NUM_MASTER_common] =
 {
 	"bodydrop1.wav",
 	"bodydrop2.wav",
@@ -964,7 +964,7 @@ static string MASTER_common[NUM_MASTER_common] =
 };
 
 #define NUM_MASTER_controller 16
-static string MASTER_controller[NUM_MASTER_controller] =
+static const char * MASTER_controller[NUM_MASTER_controller] =
 {
 	"con_alert1.wav",
 	"con_alert2.wav",
@@ -985,7 +985,7 @@ static string MASTER_controller[NUM_MASTER_controller] =
 };
 
 #define NUM_MASTER_crystal 14
-static string MASTER_crystal[NUM_MASTER_crystal] =
+static const char * MASTER_crystal[NUM_MASTER_crystal] =
 {
 	"comp1.wav",
 	"comp3.wav",
@@ -1004,7 +1004,7 @@ static string MASTER_crystal[NUM_MASTER_crystal] =
 };
 
 #define NUM_MASTER_crystal2 4
-static string MASTER_crystal2[NUM_MASTER_crystal2] =
+static const char * MASTER_crystal2[NUM_MASTER_crystal2] =
 {
 	"boss.mp3",
 	"boss_die.mp3",
@@ -1013,7 +1013,7 @@ static string MASTER_crystal2[NUM_MASTER_crystal2] =
 };
 
 #define NUM_MASTER_deadsimpleneo 3
-static string MASTER_deadsimpleneo[NUM_MASTER_deadsimpleneo] =
+static const char * MASTER_deadsimpleneo[NUM_MASTER_deadsimpleneo] =
 {
 	"disparition.mp3",
 	"click.wav",
@@ -1021,7 +1021,7 @@ static string MASTER_deadsimpleneo[NUM_MASTER_deadsimpleneo] =
 };
 
 #define NUM_MASTER_debris 64
-static string MASTER_debris[NUM_MASTER_debris] =
+static const char * MASTER_debris[NUM_MASTER_debris] =
 {
 	"alien_teleport.wav",
 	"beamstart1.wav",
@@ -1090,14 +1090,14 @@ static string MASTER_debris[NUM_MASTER_debris] =
 };
 
 #define NUM_MASTER_demonprey 2
-static string MASTER_demonprey[NUM_MASTER_demonprey] =
+static const char * MASTER_demonprey[NUM_MASTER_demonprey] =
 {
 	"funkymusicshort.mp3",
 	"weirdlaugh12.wav",
 };
 
 #define NUM_MASTER_doors 23
-static string MASTER_doors[NUM_MASTER_doors] =
+static const char * MASTER_doors[NUM_MASTER_doors] =
 {
 	"aliendoor1.wav",
 	"aliendoor2.wav",
@@ -1125,7 +1125,7 @@ static string MASTER_doors[NUM_MASTER_doors] =
 };
 
 #define NUM_MASTER_drill 115
-static string MASTER_drill[NUM_MASTER_drill] =
+static const char * MASTER_drill[NUM_MASTER_drill] =
 {
 	"add01.wav",
 	"add02.wav",
@@ -1245,7 +1245,7 @@ static string MASTER_drill[NUM_MASTER_drill] =
 };
 
 #define NUM_MASTER_escape_series 8
-static string MASTER_escape_series[NUM_MASTER_escape_series] =
+static const char * MASTER_escape_series[NUM_MASTER_escape_series] =
 {
 	"boss.mp3",
 	"credits.mp3",
@@ -1258,7 +1258,7 @@ static string MASTER_escape_series[NUM_MASTER_escape_series] =
 };
 
 #define NUM_MASTER_escape_series_barney 9
-static string MASTER_escape_series_barney[NUM_MASTER_escape_series_barney] =
+static const char * MASTER_escape_series_barney[NUM_MASTER_escape_series_barney] =
 {
 	"escape_barney_1.wav",
 	"escape_barney_2.wav",
@@ -1272,13 +1272,13 @@ static string MASTER_escape_series_barney[NUM_MASTER_escape_series_barney] =
 };
 
 #define NUM_MASTER_escape_series_escape2 1
-static string MASTER_escape_series_escape2[NUM_MASTER_escape_series_escape2] =
+static const char * MASTER_escape_series_escape2[NUM_MASTER_escape_series_escape2] =
 {
 	"escape2_intro.wav",
 };
 
 #define NUM_MASTER_escape_series_escape3 15
-static string MASTER_escape_series_escape3[NUM_MASTER_escape_series_escape3] =
+static const char * MASTER_escape_series_escape3[NUM_MASTER_escape_series_escape3] =
 {
 	"boss.mp3",
 	"behind.wav",
@@ -1298,7 +1298,7 @@ static string MASTER_escape_series_escape3[NUM_MASTER_escape_series_escape3] =
 };
 
 #define NUM_MASTER_escape_series_fast_zombie 16
-static string MASTER_escape_series_fast_zombie[NUM_MASTER_escape_series_fast_zombie] =
+static const char * MASTER_escape_series_fast_zombie[NUM_MASTER_escape_series_fast_zombie] =
 {
 	"claw_miss1.wav",
 	"claw_miss2.wav",
@@ -1319,13 +1319,13 @@ static string MASTER_escape_series_fast_zombie[NUM_MASTER_escape_series_fast_zom
 };
 
 #define NUM_MASTER_extended 1
-static string MASTER_extended[NUM_MASTER_extended] =
+static const char * MASTER_extended[NUM_MASTER_extended] =
 {
 	"papers.wav",
 };
 
 #define NUM_MASTER_fans 15
-static string MASTER_fans[NUM_MASTER_fans] =
+static const char * MASTER_fans[NUM_MASTER_fans] =
 {
 	"fan1.wav",
 	"fan1off.wav",
@@ -1345,7 +1345,7 @@ static string MASTER_fans[NUM_MASTER_fans] =
 };
 
 #define NUM_MASTER_fgrunt 195
-static string MASTER_fgrunt[NUM_MASTER_fgrunt] =
+static const char * MASTER_fgrunt[NUM_MASTER_fgrunt] =
 {
 	"alert.wav",
 	"alien.wav",
@@ -1545,7 +1545,7 @@ static string MASTER_fgrunt[NUM_MASTER_fgrunt] =
 };
 
 #define NUM_MASTER_fvox 142
-static string MASTER_fvox[NUM_MASTER_fvox] =
+static const char * MASTER_fvox[NUM_MASTER_fvox] =
 {
 	"acquired.wav",
 	"activated.wav",
@@ -1692,7 +1692,7 @@ static string MASTER_fvox[NUM_MASTER_fvox] =
 };
 
 #define NUM_MASTER_garg 25
-static string MASTER_garg[NUM_MASTER_garg] =
+static const char * MASTER_garg[NUM_MASTER_garg] =
 {
 	"gar_alert1.wav",
 	"gar_alert2.wav",
@@ -1722,7 +1722,7 @@ static string MASTER_garg[NUM_MASTER_garg] =
 };
 
 #define NUM_MASTER_geneworm 15
-static string MASTER_geneworm[NUM_MASTER_geneworm] =
+static const char * MASTER_geneworm[NUM_MASTER_geneworm] =
 {
 	"geneworm_attack_mounted_gun.wav",
 	"geneworm_attack_mounted_rocket.wav",
@@ -1742,7 +1742,7 @@ static string MASTER_geneworm[NUM_MASTER_geneworm] =
 };
 
 #define NUM_MASTER_gman 22
-static string MASTER_gman[NUM_MASTER_gman] =
+static const char * MASTER_gman[NUM_MASTER_gman] =
 {
 	"gman_choose1.wav",
 	"gman_choose2.wav",
@@ -1769,7 +1769,7 @@ static string MASTER_gman[NUM_MASTER_gman] =
 };
 
 #define NUM_MASTER_gonarch 22
-static string MASTER_gonarch[NUM_MASTER_gonarch] =
+static const char * MASTER_gonarch[NUM_MASTER_gonarch] =
 {
 	"gon_alert1.wav",
 	"gon_alert2.wav",
@@ -1796,7 +1796,7 @@ static string MASTER_gonarch[NUM_MASTER_gonarch] =
 };
 
 #define NUM_MASTER_gonome 15
-static string MASTER_gonome[NUM_MASTER_gonome] =
+static const char * MASTER_gonome[NUM_MASTER_gonome] =
 {
 	"gonome_death2.wav",
 	"gonome_death3.wav",
@@ -1816,14 +1816,14 @@ static string MASTER_gonome[NUM_MASTER_gonome] =
 };
 
 #define NUM_MASTER_grunts2 2
-static string MASTER_grunts2[NUM_MASTER_grunts2] =
+static const char * MASTER_grunts2[NUM_MASTER_grunts2] =
 {
 	"radio1.wav",
 	"radio2.wav",
 };
 
 #define NUM_MASTER_hammerhead 11
-static string MASTER_hammerhead[NUM_MASTER_hammerhead] =
+static const char * MASTER_hammerhead[NUM_MASTER_hammerhead] =
 {
 	"biggun1.wav",
 	"biggun3.wav",
@@ -1839,7 +1839,7 @@ static string MASTER_hammerhead[NUM_MASTER_hammerhead] =
 };
 
 #define NUM_MASTER_hassault 7
-static string MASTER_hassault[NUM_MASTER_hassault] =
+static const char * MASTER_hassault[NUM_MASTER_hassault] =
 {
 	"hw_gun4.wav",
 	"hw_shoot1.wav",
@@ -1851,7 +1851,7 @@ static string MASTER_hassault[NUM_MASTER_hassault] =
 };
 
 #define NUM_MASTER_headcrab 16
-static string MASTER_headcrab[NUM_MASTER_headcrab] =
+static const char * MASTER_headcrab[NUM_MASTER_headcrab] =
 {
 	"hc_alert1.wav",
 	"hc_alert2.wav",
@@ -1872,7 +1872,7 @@ static string MASTER_headcrab[NUM_MASTER_headcrab] =
 };
 
 #define NUM_MASTER_hgrunt 334
-static string MASTER_hgrunt[NUM_MASTER_hgrunt] =
+static const char * MASTER_hgrunt[NUM_MASTER_hgrunt] =
 {
 	"a!.wav",
 	"a.wav",
@@ -2211,7 +2211,7 @@ static string MASTER_hgrunt[NUM_MASTER_hgrunt] =
 };
 
 #define NUM_MASTER_holo 50
-static string MASTER_holo[NUM_MASTER_holo] =
+static const char * MASTER_holo[NUM_MASTER_holo] =
 {
 	"tr_ba_lightson.wav",
 	"tr_ba_unuse.wav",
@@ -2266,7 +2266,7 @@ static string MASTER_holo[NUM_MASTER_holo] =
 };
 
 #define NUM_MASTER_hornet 6
-static string MASTER_hornet[NUM_MASTER_hornet] =
+static const char * MASTER_hornet[NUM_MASTER_hornet] =
 {
 	"ag_buzz1.wav",
 	"ag_buzz2.wav",
@@ -2277,7 +2277,7 @@ static string MASTER_hornet[NUM_MASTER_hornet] =
 };
 
 #define NUM_MASTER_houndeye 25
-static string MASTER_houndeye[NUM_MASTER_houndeye] =
+static const char * MASTER_houndeye[NUM_MASTER_houndeye] =
 {
 	"he_alert1.wav",
 	"he_alert2.wav",
@@ -2307,7 +2307,7 @@ static string MASTER_houndeye[NUM_MASTER_houndeye] =
 };
 
 #define NUM_MASTER_hunger_alfred 9
-static string MASTER_hunger_alfred[NUM_MASTER_hunger_alfred] =
+static const char * MASTER_hunger_alfred[NUM_MASTER_hunger_alfred] =
 {
 	"alfred1.wav",
 	"alfred2.wav",
@@ -2321,7 +2321,7 @@ static string MASTER_hunger_alfred[NUM_MASTER_hunger_alfred] =
 };
 
 #define NUM_MASTER_hunger_franklin 9
-static string MASTER_hunger_franklin[NUM_MASTER_hunger_franklin] =
+static const char * MASTER_hunger_franklin[NUM_MASTER_hunger_franklin] =
 {
 	"frank1.wav",
 	"frank2.wav",
@@ -2335,7 +2335,7 @@ static string MASTER_hunger_franklin[NUM_MASTER_hunger_franklin] =
 };
 
 #define NUM_MASTER_hunger_hungerbarney 11
-static string MASTER_hunger_hungerbarney[NUM_MASTER_hunger_hungerbarney] =
+static const char * MASTER_hunger_hungerbarney[NUM_MASTER_hunger_hungerbarney] =
 {
 	"ba_die1.wav",
 	"ba_die2.wav",
@@ -2351,7 +2351,7 @@ static string MASTER_hunger_hungerbarney[NUM_MASTER_hunger_hungerbarney] =
 };
 
 #define NUM_MASTER_hunger_hungercrab 17
-static string MASTER_hunger_hungercrab[NUM_MASTER_hunger_hungercrab] =
+static const char * MASTER_hunger_hungercrab[NUM_MASTER_hunger_hungercrab] =
 {
 	"hc_alert1.wav",
 	"hc_alert2.wav",
@@ -2373,7 +2373,7 @@ static string MASTER_hunger_hungercrab[NUM_MASTER_hunger_hungercrab] =
 };
 
 #define NUM_MASTER_hunger_hungerhound 24
-static string MASTER_hunger_hungerhound[NUM_MASTER_hunger_hungerhound] =
+static const char * MASTER_hunger_hungerhound[NUM_MASTER_hunger_hungerhound] =
 {
 	"he_alert1.wav",
 	"he_alert2.wav",
@@ -2402,7 +2402,7 @@ static string MASTER_hunger_hungerhound[NUM_MASTER_hunger_hungerhound] =
 };
 
 #define NUM_MASTER_hunger_hungerplats 9
-static string MASTER_hunger_hungerplats[NUM_MASTER_hunger_hungerplats] =
+static const char * MASTER_hunger_hungerplats[NUM_MASTER_hunger_hungerplats] =
 {
 	"squeekmove1.wav",
 	"train_use2.wav",
@@ -2416,7 +2416,7 @@ static string MASTER_hunger_hungerplats[NUM_MASTER_hunger_hungerplats] =
 };
 
 #define NUM_MASTER_hunger_hungerslave 15
-static string MASTER_hunger_hungerslave[NUM_MASTER_hunger_hungerslave] =
+static const char * MASTER_hunger_hungerslave[NUM_MASTER_hunger_hungerslave] =
 {
 	"slv_alert1.wav",
 	"slv_alert3.wav",
@@ -2436,7 +2436,7 @@ static string MASTER_hunger_hungerslave[NUM_MASTER_hunger_hungerslave] =
 };
 
 #define NUM_MASTER_hunger_hungerzombie 16
-static string MASTER_hunger_hungerzombie[NUM_MASTER_hunger_hungerzombie] =
+static const char * MASTER_hunger_hungerzombie[NUM_MASTER_hunger_hungerzombie] =
 {
 	"claw_miss1.wav",
 	"claw_miss2.wav",
@@ -2457,7 +2457,7 @@ static string MASTER_hunger_hungerzombie[NUM_MASTER_hunger_hungerzombie] =
 };
 
 #define NUM_MASTER_hunger_hungerzombiecop 11
-static string MASTER_hunger_hungerzombiecop[NUM_MASTER_hunger_hungerzombiecop] =
+static const char * MASTER_hunger_hungerzombiecop[NUM_MASTER_hunger_hungerzombiecop] =
 {
 	"zo_alert10.wav",
 	"zo_alert20.wav",
@@ -2473,7 +2473,7 @@ static string MASTER_hunger_hungerzombiecop[NUM_MASTER_hunger_hungerzombiecop] =
 };
 
 #define NUM_MASTER_hunger_hungerzombiefem 11
-static string MASTER_hunger_hungerzombiefem[NUM_MASTER_hunger_hungerzombiefem] =
+static const char * MASTER_hunger_hungerzombiefem[NUM_MASTER_hunger_hungerzombiefem] =
 {
 	"zo_alert10.wav",
 	"zo_alert20.wav",
@@ -2489,7 +2489,7 @@ static string MASTER_hunger_hungerzombiefem[NUM_MASTER_hunger_hungerzombiefem] =
 };
 
 #define NUM_MASTER_hunger_hungerzork 28
-static string MASTER_hunger_hungerzork[NUM_MASTER_hunger_hungerzork] =
+static const char * MASTER_hunger_hungerzork[NUM_MASTER_hunger_hungerzork] =
 {
 	"ag_alert1.wav",
 	"ag_alert2.wav",
@@ -2522,7 +2522,7 @@ static string MASTER_hunger_hungerzork[NUM_MASTER_hunger_hungerzork] =
 };
 
 #define NUM_MASTER_hunger_recorder 16
-static string MASTER_hunger_recorder[NUM_MASTER_hunger_recorder] =
+static const char * MASTER_hunger_recorder[NUM_MASTER_hunger_recorder] =
 {
 	"cradio_mess1.wav",
 	"cradio_mess2.wav",
@@ -2543,7 +2543,7 @@ static string MASTER_hunger_recorder[NUM_MASTER_hunger_recorder] =
 };
 
 #define NUM_MASTER_hunger_sheriff 11
-static string MASTER_hunger_sheriff[NUM_MASTER_hunger_sheriff] =
+static const char * MASTER_hunger_sheriff[NUM_MASTER_hunger_sheriff] =
 {
 	"rayward.wav",
 	"sherif1.wav",
@@ -2559,7 +2559,7 @@ static string MASTER_hunger_sheriff[NUM_MASTER_hunger_sheriff] =
 };
 
 #define NUM_MASTER_hunger_thambs 78
-static string MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
+static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 {
 	"ap_rotor3new.wav",
 	"bat.wav",
@@ -2642,7 +2642,7 @@ static string MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 };
 
 #define NUM_MASTER_hunger_thambs2 22
-static string MASTER_hunger_thambs2[NUM_MASTER_hunger_thambs2] =
+static const char * MASTER_hunger_thambs2[NUM_MASTER_hunger_thambs2] =
 {
 	"alarm1.wav",
 	"alien_move5.wav",
@@ -2669,7 +2669,7 @@ static string MASTER_hunger_thambs2[NUM_MASTER_hunger_thambs2] =
 };
 
 #define NUM_MASTER_hunger_thweapons 13
-static string MASTER_hunger_thweapons[NUM_MASTER_hunger_thweapons] =
+static const char * MASTER_hunger_thweapons[NUM_MASTER_hunger_thweapons] =
 {
 	"ap9_bolt.wav",
 	"ap9_clipin.wav",
@@ -2687,7 +2687,7 @@ static string MASTER_hunger_thweapons[NUM_MASTER_hunger_thweapons] =
 };
 
 #define NUM_MASTER_hunger_zombierat 6
-static string MASTER_hunger_zombierat[NUM_MASTER_hunger_zombierat] =
+static const char * MASTER_hunger_zombierat[NUM_MASTER_hunger_zombierat] =
 {
 	"sqk_blast1.wav",
 	"sqk_deploy1.wav",
@@ -2698,7 +2698,7 @@ static string MASTER_hunger_zombierat[NUM_MASTER_hunger_zombierat] =
 };
 
 #define NUM_MASTER_hungerhound 10
-static string MASTER_hungerhound[NUM_MASTER_hungerhound] =
+static const char * MASTER_hungerhound[NUM_MASTER_hungerhound] =
 {
 	"he_alert1.wav",
 	"he_attack1.wav",
@@ -2713,7 +2713,7 @@ static string MASTER_hungerhound[NUM_MASTER_hungerhound] =
 };
 
 #define NUM_MASTER_ichy 19
-static string MASTER_ichy[NUM_MASTER_ichy] =
+static const char * MASTER_ichy[NUM_MASTER_ichy] =
 {
 	"ichy_alert1.wav",
 	"ichy_alert2.wav",
@@ -2737,7 +2737,7 @@ static string MASTER_ichy[NUM_MASTER_ichy] =
 };
 
 #define NUM_MASTER_incoming 15
-static string MASTER_incoming[NUM_MASTER_incoming] =
+static const char * MASTER_incoming[NUM_MASTER_incoming] =
 {
 	"s2.mod",
 	"cbar_hit1.wav",
@@ -2757,7 +2757,7 @@ static string MASTER_incoming[NUM_MASTER_incoming] =
 };
 
 #define NUM_MASTER_infested 3
-static string MASTER_infested[NUM_MASTER_infested] =
+static const char * MASTER_infested[NUM_MASTER_infested] =
 {
 	"i1.wav",
 	"i2.wav",
@@ -2765,7 +2765,7 @@ static string MASTER_infested[NUM_MASTER_infested] =
 };
 
 #define NUM_MASTER_intro 9
-static string MASTER_intro[NUM_MASTER_intro] =
+static const char * MASTER_intro[NUM_MASTER_intro] =
 {
 	"g3_copy.wav",
 	"g7_copy_hq.wav",
@@ -2779,7 +2779,7 @@ static string MASTER_intro[NUM_MASTER_intro] =
 };
 
 #define NUM_MASTER_items 29
-static string MASTER_items[NUM_MASTER_items] =
+static const char * MASTER_items[NUM_MASTER_items] =
 {
 	"9mmclip1.wav",
 	"9mmclip2.wav",
@@ -2813,7 +2813,7 @@ static string MASTER_items[NUM_MASTER_items] =
 };
 
 #define NUM_MASTER_it_has_leaks 10
-static string MASTER_it_has_leaks[NUM_MASTER_it_has_leaks] =
+static const char * MASTER_it_has_leaks[NUM_MASTER_it_has_leaks] =
 {
 	"drip1.wav",
 	"fire1.wav",
@@ -2828,7 +2828,7 @@ static string MASTER_it_has_leaks[NUM_MASTER_it_has_leaks] =
 };
 
 #define NUM_MASTER_jumpers 3
-static string MASTER_jumpers[NUM_MASTER_jumpers] =
+static const char * MASTER_jumpers[NUM_MASTER_jumpers] =
 {
 	"death3.wav",
 	"endgame.wav",
@@ -2836,7 +2836,7 @@ static string MASTER_jumpers[NUM_MASTER_jumpers] =
 };
 
 #define NUM_MASTER_kingpin 19
-static string MASTER_kingpin[NUM_MASTER_kingpin] =
+static const char * MASTER_kingpin[NUM_MASTER_kingpin] =
 {
 	"kingpin_alert1.wav",
 	"kingpin_alert2.wav",
@@ -2860,14 +2860,14 @@ static string MASTER_kingpin[NUM_MASTER_kingpin] =
 };
 
 #define NUM_MASTER_last 2
-static string MASTER_last[NUM_MASTER_last] =
+static const char * MASTER_last[NUM_MASTER_last] =
 {
 	"lightclunk.wav",
 	"radiobattle.wav",
 };
 
 #define NUM_MASTER_leech 5
-static string MASTER_leech[NUM_MASTER_leech] =
+static const char * MASTER_leech[NUM_MASTER_leech] =
 {
 	"leech_alert1.wav",
 	"leech_alert2.wav",
@@ -2877,13 +2877,13 @@ static string MASTER_leech[NUM_MASTER_leech] =
 };
 
 #define NUM_MASTER_minigun 1
-static string MASTER_minigun[NUM_MASTER_minigun] =
+static const char * MASTER_minigun[NUM_MASTER_minigun] =
 {
 	"hw_shoot1.wav",
 };
 
 #define NUM_MASTER_misc 45
-static string MASTER_misc[NUM_MASTER_misc] =
+static const char * MASTER_misc[NUM_MASTER_misc] =
 {
 	"bbcover.wav",
 	"bbimpact.wav",
@@ -2933,7 +2933,7 @@ static string MASTER_misc[NUM_MASTER_misc] =
 };
 
 #define NUM_MASTER_mommamesa 14
-static string MASTER_mommamesa[NUM_MASTER_mommamesa] =
+static const char * MASTER_mommamesa[NUM_MASTER_mommamesa] =
 {
 	"ba_attack2.wav",
 	"effect_on.wav",
@@ -2952,14 +2952,14 @@ static string MASTER_mommamesa[NUM_MASTER_mommamesa] =
 };
 
 #define NUM_MASTER_mommamesa_gunshot 2
-static string MASTER_mommamesa_gunshot[NUM_MASTER_mommamesa_gunshot] =
+static const char * MASTER_mommamesa_gunshot[NUM_MASTER_mommamesa_gunshot] =
 {
 	"aug-1.wav",
 	"p90-1.wav",
 };
 
 #define NUM_MASTER_mommamesa_music 20
-static string MASTER_mommamesa_music[NUM_MASTER_mommamesa_music] =
+static const char * MASTER_mommamesa_music[NUM_MASTER_mommamesa_music] =
 {
 	"bgmusic01.wav",
 	"bgmusic01_intro.wav",
@@ -2984,7 +2984,7 @@ static string MASTER_mommamesa_music[NUM_MASTER_mommamesa_music] =
 };
 
 #define NUM_MASTER_nihilanth 14
-static string MASTER_nihilanth[NUM_MASTER_nihilanth] =
+static const char * MASTER_nihilanth[NUM_MASTER_nihilanth] =
 {
 	"nil_alone.wav",
 	"nil_comes.wav",
@@ -3003,13 +3003,13 @@ static string MASTER_nihilanth[NUM_MASTER_nihilanth] =
 };
 
 #define NUM_MASTER_omg 1
-static string MASTER_omg[NUM_MASTER_omg] =
+static const char * MASTER_omg[NUM_MASTER_omg] =
 {
 	"nomble.wav",
 };
 
 #define NUM_MASTER_ops 6
-static string MASTER_ops[NUM_MASTER_ops] =
+static const char * MASTER_ops[NUM_MASTER_ops] =
 {
 	"of2a5_bo01.wav",
 	"of2a5_bo02.wav",
@@ -3020,7 +3020,7 @@ static string MASTER_ops[NUM_MASTER_ops] =
 };
 
 #define NUM_MASTER_osprey2 5
-static string MASTER_osprey2[NUM_MASTER_osprey2] =
+static const char * MASTER_osprey2[NUM_MASTER_osprey2] =
 {
 	"askinyou.wav",
 	"damn_you.wav",
@@ -3030,7 +3030,7 @@ static string MASTER_osprey2[NUM_MASTER_osprey2] =
 };
 
 #define NUM_MASTER_otis 107
-static string MASTER_otis[NUM_MASTER_otis] =
+static const char * MASTER_otis[NUM_MASTER_otis] =
 {
 	"aliencombat.wav",
 	"aliens.wav",
@@ -3142,7 +3142,7 @@ static string MASTER_otis[NUM_MASTER_otis] =
 };
 
 #define NUM_MASTER_pitdrone 26
-static string MASTER_pitdrone[NUM_MASTER_pitdrone] =
+static const char * MASTER_pitdrone[NUM_MASTER_pitdrone] =
 {
 	"pit_drone_alert1.wav",
 	"pit_drone_alert2.wav",
@@ -3173,7 +3173,7 @@ static string MASTER_pitdrone[NUM_MASTER_pitdrone] =
 };
 
 #define NUM_MASTER_pitworm 19
-static string MASTER_pitworm[NUM_MASTER_pitworm] =
+static const char * MASTER_pitworm[NUM_MASTER_pitworm] =
 {
 	"clang1.wav",
 	"clang2.wav",
@@ -3197,7 +3197,7 @@ static string MASTER_pitworm[NUM_MASTER_pitworm] =
 };
 
 #define NUM_MASTER_plats 36
-static string MASTER_plats[NUM_MASTER_plats] =
+static const char * MASTER_plats[NUM_MASTER_plats] =
 {
 	"bigmove1.wav",
 	"bigmove2.wav",
@@ -3238,7 +3238,7 @@ static string MASTER_plats[NUM_MASTER_plats] =
 };
 
 #define NUM_MASTER_player 91
-static string MASTER_player[NUM_MASTER_player] =
+static const char * MASTER_player[NUM_MASTER_player] =
 {
 	"boots1.wav",
 	"boots2.wav",
@@ -3334,7 +3334,7 @@ static string MASTER_player[NUM_MASTER_player] =
 };
 
 #define NUM_MASTER_puchi_spportal 10
-static string MASTER_puchi_spportal[NUM_MASTER_puchi_spportal] =
+static const char * MASTER_puchi_spportal[NUM_MASTER_puchi_spportal] =
 {
 	"f2_new.wav",
 	"NA0.wav",
@@ -3349,7 +3349,7 @@ static string MASTER_puchi_spportal[NUM_MASTER_puchi_spportal] =
 };
 
 #define NUM_MASTER_radio 9
-static string MASTER_radio[NUM_MASTER_radio] =
+static const char * MASTER_radio[NUM_MASTER_radio] =
 {
 	"bootcamp0.wav",
 	"of1a2_rd01.wav",
@@ -3363,14 +3363,14 @@ static string MASTER_radio[NUM_MASTER_radio] =
 };
 
 #define NUM_MASTER_Rampage 2
-static string MASTER_Rampage[NUM_MASTER_Rampage] =
+static const char * MASTER_Rampage[NUM_MASTER_Rampage] =
 {
 	"button3.wav",
 	"of1a6_rd01.wav",
 };
 
 #define NUM_MASTER_richard_boderman 6
-static string MASTER_richard_boderman[NUM_MASTER_richard_boderman] =
+static const char * MASTER_richard_boderman[NUM_MASTER_richard_boderman] =
 {
 	"wagner.mp3",
 	"hueytimer1.wav",
@@ -3381,7 +3381,7 @@ static string MASTER_richard_boderman[NUM_MASTER_richard_boderman] =
 };
 
 #define NUM_MASTER_rng 13
-static string MASTER_rng[NUM_MASTER_rng] =
+static const char * MASTER_rng[NUM_MASTER_rng] =
 {
 	"kyper_kuutio2_loop.ogg",
 	"kyper_kuutio3b_loop.ogg",
@@ -3399,7 +3399,7 @@ static string MASTER_rng[NUM_MASTER_rng] =
 };
 
 #define NUM_MASTER_roach 3
-static string MASTER_roach[NUM_MASTER_roach] =
+static const char * MASTER_roach[NUM_MASTER_roach] =
 {
 	"rch_die.wav",
 	"rch_smash.wav",
@@ -3407,7 +3407,7 @@ static string MASTER_roach[NUM_MASTER_roach] =
 };
 
 #define NUM_MASTER_rosenberg 174
-static string MASTER_rosenberg[NUM_MASTER_rosenberg] =
+static const char * MASTER_rosenberg[NUM_MASTER_rosenberg] =
 {
 	"ro_01_admin.wav",
 	"ro_01_alive.wav",
@@ -3586,7 +3586,7 @@ static string MASTER_rosenberg[NUM_MASTER_rosenberg] =
 };
 
 #define NUM_MASTER_sandstone 8
-static string MASTER_sandstone[NUM_MASTER_sandstone] =
+static const char * MASTER_sandstone[NUM_MASTER_sandstone] =
 {
 	"armoron_1.wav",
 	"artillery.wav",
@@ -3599,7 +3599,7 @@ static string MASTER_sandstone[NUM_MASTER_sandstone] =
 };
 
 #define NUM_MASTER_scientist 453
-static string MASTER_scientist[NUM_MASTER_scientist] =
+static const char * MASTER_scientist[NUM_MASTER_scientist] =
 {
 	"absolutely.wav",
 	"absolutelynot.wav",
@@ -4057,7 +4057,7 @@ static string MASTER_scientist[NUM_MASTER_scientist] =
 };
 
 #define NUM_MASTER_sc_activist 17
-static string MASTER_sc_activist[NUM_MASTER_sc_activist] =
+static const char * MASTER_sc_activist[NUM_MASTER_sc_activist] =
 {
 	"ALARM.wav",
 	"boomer.wav",
@@ -4079,7 +4079,7 @@ static string MASTER_sc_activist[NUM_MASTER_sc_activist] =
 };
 
 #define NUM_MASTER_sc_incoming 10
-static string MASTER_sc_incoming[NUM_MASTER_sc_incoming] =
+static const char * MASTER_sc_incoming[NUM_MASTER_sc_incoming] =
 {
 	"cbar_hit1.wav",
 	"cbar_hit2.wav",
@@ -4094,14 +4094,14 @@ static string MASTER_sc_incoming[NUM_MASTER_sc_incoming] =
 };
 
 #define NUM_MASTER_sc_mazing 2
-static string MASTER_sc_mazing[NUM_MASTER_sc_mazing] =
+static const char * MASTER_sc_mazing[NUM_MASTER_sc_mazing] =
 {
 	"drums.wav",
 	"drums2.wav",
 };
 
 #define NUM_MASTER_sc_persia 9
-static string MASTER_sc_persia[NUM_MASTER_sc_persia] =
+static const char * MASTER_sc_persia[NUM_MASTER_sc_persia] =
 {
 	"background.wav",
 	"GUN1.WAV",
@@ -4115,7 +4115,7 @@ static string MASTER_sc_persia[NUM_MASTER_sc_persia] =
 };
 
 #define NUM_MASTER_sc_psyko 16
-static string MASTER_sc_psyko[NUM_MASTER_sc_psyko] =
+static const char * MASTER_sc_psyko[NUM_MASTER_sc_psyko] =
 {
 	"dangerous.mp3",
 	"theme1.mp3",
@@ -4136,7 +4136,7 @@ static string MASTER_sc_psyko[NUM_MASTER_sc_psyko] =
 };
 
 #define NUM_MASTER_sc_robination 6
-static string MASTER_sc_robination[NUM_MASTER_sc_robination] =
+static const char * MASTER_sc_robination[NUM_MASTER_sc_robination] =
 {
 	"alarm001.wav",
 	"crash.wav",
@@ -4147,7 +4147,7 @@ static string MASTER_sc_robination[NUM_MASTER_sc_robination] =
 };
 
 #define NUM_MASTER_sc_royals 26
-static string MASTER_sc_royals[NUM_MASTER_sc_royals] =
+static const char * MASTER_sc_royals[NUM_MASTER_sc_royals] =
 {
 	"blade.wav",
 	"chant1.wav",
@@ -4178,7 +4178,7 @@ static string MASTER_sc_royals[NUM_MASTER_sc_royals] =
 };
 
 #define NUM_MASTER_sc_tetris 11
-static string MASTER_sc_tetris[NUM_MASTER_sc_tetris] =
+static const char * MASTER_sc_tetris[NUM_MASTER_sc_tetris] =
 {
 	"clear.wav",
 	"move.wav",
@@ -4194,7 +4194,7 @@ static string MASTER_sc_tetris[NUM_MASTER_sc_tetris] =
 };
 
 #define NUM_MASTER_sectore 78
-static string MASTER_sectore[NUM_MASTER_sectore] =
+static const char * MASTER_sectore[NUM_MASTER_sectore] =
 {
 	"bossa.it",
 	"83257-space_walk.mod",
@@ -4277,13 +4277,13 @@ static string MASTER_sectore[NUM_MASTER_sectore] =
 };
 
 #define NUM_MASTER_sectore_3 1
-static string MASTER_sectore_3[NUM_MASTER_sectore_3] =
+static const char * MASTER_sectore_3[NUM_MASTER_sectore_3] =
 {
 	"allflowers.wav",
 };
 
 #define NUM_MASTER_shockroach 10
-static string MASTER_shockroach[NUM_MASTER_shockroach] =
+static const char * MASTER_shockroach[NUM_MASTER_shockroach] =
 {
 	"shock_angry.wav",
 	"shock_bite.wav",
@@ -4298,7 +4298,7 @@ static string MASTER_shockroach[NUM_MASTER_shockroach] =
 };
 
 #define NUM_MASTER_shocktrooper 28
-static string MASTER_shocktrooper[NUM_MASTER_shocktrooper] =
+static const char * MASTER_shocktrooper[NUM_MASTER_shocktrooper] =
 {
 	"blis.wav",
 	"dit.wav",
@@ -4331,7 +4331,7 @@ static string MASTER_shocktrooper[NUM_MASTER_shocktrooper] =
 };
 
 #define NUM_MASTER_speech 4
-static string MASTER_speech[NUM_MASTER_speech] =
+static const char * MASTER_speech[NUM_MASTER_speech] =
 {
 	"grenade1.wav",
 	"Pineapple.wav",
@@ -4340,7 +4340,7 @@ static string MASTER_speech[NUM_MASTER_speech] =
 };
 
 #define NUM_MASTER_squeek 6
-static string MASTER_squeek[NUM_MASTER_squeek] =
+static const char * MASTER_squeek[NUM_MASTER_squeek] =
 {
 	"sqk_blast1.wav",
 	"sqk_deploy1.wav",
@@ -4351,13 +4351,13 @@ static string MASTER_squeek[NUM_MASTER_squeek] =
 };
 
 #define NUM_MASTER_stukabat 1
-static string MASTER_stukabat[NUM_MASTER_stukabat] =
+static const char * MASTER_stukabat[NUM_MASTER_stukabat] =
 {
 	"stukabat_flap1.wav",
 };
 
 #define NUM_MASTER_svencoop1 12
-static string MASTER_svencoop1[NUM_MASTER_svencoop1] =
+static const char * MASTER_svencoop1[NUM_MASTER_svencoop1] =
 {
 	"barney1.wav",
 	"barney2.wav",
@@ -4374,7 +4374,7 @@ static string MASTER_svencoop1[NUM_MASTER_svencoop1] =
 };
 
 #define NUM_MASTER_svencoop2 12
-static string MASTER_svencoop2[NUM_MASTER_svencoop2] =
+static const char * MASTER_svencoop2[NUM_MASTER_svencoop2] =
 {
 	"grunt2.wav",
 	"kaaglose.wav",
@@ -4391,7 +4391,7 @@ static string MASTER_svencoop2[NUM_MASTER_svencoop2] =
 };
 
 #define NUM_MASTER_svencoop3 4
-static string MASTER_svencoop3[NUM_MASTER_svencoop3] =
+static const char * MASTER_svencoop3[NUM_MASTER_svencoop3] =
 {
 	"grueattack.wav",
 	"gruebreath.wav",
@@ -4400,7 +4400,7 @@ static string MASTER_svencoop3[NUM_MASTER_svencoop3] =
 };
 
 #define NUM_MASTER_tentacle 17
-static string MASTER_tentacle[NUM_MASTER_tentacle] =
+static const char * MASTER_tentacle[NUM_MASTER_tentacle] =
 {
 	"te_alert1.wav",
 	"te_alert2.wav",
@@ -4422,7 +4422,7 @@ static string MASTER_tentacle[NUM_MASTER_tentacle] =
 };
 
 #define NUM_MASTER_toonrun 5
-static string MASTER_toonrun[NUM_MASTER_toonrun] =
+static const char * MASTER_toonrun[NUM_MASTER_toonrun] =
 {
 	"FlowerHurt.wav",
 	"ocean.wav",
@@ -4432,7 +4432,7 @@ static string MASTER_toonrun[NUM_MASTER_toonrun] =
 };
 
 #define NUM_MASTER_tor 14
-static string MASTER_tor[NUM_MASTER_tor] =
+static const char * MASTER_tor[NUM_MASTER_tor] =
 {
 	"tor-alerted.wav",
 	"tor-attack1.wav",
@@ -4451,7 +4451,7 @@ static string MASTER_tor[NUM_MASTER_tor] =
 };
 
 #define NUM_MASTER_tram 9
-static string MASTER_tram[NUM_MASTER_tram] =
+static const char * MASTER_tram[NUM_MASTER_tram] =
 {
 	"ba_tram0.wav",
 	"ba_tram1.wav",
@@ -4465,7 +4465,7 @@ static string MASTER_tram[NUM_MASTER_tram] =
 };
 
 #define NUM_MASTER_tride 10
-static string MASTER_tride[NUM_MASTER_tride] =
+static const char * MASTER_tride[NUM_MASTER_tride] =
 {
 	"c0a0_tr_arrive.wav",
 	"c0a0_tr_dest.wav",
@@ -4480,14 +4480,14 @@ static string MASTER_tride[NUM_MASTER_tride] =
 };
 
 #define NUM_MASTER_tur 2
-static string MASTER_tur[NUM_MASTER_tur] =
+static const char * MASTER_tur[NUM_MASTER_tur] =
 {
 	"labyrinth.wav",
 	"wotw.wav",
 };
 
 #define NUM_MASTER_turret 13
-static string MASTER_turret[NUM_MASTER_turret] =
+static const char * MASTER_turret[NUM_MASTER_turret] =
 {
 	"tu_active.wav",
 	"tu_active2.wav",
@@ -4505,7 +4505,7 @@ static string MASTER_turret[NUM_MASTER_turret] =
 };
 
 #define NUM_MASTER_turretfortress 13
-static string MASTER_turretfortress[NUM_MASTER_turretfortress] =
+static const char * MASTER_turretfortress[NUM_MASTER_turretfortress] =
 {
 	"makov2.mp3",
 	"n2.mp3",
@@ -4523,7 +4523,7 @@ static string MASTER_turretfortress[NUM_MASTER_turretfortress] =
 };
 
 #define NUM_MASTER_UI 3
-static string MASTER_UI[NUM_MASTER_UI] =
+static const char * MASTER_UI[NUM_MASTER_UI] =
 {
 	"buttonclick.wav",
 	"buttonclickrelease.wav",
@@ -4531,7 +4531,7 @@ static string MASTER_UI[NUM_MASTER_UI] =
 };
 
 #define NUM_MASTER_vger 11
-static string MASTER_vger[NUM_MASTER_vger] =
+static const char * MASTER_vger[NUM_MASTER_vger] =
 {
 	"all.wav",
 	"beer.wav",
@@ -4547,7 +4547,7 @@ static string MASTER_vger[NUM_MASTER_vger] =
 };
 
 #define NUM_MASTER_voltigore 25
-static string MASTER_voltigore[NUM_MASTER_voltigore] =
+static const char * MASTER_voltigore[NUM_MASTER_voltigore] =
 {
 	"voltigore_alert1.wav",
 	"voltigore_alert2.wav",
@@ -4577,7 +4577,7 @@ static string MASTER_voltigore[NUM_MASTER_voltigore] =
 };
 
 #define NUM_MASTER_vox 618
-static string MASTER_vox[NUM_MASTER_vox] =
+static const char * MASTER_vox[NUM_MASTER_vox] =
 {
 	"a.wav",
 	"accelerating.wav",
@@ -5200,7 +5200,7 @@ static string MASTER_vox[NUM_MASTER_vox] =
 };
 
 #define NUM_MASTER_weapons 176
-static string MASTER_weapons[NUM_MASTER_weapons] =
+static const char * MASTER_weapons[NUM_MASTER_weapons] =
 {
 	"357_chamberin.wav",
 	"357_chamberout.wav",
@@ -5381,7 +5381,7 @@ static string MASTER_weapons[NUM_MASTER_weapons] =
 };
 
 #define NUM_MASTER_weapons_afrikakorps 12
-static string MASTER_weapons_afrikakorps[NUM_MASTER_weapons_afrikakorps] =
+static const char * MASTER_weapons_afrikakorps[NUM_MASTER_weapons_afrikakorps] =
 {
 	"bazookareloadgetrocket.wav",
 	"bazookareloadrocketin.wav",
@@ -5398,7 +5398,7 @@ static string MASTER_weapons_afrikakorps[NUM_MASTER_weapons_afrikakorps] =
 };
 
 #define NUM_MASTER_weapons_cbe 10
-static string MASTER_weapons_cbe[NUM_MASTER_weapons_cbe] =
+static const char * MASTER_weapons_cbe[NUM_MASTER_weapons_cbe] =
 {
 	"cbe_hit1.wav",
 	"cbe_hit2.wav",
@@ -5413,7 +5413,7 @@ static string MASTER_weapons_cbe[NUM_MASTER_weapons_cbe] =
 };
 
 #define NUM_MASTER_weapons_uzi 17
-static string MASTER_weapons_uzi[NUM_MASTER_weapons_uzi] =
+static const char * MASTER_weapons_uzi[NUM_MASTER_weapons_uzi] =
 {
 	"akimbo_deploy.wav",
 	"akimbo_pull1.wav",
@@ -5435,7 +5435,7 @@ static string MASTER_weapons_uzi[NUM_MASTER_weapons_uzi] =
 };
 
 #define NUM_MASTER_x 16
-static string MASTER_x[NUM_MASTER_x] =
+static const char * MASTER_x[NUM_MASTER_x] =
 {
 	"nih_die2.wav",
 	"x_attack1.wav",
@@ -5456,7 +5456,7 @@ static string MASTER_x[NUM_MASTER_x] =
 };
 
 #define NUM_MASTER_zombie 16
-static string MASTER_zombie[NUM_MASTER_zombie] =
+static const char * MASTER_zombie[NUM_MASTER_zombie] =
 {
 	"claw_miss1.wav",
 	"claw_miss2.wav",
@@ -5477,9 +5477,9 @@ static string MASTER_zombie[NUM_MASTER_zombie] =
 };
 
 #define NUM_MASTER_DIRS 144
-static string * masterList[NUM_MASTER_DIRS];
-static int      masterSize[NUM_MASTER_DIRS];
-static string   masterDirs[NUM_MASTER_DIRS];
+static const char ** masterList[NUM_MASTER_DIRS];
+static int           masterSize[NUM_MASTER_DIRS];
+static const char *  masterDirs[NUM_MASTER_DIRS];
 static void initMasterList()
 {
 	masterList[0] = MASTER_sound;
