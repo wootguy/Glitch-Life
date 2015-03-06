@@ -134,6 +134,55 @@ static const char * default_wads[NUM_DEFAULT_WADS] =
 	"zhlt",
 };
 
+#define NUM_SKIES 44
+static const char * SKIES[NUM_STATIC_SPRITES] =
+{
+	"ac_",
+	"arcn",
+	"carnival",
+	"coliseum",
+	"desnoon",
+	"dfcliff",
+	"doom1",
+	"dustbowl",
+	"fodrian",
+	"forest512_",
+	"gmcity",
+	"grassy",
+	"hplanet",
+	"hydramanti",
+	"parallax-errorlf256_",
+	"sandstone",
+	"sky_blu_",
+	"tetris",
+	"theyh2",
+	"theyh3",
+	"thn",
+	"toon",
+	"tornsky",
+	"twildes",
+	"vreality_sky",
+	"2desert",
+	"alien1",
+	"alien2",
+	"alien3",
+	"black",
+	"city",
+	"cliff",
+	"desert",
+	"dusk",
+	"morning",
+	"neb1",
+	"neb2b",
+	"neb6",
+	"neb7",
+	"night",
+	"space",
+	"xen10",
+	"xen8",
+	"xen9",
+};
+
 #define MAX_MAP_TEXTURES     512
 #define MAX_MAP_ENTITIES     8192		// increased from 1024
 #define MAX_MAP_MODELS       512 // Really more like 511
@@ -353,9 +402,20 @@ extern int total_map_models;
 extern string_hashmap random_monster_models;
 extern string_hashmap random_weapon_models;
 
-extern vector<string> user_sounds; // a list of every sound the program could find
-extern vector<string> user_models; // a list of every model the program could find
-extern vector<string> user_skies; // a list of every sky the program could find
+// lists of everything the program could find
+extern vector<string> user_sounds; 
+extern vector<string> user_animated_sprites;
+extern vector<string> user_sprites;
+extern vector<string> user_skies; 
+extern vector<string> user_monster_models;
+extern vector<string> user_prop_models;
+extern vector<string> user_v_models;
+extern vector<string> user_p_models;
+extern vector<string> user_w_models;
+extern vector<string> user_apache_models;
+extern vector<string> user_player_models;
+
+extern int total_model_count;
 
 extern bool barnacle_grapple_hook; // renames all textures to "xeno_grapple"
 extern string MAP_PREFIX;
@@ -377,6 +437,8 @@ enum sprite_types
 	SPRITE_TYPE_ANIMATED,
 	SPRITE_TYPE_GENERIC
 };
+
+void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default);
 
 Keyvalue extractKeyvalue(std::string line);
 

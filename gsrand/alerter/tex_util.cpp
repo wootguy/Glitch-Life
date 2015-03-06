@@ -2,38 +2,93 @@
 #include "tex_util.h"
 #include "gsrand.h"
 
-vector<Wad> getWads(bool defaultOnly)
+void find_all_skies(string skyPath)
+{
+	user_skies.clear();
+
+	vector<string> dirs = getAllSubdirs(skyPath);
+
+	for (uint i = 0; i < dirs.size(); i++)
+	{
+		vector<string> results = getDirFiles(dirs[i], "tga");
+		string cpath = "";
+		int dir_find = dirs[i].find("gfx/env/");
+		if (dir_find != string::npos && dirs[i].length() > dir_find + string("gfx/env/").length())
+			cpath = getSubStr(dirs[i], dir_find + string("gfx/env/").length()); // skip gfx/env/
+		for (uint k = 0; k < results.size(); k++)
+		{
+			string name = getSubStr(results[k],0,results[k].length()-4);
+			if (name.length() < 2)
+				continue;
+			string sky_name = getSubStr(name, 0, name.length()-2);
+			string side = getSubStr(name, sky_name.length());
+			if (matchStr(side, "lf") || matchStr(side, "rt") || matchStr(side, "dn") ||
+				matchStr(side, "ft") || matchStr(side, "bk"))
+				continue; // only check each "up"
+
+			bool hasLF = false;
+			bool hasRT = false;
+			bool hasDN = false;
+			bool hasFT = false;
+			bool hasBK = false;
+			for (uint i = 0; i < results.size(); ++i)
+			{
+				if (matchStr(sky_name + "lf.tga", results[i])) hasLF = true;
+				if (matchStr(sky_name + "rt.tga", results[i])) hasRT = true;
+				if (matchStr(sky_name + "dn.tga", results[i])) hasDN = true;
+				if (matchStr(sky_name + "ft.tga", results[i])) hasFT = true;
+				if (matchStr(sky_name + "bk.tga", results[i])) hasBK = true;
+			}
+			if (hasLF && hasRT && hasDN && hasFT && hasBK)
+				user_skies.push_back(sky_name);	
+		}
+	}
+}
+
+void get_all_skies()
+{
+	find_all_skies("../valve/gfx/env/");
+	vector<string> temp_skies = user_skies;
+	find_all_skies("gfx/env/");
+
+	insert_unique(temp_skies, user_skies);
+
+	filter_default_content(user_skies, SKIES, NUM_SKIES);
+
+	/*
+	println("#define NUM_SKIES " + str(user_skies.size()));
+	println("static const char * SKIES[NUM_STATIC_SPRITES] =");
+	println("{");
+	for (uint s = 0; s < user_skies.size(); s++)
+		println("\t\"" + user_skies[s] + "\",");
+	println("};\n");
+
+	writeLog();
+	*/
+}
+
+vector<Wad> getWads()
 {
 	vector<Wad> wads;
-	for (int i = 0; i < NUM_DEFAULT_WADS; i++)
+	vector<string> files = getDirFiles(wadPath, "wad");
+	for (uint i = 0; i < files.size(); i++)
 	{
-		string name = string(default_wads[i]) + ".wad";
-		if (fileExists(name))
-			wads.push_back(Wad(name));
-		else if (fileExists(wadPath + name))
-			wads.push_back(Wad(wadPath + name));
-	}
-	if (!defaultOnly)
-	{
-		vector<string> files = getDirFiles(wadPath, "wad");
-		for (uint i = 0; i < files.size(); i++)
+		string prefix = getSubStr(files[i],0,6);
+		if (matchStrCase(prefix,"gsrand"))
+			continue;
+		string wad = wadPath + files[i];
+		bool is_default = false;
+		for (int i = 0; i < NUM_DEFAULT_WADS; i++)
 		{
-			string prefix = getSubStr(files[i],0,6);
-			if (matchStrCase(prefix,"gsrand"))
-				continue;
-
-			bool repeat = false;
-			for (uint k = 0; k < wads.size(); k++)
-			{
-				if (matchStr(wadPath + files[i],wads[k].filename))
-				{
-					repeat = true;
-					break;
-				}
-			}
-			if (!repeat)
-				wads.push_back(Wad(wadPath + files[i]));
+			string name = string(default_wads[i]) + ".wad";
+			if (matchStr(wad, name))
+				is_default = true;
 		}
+		if (is_default && contentMode == CONTENT_CUSTOM || 
+			!is_default && contentMode == CONTENT_DEFAULT)
+			continue;
+
+		wads.push_back(Wad(wad));
 	}
 	for (uint i = 0; i < wads.size(); i++)
 	{
@@ -84,7 +139,7 @@ WADTEX ** loadRandomTextures(vector<string> wadTextures, vector<Wad> wads)
 			if (newTex[i] == NULL)
 				println("DANGER NULL TEX");
 			string tex_name = wadTextures[i];
-			if (barnacle_grapple_hook)
+			if (barnacle_grapple_hook && tex_name.find("sky") != 0 && tex_name.find("aaatrigger") != 0)
 				tex_name = "xeno_grapple"; // all textures by this name can be grappled
 			for (uint k = 0; k < MAXTEXTURENAME; k++)
 			{

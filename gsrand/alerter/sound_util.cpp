@@ -31,35 +31,40 @@ void getAllSounds()
 		{
 			vector<string> results = getDirFiles(dirs[i], exts[e]);
 			for (uint k = 0; k < results.size(); k++)
-				user_sounds.push_back(prefix + results[k]);
+			{
+				if (results[k].find("null") != 0)
+					user_sounds.push_back(prefix + results[k]);
+			}
 		}
 	}
 
+	vector<string> default_sounds;
+	for (uint d = 0; d < NUM_MASTER_DIRS; ++d)
+		for (uint s = 0; s < masterSize[d]; ++s)
+			default_sounds.push_back(masterDirs[d] + string("/") + masterList[d][s]);
+
+	vector<string> filtered_sounds;
+	filtered_sounds.reserve(user_sounds.size());
 	if (contentMode != CONTENT_EVERYTHING)
 	{
 		for (uint i = 0, sz = user_sounds.size(); i < sz; ++i)
 		{
-			bool done = false;
-			for (uint d = 0; d < NUM_MASTER_DIRS; ++d)
+			bool match = false;
+			if (user_sounds[i].find("thunder.wav") == 0) // the only default sound not in a folder
+				match = true;
+			for (uint d = 0; d < default_sounds.size() && !match; ++d)
 			{
-				for (uint s = 0; s < masterSize[d]; ++s)
+				if (matchStr(user_sounds[i], default_sounds[d]))
 				{
-					string default_sound = masterDirs[d] + string("/") + masterList[d][s];
-					if (matchStr(user_sounds[i], default_sound) && contentMode == CONTENT_CUSTOM)
-					{
-						done = true;
-						user_sounds.erase(user_sounds.begin() + i--);
-					}
-					else if (contentMode == CONTENT_DEFAULT)
-					{
-						done = true;
-						user_sounds.erase(user_sounds.begin() + i--);
-					}
-					if (done) break;
+					match = true;
+					if (contentMode == CONTENT_DEFAULT)
+						filtered_sounds.push_back(user_sounds[i]);
 				}
-				if (done) break;
 			}
+			if (!match && contentMode == CONTENT_CUSTOM) // must not have found a match
+				filtered_sounds.push_back(user_sounds[i]);
 		}
+		user_sounds = filtered_sounds;
 	}
 }
 

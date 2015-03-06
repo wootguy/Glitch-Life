@@ -342,6 +342,19 @@ Entity ** getMapEnts(BSP * map, bool printInfo, int& numEnts)
 	return ents;
 }
 
+void randomize_skybox(Entity ** ents)
+{
+	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+	{
+		if (ents[i] == NULL) 
+			break;
+		string cname = ents[i]->keyvalues["classname"];
+
+		if (matchStr(cname,"worldspawn") && user_skies.size())
+			ents[i]->keyvalues["skyname"] = user_skies[rand() % user_skies.size()];
+	}
+}
+
 void update_changelevels(Entity** ents, string mapname)
 {
 	for (int i = 0; i < MAX_MAP_ENTITIES; i++)

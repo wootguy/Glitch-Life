@@ -14,6 +14,8 @@ bool needsRipent(BSP * map, Entity** ents);
 
 Entity ** getMapEnts(BSP * map, bool printInfo, int& numEnts);
 
+void randomize_skybox(Entity ** ents);
+
 void update_changelevels(Entity** ents, string mapname);
 
 void do_entity_randomization(Entity** ents, string mapname);

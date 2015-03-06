@@ -49,6 +49,16 @@ int total_map_models = 0;
 vector<string> user_sounds;
 vector<string> user_models;
 vector<string> user_skies;
+vector<string> user_animated_sprites;
+vector<string> user_sprites;
+vector<string> user_monster_models;
+vector<string> user_prop_models;
+vector<string> user_v_models;
+vector<string> user_p_models;
+vector<string> user_w_models;
+vector<string> user_apache_models;
+vector<string> user_player_models;
+int total_model_count = 0;
 
 string wadPath = "";
 vector<string> masterWadTex;
@@ -87,7 +97,6 @@ void initLists()
 {
 	init_default_model_lists();
 	init_black_lists();
-	init_random_monster_models();
 
 	wlists[WEP_PIPEWRENCH] = wrench;
 	wlists[WEP_PIPEWRENCH] = crowbar;
@@ -213,6 +222,30 @@ void initLists()
 	msize[BARNEY] = NUM_BARNEY;
 }
 
+void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default)
+{
+	if (contentMode != CONTENT_EVERYTHING)
+	{
+		vector<string> filtered;
+		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
+		{
+			bool match = false;
+			for (int k = 0; k < num_default; k++)
+			{
+				if (matchStr(default_list[k], unfiltered[i]))
+				{
+					match = true;
+					break;
+				}
+			}
+			if (match && contentMode == CONTENT_DEFAULT ||
+				!match && contentMode == CONTENT_CUSTOM)
+				filtered.push_back(unfiltered[i]);		
+		}
+		unfiltered = filtered;
+	}	
+}
+
 string get_weapon_name(int id)
 {
 	switch(id)
@@ -320,7 +353,7 @@ bool createCFG(string path, string mapname)
 		}
 
 		if (!has_grapple && (mdlMode != MDL_NONE || entMode == ENT_SUPER))
-			fout << "weapon_grapple\n";
+			fout << "\nweapon_grapple\n";
 	}
 	
 
@@ -473,28 +506,61 @@ int randomize_maps()
 	string path = getWorkDir() + "maps/";
 	vector<string> files = getDirFiles(getWorkDir() + "maps/","bsp");
 
-	cout << "Found " << files.size() << " maps\n";
+	cout << "Found " << files.size() << " maps\n\n";
+
+	if (contentMode == CONTENT_EVERYTHING) println("Finding content...");
+	if (contentMode == CONTENT_DEFAULT) println("Finding default content...");
+	if (contentMode == CONTENT_CUSTOM) println("Finding non-default content...");
+
+	numOverflow = 0;
+	int sounds = 0;
+
+	if (sndMode != SND_NONE)
+	{
+		getAllSounds();
+		getAllVoices();
+		println("Found " + str(user_sounds.size()) + " sounds");
+	}
+
+	if (mdlMode != MDL_NONE)
+	{
+		
+		get_all_models();
+		total_model_count = user_monster_models.size() + user_prop_models.size() + user_v_models.size() +
+						  user_p_models.size() + user_w_models.size() + user_apache_models.size() + 
+						  user_player_models.size();
+		init_random_monster_models();
+		println("Found " + str(total_model_count) + " models");	
+
+		get_all_sprites();
+		println("Found " + str(user_sprites.size() + user_animated_sprites.size()) + " sprites");
+	}
 
 	vector<Wad> wads;
 	if (texMode == TEX_MAP || texMode == TEX_WADS)
 	{
-		wads = getWads(false);
+		wads = getWads();
 		println("Found " + str(wads.size()) + " wads");
-	}
+		get_all_skies();
+		println("Found " + str(user_skies.size()) + " skyboxes");
+	}	
 
-	numOverflow = 0;
-	getAllSounds();
-	getAllVoices();
-
-	int sounds = 0;
-	if (sndMode != SND_NONE)
+	// print warnings
+	if (mdlMode != MDL_NONE)
 	{
-		print("Found " + str(user_sounds.size()) + " ");
-		if (contentMode == CONTENT_EVERYTHING) println("sounds");
-		if (contentMode == CONTENT_DEFAULT) println("default sounds");
-		if (contentMode == CONTENT_CUSTOM) println("non-default sounds");
+		if (user_monster_models.empty()) println("Warning: Couldn't find any monster models");
+		if (user_prop_models.empty())    println("Warning: Couldn't find any prop models");
+		if (user_player_models.empty())  println("Warning: Couldn't find any player models");
+		if (user_v_models.empty())		 println("Warning: Couldn't find any v_weapon models");
+		if (user_p_models.empty())		 println("Warning: Couldn't find any p_weapon models");
+		if (user_w_models.empty())		 println("Warning: Couldn't find any w_weapon models");
+		if (user_apache_models.empty())  println("Warning: Couldn't find any potential apache/sentry models");
+
+		if (user_animated_sprites.empty()) println("Warning: Couldn't find any animated sprites");
+		if (user_sprites.empty())		   println("Warning: Couldn't find any single-frame sprites");
 	}
 
+	// get map prefix
 	if (prefixMode == PREFIX_CUSTOM)
 	{
 		print("\nEnter your custom map prefix: ");
@@ -521,7 +587,9 @@ int randomize_maps()
 
 	}
 
-	cout << "\nWARNING:\nClosing the program before this finishes may cause file corruption.\n\n";
+	if (prefixMode == PREFIX_NONE)
+		cout << "\nDANGER: Closing the program before this finishes will likely corrupt a map!\n";
+	cout << "\nThe randomizer is ready.\n\n";
 	cout << "1: Abort\n";
 	cout << "0: Continue\n";
 
@@ -555,24 +623,22 @@ int randomize_maps()
 		}
 
 		BSP * map = loadBSP(mapName, true);
+		int numEnts;
+		Entity** ents = getMapEnts(map, false, numEnts);
+
 		if (prefixMode != PREFIX_NONE)
 			map->name = MAP_PREFIX + map->name;
 
 		if (texMode != TEX_NONE)
 		{
 			int tex = makeMapWad(map, wads);
-
+			randomize_skybox(ents);
 			if (!verbose)
 				print(str(tex) + " textures. ");
-		}
-
-		int numEnts;
-		Entity** ents = getMapEnts(map, false, numEnts);
+		}	
 		
 		if (mdlMode != MDL_NONE)
-		{
 			do_model_replacement(map, ents, path);
-		}
 
 		if (sndMode != SND_NONE)
 			do_ent_sounds(ents, map->name);
@@ -662,7 +728,7 @@ int randomize_maps()
 	if (texMode == TEX_MASTERWAD)
 	{
 		println("\nPreparing to write master WAD");
-		vector<Wad> wads = getWads(false);
+		vector<Wad> wads = getWads();
 		println("Found " + str(wads.size()) + " wads");
 		writeWad(masterWadTex, wads, "gsrand");
 	}
@@ -953,6 +1019,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//genSoundList();
 	//genModelList();
 	//genSpriteList();
+	//get_all_skies();
 	//return 0;
 	
 	//getAllSounds();

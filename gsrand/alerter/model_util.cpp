@@ -8,81 +8,418 @@
 // Also kind of sprite util file
 //
 
+
 // request a completely random model (MODEL_TYPE_GENERIC), or a specific model type
 string get_random_model(int request_model_type)
 {
-	int total_wep_models = NUM_MODEL_W + NUM_MODEL_V + NUM_MODEL_P;
+	int total_wep_models = user_v_models.size() + user_p_models.size() + user_w_models.size();
 	int w_start = 0;
-	int v_start = w_start + NUM_MODEL_W;
-	int p_start = v_start + NUM_MODEL_V;
+	int v_start = w_start + user_w_models.size();
+	int p_start = v_start + user_v_models.size();
 	int r;
 
 	if (request_model_type == MODEL_TYPE_GENERIC)
 	{
 		r = rand() % 3;
-		if (r == 0) // weapon
+		if (r == 0 && total_wep_models > 0) // weapon
 		{
 			r = rand() % total_wep_models;
-			if (r >= p_start)
-				return MODEL_P[r - p_start];
-			else if (r >= v_start)
-				return MODEL_V[r - v_start];
-			else if (r >= w_start)
-				return MODEL_W[r - w_start];
+			if (r >= p_start && user_p_models.size())
+				return user_p_models[r - p_start];
+			else if (r >= v_start && user_v_models.size())
+				return user_v_models[r - v_start];
+			else if (r >= w_start && user_w_models.size())
+				return user_w_models[r - w_start];
 		}
-		else if (r == 1)
-			return MODEL_PROPS[rand() % NUM_MODEL_PROPS];
+		else if (r == 1 && user_prop_models.size())
+			return user_prop_models[rand() % user_prop_models.size()];
 		else
 		{
 			r = rand() % 4;
-			if (r) return MODEL_MONSTERS[rand() % NUM_MODEL_MONSTERS];
-			return MODEL_PLAYERS[rand() % NUM_MODEL_PLAYERS]; 
+			if (r && user_monster_models.size()) return user_monster_models[rand() % user_monster_models.size()];
+			if (user_player_models.size())
+				return user_player_models[rand() % user_player_models.size()]; 
 		}
 	}
-	else if (request_model_type == MODEL_TYPE_PROP)
-		return MODEL_PROPS[rand() % NUM_MODEL_PROPS];
+	else if (request_model_type == MODEL_TYPE_PROP && user_prop_models.size())
+		return user_prop_models[rand() % user_prop_models.size()];
 	else if (request_model_type == MODEL_TYPE_MONSTER)
 	{
 		r = rand() % 4;
-		if (r) return MODEL_MONSTERS[rand() % NUM_MODEL_MONSTERS];
-		return MODEL_PLAYERS[rand() % NUM_MODEL_PLAYERS]; 
+			if (r && user_monster_models.size()) return user_monster_models[rand() % user_monster_models.size()];
+			if (user_player_models.size())
+				return user_player_models[rand() % user_player_models.size()]; 
 	}
-	else if (request_model_type == MODEL_TYPE_P_WEAPON)
-		return MODEL_P[rand() % NUM_MODEL_P];
-	else if (request_model_type == MODEL_TYPE_W_WEAPON)
-		return MODEL_W[rand() % NUM_MODEL_W];
-	else if (request_model_type == MODEL_TYPE_V_WEAPON)
-		return MODEL_V[rand() % NUM_MODEL_V];
-	else
-		print("Invalid model request: " + request_model_type);
+	else if (request_model_type == MODEL_TYPE_P_WEAPON && user_p_models.size())
+		return user_p_models[rand() % user_p_models.size()];
+	else if (request_model_type == MODEL_TYPE_W_WEAPON && user_w_models.size())
+		return user_w_models[rand() % user_w_models.size()];
+	else if (request_model_type == MODEL_TYPE_V_WEAPON && user_v_models.size())
+		return user_v_models[rand() % user_v_models.size()];
 
-	print("FAILED TO GET RANDOM MODEL: " + str(r));
-	return "";
+	return "models/not_precached.mdl";
 }
 
 string get_random_sprite(int request_model_type)
 {
-	int total_sprites = NUM_STATIC_SPRITES + NUM_ANIMATED_SPRITES;
+	int total_sprites = user_sprites.size() + user_animated_sprites.size();
 	int anim_start = 0;
-	int static_start = NUM_ANIMATED_SPRITES;
+	int static_start = user_animated_sprites.size();
 	int r;
 
 	if (request_model_type == SPRITE_TYPE_GENERIC)
 	{
 		r = rand() % total_sprites;
-		if (r >= static_start)
-			return STATIC_SPRITES[r - static_start];
-		return ANIMATED_SPRITES[r];
+		if (r >= static_start && user_sprites.size())
+			return user_sprites[r - static_start];
+		return user_animated_sprites[r];
 	}
-	else if (request_model_type == SPRITE_TYPE_ANIMATED)
-		return ANIMATED_SPRITES[rand() % NUM_ANIMATED_SPRITES];
-	else if (request_model_type == SPRITE_TYPE_STATIC)
-		return STATIC_SPRITES[rand() % NUM_STATIC_SPRITES];
-	else
-		print("Invalid sprite request: " + request_model_type);
+	else if (request_model_type == SPRITE_TYPE_ANIMATED && user_animated_sprites.size())
+		return user_animated_sprites[rand() % user_animated_sprites.size()];
+	else if (request_model_type == SPRITE_TYPE_STATIC && user_sprites.size())
+		return user_sprites[rand() % user_sprites.size()];
 
-	print("FAILED TO GET RANDOM SPRITE: " + str(request_model_type));
-	return "";
+	return "sprites/tile.spr";
+}
+
+void filter_default_model_content(vector<string>& unfiltered)
+{
+	if (contentMode != CONTENT_EVERYTHING)
+	{
+		vector<string> filtered;
+		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
+		{
+			bool match = false;
+			for (int k = 0; k < NUM_MODEL_MONSTERS; k++)
+			{
+				if (matchStr(MODEL_MONSTERS[k], unfiltered[i]))
+				{
+					match = true;
+					break;
+				}
+			}
+			for (int k = 0; k < NUM_MODEL_PROPS && !match; k++)
+			{
+				if (matchStr(MODEL_PROPS[k], unfiltered[i]))
+				{
+					match = true;
+					break;
+				}
+			}
+			for (int k = 0; k < NUM_MODEL_V && !match; k++)
+			{
+				if (matchStr(MODEL_V[k], unfiltered[i]))
+				{
+					match = true;
+					break;
+				}
+			}
+			for (int k = 0; k < NUM_MODEL_P && !match; k++)
+			{
+				if (matchStr(MODEL_P[k], unfiltered[i]))
+				{
+					match = true;
+					break;
+				}
+			}
+			for (int k = 0; k < NUM_MODEL_W && !match; k++)
+			{
+				if (matchStr(MODEL_W[k], unfiltered[i]))
+				{
+					match = true;
+					break;
+				}
+			}
+			for (int k = 0; k < NUM_MODEL_PLAYERS && !match; k++)
+			{
+				if (matchStr(MODEL_PLAYERS[k], unfiltered[i]))
+				{
+					match = true;
+					break;
+				}
+			}
+			if (match && contentMode == CONTENT_DEFAULT ||
+				!match && contentMode == CONTENT_CUSTOM)
+				filtered.push_back(unfiltered[i]);		
+		}
+		unfiltered = filtered;
+	}	
+}
+
+void find_all_models(string modelPath)
+{
+	user_monster_models.clear();
+	user_prop_models.clear();
+	user_player_models.clear();
+	user_v_models.clear();
+	user_p_models.clear();
+	user_w_models.clear();
+	user_apache_models.clear(); 
+
+	vector<string> dirs = getAllSubdirs(modelPath);
+
+	for (uint i = 0; i < dirs.size(); i++)
+	{
+		vector<string> results = getDirFiles(dirs[i], "mdl");
+
+		string cpath = "";
+		int dir_find = dirs[i].find("models/");
+		if (dir_find != string::npos && dirs[i].length() > dir_find + string("models/").length())
+			cpath = getSubStr(dirs[i], dir_find + string("models/").length()); // skip models/
+
+		for (uint k = 0; k < results.size(); k++)
+		{
+			if (cpath.find("player/") == 0)
+			{
+				user_player_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+				continue;
+			}
+			string name = getSubStr(results[k],0,results[k].length()-4);
+
+			// skip animation models
+			string last_2_chars = getSubStr(name, name.length()-2);
+			if (isNumber(last_2_chars)) // 357 gun doesn't use extra models (USUALLY)
+			{
+				bool is_anim_model = false;
+				string find_model = getSubStr(name, 0, name.length()-2);
+				for (uint x = 0; x < results.size(); x++)
+				{
+					string nameTemp = getSubStr(results[x],0,results[x].length()-4);
+					if (matchStr(nameTemp, find_model))
+						is_anim_model = true;
+				}
+				if (is_anim_model)
+					continue;
+			}
+
+			if (name.length() > 0)
+			{
+				ifstream fin (dirs[i] + results[k], ios::binary);
+
+				MDLHEADER mdlHead;
+				fin.read((char*)&mdlHead, sizeof(MDLHEADER));
+
+				if (mdlHead.numbonecontrollers >= 2)
+					user_apache_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+
+				if (string(mdlHead.name).length() <= 0)
+				{
+					// println("found T model: " + name);
+					fin.close();
+					continue;
+				}
+
+				if (mdlHead.id == 1364411465)
+				{
+					//println("Found weird model: " + name);
+					fin.close();
+					continue;
+				}
+
+				if (name.length() > 2)
+				{
+					string prefix = getSubStr(name,0,2);
+					if (matchStr(prefix, "v_"))
+					{
+						user_v_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+						continue;
+					}
+					else if (matchStr(prefix, "p_"))
+					{
+						user_p_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+						continue;
+					}
+					else if (matchStr(prefix, "w_"))
+					{
+						user_w_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+						continue;
+					}
+				}
+
+				if (mdlHead.numseq == 1)
+				{
+					fin.seekg(mdlHead.seqindex);
+					MDLSEQUENCE seq;
+					fin.read((char*)&seq, sizeof(MDLSEQUENCE));
+
+					if (seq.numframes == 1 || mdlHead.numbones == 1 || string(seq.label).find("idle") != string::npos)
+					{
+						user_prop_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+						continue;
+					}
+					// TODO: Check the sequence for movement, don't just assume it's a monster
+				}
+
+				fin.close();
+
+				user_monster_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
+			}				
+		}
+	}
+}
+
+void get_all_models()
+{	
+	find_all_models("../valve/models/");
+	vector<string> temp_monster_models = user_monster_models;
+	vector<string> temp_prop_models = user_prop_models;
+	vector<string> temp_player_models = user_player_models;
+	vector<string> temp_v_models = user_v_models;
+	vector<string> temp_p_models = user_p_models;
+	vector<string> temp_w_models = user_w_models;
+	vector<string> temp_apache_models = user_apache_models; 
+	find_all_models("models/");
+
+	// combine half-life and sven-coop models
+	insert_unique(temp_monster_models, user_monster_models);
+	insert_unique(temp_prop_models, user_prop_models);
+	insert_unique(temp_player_models, user_player_models);
+	insert_unique(temp_v_models, user_v_models);
+	insert_unique(temp_p_models, user_p_models);
+	insert_unique(temp_w_models, user_w_models);
+	insert_unique(temp_apache_models, user_apache_models);
+
+	filter_default_model_content(user_monster_models);
+	filter_default_model_content(user_prop_models);
+	filter_default_model_content(user_v_models);
+	filter_default_model_content(user_p_models);
+	filter_default_model_content(user_w_models);
+	filter_default_model_content(user_apache_models);
+	filter_default_model_content(user_player_models);	
+
+	// i'll be using this model to indicate replacement errors
+	vector<string>::iterator it = find(user_prop_models.begin(), user_prop_models.end(), "not_precached");
+	if (it != user_prop_models.end())
+		user_prop_models.erase(it);
+
+	if (false)
+	{
+		println("#define NUM_APACHE_MODELS " + str(user_apache_models.size()));
+		println("static const char * APACHE_MODELS[NUM_APACHE_MODELS] =");
+		println("{");
+		for (uint s = 0; s < user_apache_models.size(); s++)
+			println("\t\"" + user_apache_models[s] + "\",");
+		println("};\n");
+
+		println("#define NUM_MODEL_V " + str(user_v_models.size()));
+		println("static const char * MODEL_V[NUM_MODEL_V] =");
+		println("{");
+		for (uint s = 0; s < user_v_models.size(); s++)
+			println("\t\"" + user_v_models[s] + "\",");
+		println("};\n");
+
+		println("#define NUM_MODEL_P " + str(user_p_models.size()));
+		println("static const char * MODEL_P[NUM_MODEL_P] =");
+		println("{");
+		for (uint s = 0; s < user_p_models.size(); s++)
+			println("\t\"" + user_p_models[s] + "\",");
+		println("};\n");
+
+		println("#define NUM_MODEL_W " + str(user_w_models.size()));
+		println("static const char * MODEL_W[NUM_MODEL_W] =");
+		println("{");
+		for (uint s = 0; s < user_w_models.size(); s++)
+			println("\t\"" + user_w_models[s] + "\",");
+		println("};\n");
+
+		println("#define NUM_MODEL_PROPS " + str(user_prop_models.size()));
+		println("static const char * MODEL_PROPS[NUM_MODEL_PROPS] =");
+		println("{");
+		for (uint s = 0; s < user_prop_models.size(); s++)
+			println("\t\"" + user_prop_models[s] + "\",");
+		println("};\n");
+
+		println("#define NUM_MODEL_MONSTERS " + str(user_monster_models.size()));
+		println("static const char * MODEL_MONSTERS[NUM_MODEL_MONSTERS] =");
+		println("{");
+		for (uint s = 0; s < user_monster_models.size(); s++)
+			println("\t\"" + user_monster_models[s] + "\",");
+		println("};\n");
+
+		println("#define NUM_MODEL_PLAYERS " + str(user_player_models.size()));
+		println("static const char * MODEL_PLAYERS[NUM_MODEL_PLAYERS] =");
+		println("{");
+		for (uint s = 0; s < user_player_models.size(); s++)
+			println("\t\"" + user_player_models[s] + "\",");
+		println("};\n");
+
+		writeLog(); 
+	}
+
+}
+
+void find_all_sprites(string spritePath)
+{
+	user_sprites.clear();
+	user_animated_sprites.clear();
+
+	vector<string> dirs = getAllSubdirs(spritePath);
+
+	for (uint i = 0; i < dirs.size(); i++)
+	{
+		vector<string> results = getDirFiles(dirs[i], "spr");
+		string cpath = "";
+		int dir_find = dirs[i].find("sprites/");
+		if (dir_find != string::npos && dirs[i].length() > dir_find + string("sprites/").length())
+			cpath = getSubStr(dirs[i], dir_find + string("sprites/").length()); // skip sprites/
+		for (uint k = 0; k < results.size(); k++)
+		{
+			string name = getSubStr(results[k],0,results[k].length()-4);
+			if (name.length() > 0)
+			{
+				ifstream fin (dirs[i] + results[k], ios::binary);
+
+				SPRHEADER sprHead;
+				fin.read((char*)&sprHead, sizeof(SPRHEADER));
+				fin.close();
+
+				if (sprHead.frames > 1)
+					user_animated_sprites.push_back(cpath + results[k].substr(0, results[k].find(".spr")));
+				else
+					user_sprites.push_back(cpath + results[k].substr(0, results[k].find(".spr")));
+			}				
+		}
+	}
+}
+
+void get_all_sprites()
+{
+	find_all_sprites("../valve/sprites/");
+	vector<string> temp_sprites = user_sprites;
+	vector<string> temp_animated_sprites = user_animated_sprites;
+	find_all_sprites("sprites/");
+	
+	// combine half-life and sven-coop sprites
+	insert_unique(temp_sprites, user_sprites);
+	insert_unique(temp_animated_sprites, user_animated_sprites);
+
+	// i'll be using this sprite to indicate replacement errors
+	vector<string>::iterator it = find(user_sprites.begin(), user_sprites.end(), "tile");
+	if (it != user_sprites.end())
+		user_sprites.erase(it);
+
+	filter_default_content(user_animated_sprites, ANIMATED_SPRITES, NUM_ANIMATED_SPRITES);
+	filter_default_content(user_sprites, STATIC_SPRITES, NUM_STATIC_SPRITES);
+
+	if (false)
+	{
+		println("#define NUM_ANIMATED_SPRITES " + str(user_animated_sprites.size()));
+		println("static const char * ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =");
+		println("{");
+		for (uint s = 0; s < user_animated_sprites.size(); s++)
+			println("\t\"" + user_animated_sprites[s] + "\",");
+		println("};\n");
+
+		println("#define NUM_STATIC_SPRITES " + str(user_sprites.size()));
+		println("static const char * STATIC_SPRITES[NUM_STATIC_SPRITES] =");
+		println("{");
+		for (uint s = 0; s < user_sprites.size(); s++)
+			println("\t\"" + user_sprites[s] + "\",");
+		println("};\n");
+
+		writeLog(); 
+	}
+
 }
 
 void init_random_monster_models()
@@ -360,7 +697,9 @@ string get_random_replacement(string model, vector<string>& replaced, vector<str
 		do
 		{
 			replacement = random_model_replace(model);	
-			// using a replacement model that's been replaced in this file causes Host Precache error
+			if (replaced.size() >= total_model_count || replace_models.size() >= total_model_count)
+				break;
+			// using a replacement model that's been replaced in this file can cause Host Precache error
 		} while (find(replaced.begin(), replaced.end(), replacement) != replaced.end() ||
 				 find(replace_models.begin(), replace_models.end(), replacement) != replace_models.end());
 	}
@@ -517,8 +856,8 @@ bool is_safe_model_replacement(string classname, string model, string replacemen
 			if (satchel_blacklist[i].find(replacement) != string::npos)
 				return false;
 	}
-	if (model.find("models/doctor.mdl") == 0)
-		return false; // problematic model
+	if (replacement.find("models/doctor.mdl") == 0)
+		return false; // problematic model and model I use for indicating errors
 	return true;
 }
 
@@ -610,8 +949,10 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				else if (matchStr(cname, "monster_apache") || matchStr(cname, "monster_sentry"))
 				{
 					// crash if model has less than 2 bone controllers
-					int r = rand() % NUM_APACHE_MODELS;
-					it->second = "models/" + string(APACHE_MODELS[r]) + ".mdl";
+					if (user_apache_models.size())
+						it->second = "models/" + user_apache_models[rand() % user_apache_models.size()] + ".mdl";
+					else
+						it->second = "models/" + string(APACHE_MODELS[rand() % NUM_APACHE_MODELS]) + ".mdl";
 				}
 				else
 				{
@@ -780,8 +1121,16 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				else if (matchStr(cname, "monster_apache") || matchStr(cname, "monster_sentry"))
 				{
 					// crash if model has less than 2 bone controllers
-					int r = rand() % NUM_APACHE_MODELS;
-					ents[i]->keyvalues[custom_monster_model_key] = "models/" + string(APACHE_MODELS[r]) + ".mdl";
+					if (user_apache_models.size())
+					{
+						int r = rand() % user_apache_models.size();
+						ents[i]->keyvalues[custom_monster_model_key] = "models/" + user_apache_models[r] + ".mdl";
+					}
+					else
+					{
+						int r = rand() % NUM_APACHE_MODELS;
+						ents[i]->keyvalues[custom_monster_model_key] = "models/" + string(APACHE_MODELS[r]) + ".mdl";
+					}
 				}
 				else
 				{
@@ -841,223 +1190,4 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 		for (uint k = i; k < i+9 && k < model_replacements.size(); ++k)
 			ent->addKeyvalue("model_" + str((k-i)+1), model_replacements[k]);
 	}
-}
-
-void genModelList()
-{
-	vector<string> allModels;
-	string modelPath = "models/";
-	vector<string> dirs = getAllSubdirs(modelPath);
-	vector<string> monster;
-	vector<string> props;
-	vector<string> v_models;
-	vector<string> p_models;
-	vector<string> w_models;
-	vector<string> apache_models;
-	vector<string> player_models;
-
-	for (uint i = 0; i < dirs.size(); i++)
-	{
-		vector<string> results = getDirFiles(dirs[i], "mdl");
-		string cpath = getSubStr(dirs[i],7); // skip models/
-
-		for (uint k = 0; k < results.size(); k++)
-		{
-			if (cpath.find("player/") == 0)
-			{
-				player_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
-				continue;
-			}
-			string name = getSubStr(results[k],0,results[k].length()-4);
-
-			// skip animation models
-			string last_2_chars = getSubStr(name, name.length()-2);
-			if (isNumber(last_2_chars)) // 357 gun doesn't use extra models (USUALLY)
-			{
-				bool is_anim_model = false;
-				string find_model = getSubStr(name, 0, name.length()-2);
-				for (uint x = 0; x < results.size(); x++)
-				{
-					string nameTemp = getSubStr(results[x],0,results[x].length()-4);
-					if (matchStr(nameTemp, find_model))
-						is_anim_model = true;
-				}
-				if (is_anim_model)
-					continue;
-			}
-
-			if (name.length() > 0)
-			{
-				ifstream fin (dirs[i] + results[k], ios::binary);
-
-				MDLHEADER mdlHead;
-				fin.read((char*)&mdlHead, sizeof(MDLHEADER));
-
-				if (mdlHead.numbonecontrollers >= 2)
-					apache_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
-
-				if (string(mdlHead.name).length() <= 0)
-				{
-					// println("found T model: " + name);
-					fin.close();
-					continue;
-				}
-
-				if (mdlHead.id == 1364411465)
-				{
-					//println("Found weird model: " + name);
-					fin.close();
-					continue;
-				}
-
-				if (name.length() > 2)
-				{
-					string prefix = getSubStr(name,0,2);
-					if (matchStr(prefix, "v_"))
-					{
-						v_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
-						continue;
-					}
-					else if (matchStr(prefix, "p_"))
-					{
-						p_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
-						continue;
-					}
-					else if (matchStr(prefix, "w_"))
-					{
-						w_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
-						continue;
-					}
-				}
-
-				if (mdlHead.numseq == 1)
-				{
-					fin.seekg(mdlHead.seqindex);
-					MDLSEQUENCE seq;
-					fin.read((char*)&seq, sizeof(MDLSEQUENCE));
-					string sub = getSubStr(string(seq.label),0,4);
-
-					if (seq.numframes == 1 || mdlHead.numbones == 1 || matchStr(sub, "idle"))
-					{
-						//println("definite prop: " + name);
-						props.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
-						continue;
-					}
-					// TODO: Check the sequence for movement, don't just assume it's a prop
-					//       by those
-					/*
-					else
-					{
-						println("possible prop: " + name + " idx: " + str(mdlHead.seqindex));
-						println("first seq: " + string(seq.label) + ": " + str(seq.numframes));
-					}
-					*/
-				}
-
-				fin.close();
-
-				monster.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
-
-			}				
-		}
-	}
-
-	println("#define NUM_APACHE_MODELS " + str(apache_models.size()));
-	println("static const char * APACHE_MODELS[NUM_APACHE_MODELS] =");
-	println("{");
-	for (uint s = 0; s < apache_models.size(); s++)
-		println("\t\"" + apache_models[s] + "\",");
-	println("};\n");
-
-	println("#define NUM_MODEL_V " + str(v_models.size()));
-	println("static const char * MODEL_V[NUM_MODEL_V] =");
-	println("{");
-	for (uint s = 0; s < v_models.size(); s++)
-		println("\t\"" + v_models[s] + "\",");
-	println("};\n");
-
-	println("#define NUM_MODEL_P " + str(p_models.size()));
-	println("static const char * MODEL_P[NUM_MODEL_P] =");
-	println("{");
-	for (uint s = 0; s < p_models.size(); s++)
-		println("\t\"" + p_models[s] + "\",");
-	println("};\n");
-
-	println("#define NUM_MODEL_W " + str(w_models.size()));
-	println("static const char * MODEL_W[NUM_MODEL_W] =");
-	println("{");
-	for (uint s = 0; s < w_models.size(); s++)
-		println("\t\"" + w_models[s] + "\",");
-	println("};\n");
-
-	println("#define NUM_MODEL_PROPS " + str(props.size()));
-	println("static const char * MODEL_PROPS[NUM_MODEL_PROPS] =");
-	println("{");
-	for (uint s = 0; s < props.size(); s++)
-		println("\t\"" + props[s] + "\",");
-	println("};\n");
-
-	println("#define NUM_MODEL_MONSTERS " + str(monster.size()));
-	println("static const char * MODEL_MONSTERS[NUM_MODEL_MONSTERS] =");
-	println("{");
-	for (uint s = 0; s < monster.size(); s++)
-		println("\t\"" + monster[s] + "\",");
-	println("};\n");
-
-	println("#define NUM_MODEL_PLAYERS " + str(player_models.size()));
-	println("static const char * MODEL_PLAYERS[NUM_MODEL_PLAYERS] =");
-	println("{");
-	for (uint s = 0; s < player_models.size(); s++)
-		println("\t\"" + player_models[s] + "\",");
-	println("};\n");
-
-	writeLog();
-}
-
-void genSpriteList()
-{
-	vector<string> allSprites;
-	string spritePath = "sprites/";
-	vector<string> dirs = getAllSubdirs(spritePath);
-	vector<string> animated;
-	vector<string> singleframe;
-
-	for (uint i = 0; i < dirs.size(); i++)
-	{
-		vector<string> results = getDirFiles(dirs[i], "spr");
-		string cpath = getSubStr(dirs[i],8); // skip sprites/
-		for (uint k = 0; k < results.size(); k++)
-		{
-			string name = getSubStr(results[k],0,results[k].length()-4);
-			if (name.length() > 0)
-			{
-				ifstream fin (dirs[i] + results[k], ios::binary);
-
-				SPRHEADER sprHead;
-				fin.read((char*)&sprHead, sizeof(SPRHEADER));
-				fin.close();
-
-				if (sprHead.frames > 1)
-					animated.push_back(cpath + results[k].substr(0, results[k].find(".spr")));
-				else
-					singleframe.push_back(cpath + results[k].substr(0, results[k].find(".spr")));
-			}				
-		}
-	}
-
-	println("#define NUM_ANIMATED_SPRITES " + str(animated.size()));
-	println("static const char * ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =");
-	println("{");
-	for (uint s = 0; s < animated.size(); s++)
-		println("\t\"" + animated[s] + "\",");
-	println("};\n");
-
-	println("#define NUM_STATIC_SPRITES " + str(singleframe.size()));
-	println("static const char * STATIC_SPRITES[NUM_STATIC_SPRITES] =");
-	println("{");
-	for (uint s = 0; s < singleframe.size(); s++)
-		println("\t\"" + singleframe[s] + "\",");
-	println("};\n");
-
-	writeLog();
 }

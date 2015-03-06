@@ -5,6 +5,10 @@ struct BSP;
 class Entity;
 using namespace std;
 
+void get_all_sprites();
+
+void get_all_models();
+
 string get_random_model(int request_model_type);
 
 string get_random_sprite(int request_model_type);

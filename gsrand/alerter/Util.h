@@ -179,6 +179,8 @@ vector<std::string> getAllSubdirs(std::string path);
 
 string relative_path_to_absolute(string start_dir, string path);
 
+void insert_unique(const vector<string>& insert, vector<string>& insert_into);
+
 struct DateTime
 {
 	int year, month, day;

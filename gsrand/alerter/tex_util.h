@@ -6,7 +6,9 @@ struct BSPTEXDATA;
 
 using namespace std;
 
-vector<Wad> getWads(bool defaultOnly);
+vector<Wad> getWads();
+
+void get_all_skies();
 
 void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname);
 

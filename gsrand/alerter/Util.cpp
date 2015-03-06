@@ -652,3 +652,21 @@ string relative_path_to_absolute(string start_dir, string path)
 	
 	return start_dir + "/" + path;	
 }
+
+void insert_unique(const vector<string>& insert, vector<string>& insert_into)
+{
+	for (uint i = 0; i < insert.size(); ++i)
+	{
+		bool exists = false;
+		for (uint k = 0; k < insert_into.size(); ++k)
+		{
+			if (matchStr(insert_into[k], insert[i]))
+			{
+				exists = true;
+				break;
+			}	
+		}
+		if (!exists)
+			insert_into.push_back(insert[i]);
+	}
+}

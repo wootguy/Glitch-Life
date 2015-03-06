@@ -1,14 +1,14 @@
 glitch-life todo:
 
-skybox replacement
 player weapon v_ match p_  and w_ if super random?
 global only model replacement (stability?)
-allow non-default models/sounds/skyboxes (content selection option)
 update help pages
 read from map list instead of randomizing EVERYTHING
 grapple hook if entity mode enabled but not texture mode
 monster models aren't all actually monsters
 external model blacklists/whitelists
+sentences do not follow content rules
+program doesn't need to depend on openal
 
 p_crowbar crash (sc_royals/pharoah.mdl)
 probably should just do thorough testing on each monster type...
