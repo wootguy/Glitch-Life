@@ -12,7 +12,6 @@ extern string_hashmap default_friendly_monster_models;
 extern string_hashmap default_weapon_models;
 extern string_hashmap default_ammo_models;
 extern string_hashmap default_item_models;
-
 extern vector<string> default_gib_models;
 
 extern vector<string> default_precache_models; // models that are precached by default

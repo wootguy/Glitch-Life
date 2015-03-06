@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 #include "Entity.h"
 #include <string>
 #include "Util.h"

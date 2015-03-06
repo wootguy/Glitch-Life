@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+typedef unsigned char byte;
 typedef unsigned int uint;
 
 #define MAXTEXTURENAME 16

@@ -1,8 +1,8 @@
-#include "StdAfx.h"
 #include "model_util.h"
 #include "ent_util.h"
 #include "gsrand.h"
 #include <set>
+#include "studio.h"
 
 //
 // Also kind of sprite util file
@@ -196,8 +196,8 @@ void find_all_models(string modelPath)
 			{
 				ifstream fin (dirs[i] + results[k], ios::binary);
 
-				MDLHEADER mdlHead;
-				fin.read((char*)&mdlHead, sizeof(MDLHEADER));
+				studiohdr_t mdlHead;
+				fin.read((char*)&mdlHead, sizeof(studiohdr_t));
 
 				if (mdlHead.numbonecontrollers >= 2)
 					user_apache_models.push_back(cpath + results[k].substr(0, results[k].find(".mdl")));
@@ -239,8 +239,8 @@ void find_all_models(string modelPath)
 				if (mdlHead.numseq == 1)
 				{
 					fin.seekg(mdlHead.seqindex);
-					MDLSEQUENCE seq;
-					fin.read((char*)&seq, sizeof(MDLSEQUENCE));
+					mstudioseqdesc_t seq;
+					fin.read((char*)&seq, sizeof(mstudioseqdesc_t));
 
 					if (seq.numframes == 1 || mdlHead.numbones == 1 || string(seq.label).find("idle") != string::npos)
 					{
@@ -469,7 +469,7 @@ bool parse_gmr_line(string line, string& a, string& b)
 
 // "models" actually means models+sprites+brush entities
 int count_map_models(BSP * map, Entity** ents, string path, int& total_models, int& potential_additions,
-					string& gmr_path, string_hashmap& ent_models)
+					string& gmr_path, string_hashmap& ent_models, string original_map_name)
 {
 	total_models = map->header.lump[LUMP_MODELS].nLength / BSP_MODEL_BYTES;
 	total_models += 1; // BSP map model
@@ -538,7 +538,20 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 		}
 			
 		if (matchStr(cname, "func_breakable"))
+		{
+			if (ents[i]->keyvalues.find("gibmodel") != ents[i]->keyvalues.end())
+				ent_models[toLowerCase(ents[i]->keyvalues["gibmodel"])] = cname;
+			else
+			{
+				int material = atoi(ents[i]->keyvalues["material"].c_str());
+				if (material < 0 || material > 8) material = 1;
+				if (material == 7) material = 0; // unbreakable glass precaches glass
+				if (material == 8) material = 7; // since we skip unbreakable glass
+				ent_models[default_gib_models[material]] = cname;
+			}
+				
 			potential_additions++;
+		}
 
 		// decided not to replace door gib models because you don't usually break them
 		// and levels tend to have a lot of doors
@@ -605,7 +618,7 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 		}
 	}
 	// cfg overrides map setting
-	ifstream myfile (path + map->name + ".cfg");
+	ifstream myfile (path + original_map_name + ".cfg");
 	
 	if (myfile.is_open())
 	{
@@ -712,8 +725,7 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 	vector<string> replaced;
 
 	replace_models.insert(replace_models.end(), monster_sprites.begin(), monster_sprites.end());
-	replace_models.insert(replace_models.end(), default_gib_models.begin(), default_gib_models.end());
-	replace_models.insert(replace_models.end(), default_precache_models.begin(), default_precache_models.end());
+	replace_models.insert(replace_models.end(), default_precache_models.begin(), default_precache_models.end()); 
 
 	if (replace_level == 0) // load the old GMR file and replace models only if no new models are precached
 	{
@@ -792,6 +804,8 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 		if (matchStr(replace_models[i], "models/player.mdl"))
 			continue; // replacing it causes a crash with certain weapons (looks for T model)
 		string first = replace_models[i];
+		if (replace_level == 0 && first.find("w_") != string::npos)
+			continue; // don't take a chance to create more models
 		if (find(dont_replace.begin(), dont_replace.end(), first) != dont_replace.end())
 			continue;
 		string second;
@@ -814,11 +828,11 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 
 	if (replace_models.size() > 255)
 		print("TOO MANY MODELS: " + str(replaced.size()));
-
+	
 	return replace_models;
 }
 
-bool replace_entity_model(Entity * ent, string model_key, int model_type, int& potential_additions)
+string replace_entity_model(Entity * ent, string model_key, int model_type, int& potential_additions)
 {
 	if (mdlMode == MDL_NONE || !potential_additions)
 		return false;
@@ -827,10 +841,10 @@ bool replace_entity_model(Entity * ent, string model_key, int model_type, int& p
 	else
 		ent->keyvalues[model_key] = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
 	potential_additions -= 1;
-	return true;
+	return ent->keyvalues[model_key];
 }
 
-bool replace_entity_sprite(Entity * ent, string model_key, int sprite_type, int& potential_additions)
+string replace_entity_sprite(Entity * ent, string model_key, int sprite_type, int& potential_additions)
 {
 	if (mdlMode == MDL_NONE || !potential_additions)
 		return false;
@@ -839,7 +853,7 @@ bool replace_entity_sprite(Entity * ent, string model_key, int sprite_type, int&
 	else
 		ent->keyvalues[model_key] = "sprites/" + get_random_sprite(SPRITE_TYPE_GENERIC) + ".spr";
 	potential_additions -= 1;
-	return true;
+	return ent->keyvalues[model_key];
 }
 
 bool is_safe_model_replacement(string classname, string model, string replacement)
@@ -861,13 +875,13 @@ bool is_safe_model_replacement(string classname, string model, string replacemen
 	return true;
 }
 
-void do_model_replacement(BSP * map, Entity** ents, string path)
+void do_model_replacement(BSP * map, Entity** ents, string path, string original_map_name)
 {
 	string old_gmr_path;
 	string new_gmr_path = map->name + "_gmr.gsrand";
 	string_hashmap ent_models;
 	int total_models, potential_additions;
-	count_map_models(map, ents, path, total_models, potential_additions, old_gmr_path, ent_models);
+	count_map_models(map, ents, path, total_models, potential_additions, old_gmr_path, ent_models, original_map_name);
 
 	int max_model_limit = MAX_MAP_MODELS - 4; // let's play it safe
 	int replace_level = 2;
@@ -899,6 +913,9 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 			string cname = it->second;
 			it->second = "";
 			if (cname.find("env_shooter") != string::npos)
+				it->second = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
+
+			if (cname.find("func_breakable") != string::npos)
 				it->second = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
 
 			else if (matchStr(cname, "env_beam"))
@@ -1025,7 +1042,10 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				it--; // do it again. We can't use a replacement model that's been replaced
 			}
 			else
+			{
 				replaced.push_back(it->first);
+				res_list.push_back(it->second);
+			}
 		}
 	}
 	if (replace_level > 1)
@@ -1045,6 +1065,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				break;
 
 			string cname = toLowerCase(ents[i]->keyvalues["classname"]);
+			string new_model = "";
 
 			if (cname.find("monstermaker") != string::npos || cname.find("env_xenmaker") != string::npos)
 			{
@@ -1061,40 +1082,37 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 			}
 
 			if (matchStr(cname, "func_breakable"))
-				replace_entity_model(ents[i], "gibmodel", MODEL_TYPE_GENERIC, potential_additions);
-
-			if (cname.find("env_shooter") != string::npos)
-				replace_entity_model(ents[i], "shootmodel", MODEL_TYPE_GENERIC, potential_additions);
-
-			if (matchStr(cname, "env_beam"))
-				replace_entity_sprite(ents[i], "texture", SPRITE_TYPE_GENERIC, potential_additions);
-			if (matchStr(cname, "env_funnel"))
-				replace_entity_sprite(ents[i], "sprite", SPRITE_TYPE_GENERIC, potential_additions);
-			if (matchStr(cname, "env_laser"))
+				new_model = replace_entity_model(ents[i], "gibmodel", MODEL_TYPE_GENERIC, potential_additions);
+			else if (cname.find("env_shooter") != string::npos)
+				new_model = replace_entity_model(ents[i], "shootmodel", MODEL_TYPE_GENERIC, potential_additions);
+			else if (matchStr(cname, "env_beam"))
+				new_model = replace_entity_sprite(ents[i], "texture", SPRITE_TYPE_GENERIC, potential_additions);
+			else if (matchStr(cname, "env_funnel"))
+				new_model = replace_entity_sprite(ents[i], "sprite", SPRITE_TYPE_GENERIC, potential_additions);
+			else if (matchStr(cname, "env_laser"))
 			{
-				replace_entity_sprite(ents[i], "texture", SPRITE_TYPE_GENERIC, potential_additions);
-				replace_entity_sprite(ents[i], "EndSprite", SPRITE_TYPE_GENERIC, potential_additions);
+				new_model = replace_entity_sprite(ents[i], "texture", SPRITE_TYPE_GENERIC, potential_additions);
+				new_model = replace_entity_sprite(ents[i], "EndSprite", SPRITE_TYPE_GENERIC, potential_additions);
 			}
-			if (matchStr(cname, "item_recharge") || matchStr(cname, "item_healthcharger"))
+			else if (matchStr(cname, "item_recharge") || matchStr(cname, "item_healthcharger"))
 			{
-				replace_entity_model(ents[i], "model_juice", MODEL_TYPE_GENERIC, potential_additions);
+				new_model = replace_entity_model(ents[i], "model_juice", MODEL_TYPE_GENERIC, potential_additions);
 				continue;
 			}
-			if (matchStr(cname, "env_sprite") || matchStr(cname, "cycler_sprite") || matchStr(cname, "env_glow"))
+			else if (matchStr(cname, "env_sprite") || matchStr(cname, "cycler_sprite") || matchStr(cname, "env_glow"))
 			{
 				// low chance of sprite becoming a model
 				int r = rand() % 5;
-				if (!r) replace_entity_model(ents[i], "model", MODEL_TYPE_GENERIC, potential_additions);
-				else    replace_entity_sprite(ents[i], "model", SPRITE_TYPE_GENERIC, potential_additions);
+				if (!r) new_model = replace_entity_model(ents[i], "model", MODEL_TYPE_GENERIC, potential_additions);
+				else    new_model = replace_entity_sprite(ents[i], "model", SPRITE_TYPE_GENERIC, potential_additions);
 			}
-			if (matchStr(cname, "env_spritetrain"))
+			else if (matchStr(cname, "env_spritetrain"))
 			{
 				int r = rand() % 2;
-				if (!r) replace_entity_model(ents[i], "model", MODEL_TYPE_GENERIC, potential_additions);
-				else    replace_entity_sprite(ents[i], "model", SPRITE_TYPE_GENERIC, potential_additions);
+				if (!r) new_model = replace_entity_model(ents[i], "model", MODEL_TYPE_GENERIC, potential_additions);
+				else    new_model = replace_entity_sprite(ents[i], "model", SPRITE_TYPE_GENERIC, potential_additions);
 			}
-
-			if (cname.find("monster_") == 0 || cname.find("ammo_") != string::npos || cname.find("item_") != string::npos 
+			else if (cname.find("monster_") == 0 || cname.find("ammo_") != string::npos || cname.find("item_") != string::npos 
 			    || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon")
 				||  matchStr(cname, "env_beverage") || matchStr(cname, "weaponbox"))
 			{
@@ -1135,7 +1153,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 				else
 				{
 					int mtype = cname.find("monster_") == 0 ? MODEL_TYPE_MONSTER : MODEL_TYPE_GENERIC;
-					do { replace_entity_model(ents[i], custom_monster_model_key, mtype, potential_additions); }
+					do { new_model = replace_entity_model(ents[i], custom_monster_model_key, mtype, potential_additions); }
 					while (!is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]));
 				}
 
@@ -1149,15 +1167,8 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 							ents[i]->keyvalues[custom_monster_model_key].find("/v_") != string::npos ||
 							find(replace_models.begin(), replace_models.end(), ents[i]->keyvalues[custom_monster_model_key]) != replace_models.end() ||
 							!is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]))
-						replace_entity_model(ents[i], custom_monster_model_key, MODEL_TYPE_MONSTER, ++potential_additions);
+						new_model = replace_entity_model(ents[i], custom_monster_model_key, MODEL_TYPE_MONSTER, ++potential_additions);
 
-					if (!ents[i]->keyvalues[custom_monster_model_key].length())
-					{
-						println("WHAT WHY: ");
-						if (!replace_entity_model(ents[i], custom_monster_model_key, MODEL_TYPE_MONSTER, ++potential_additions))
-							println("OH THATS WHY");
-						println("DETAILS: " + cname + " " + ents[i]->keyvalues[custom_monster_model_key]);
-					}
 					// rename monster to "model_name monster_name"
 					string raw_model_name = ents[i]->keyvalues[custom_monster_model_key];
 					raw_model_name = getSubStr(raw_model_name, 0, raw_model_name.length()-4); // strip .mdl
@@ -1171,6 +1182,9 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 					ents[i]->keyvalues["displayname"] = raw_model_name + " " + displayname; 
 				}
 			}
+
+			if (new_model.length())
+				res_list.push_back(new_model);
 
 			if (potential_additions <= 0)
 			{
@@ -1190,4 +1204,5 @@ void do_model_replacement(BSP * map, Entity** ents, string path)
 		for (uint k = i; k < i+9 && k < model_replacements.size(); ++k)
 			ent->addKeyvalue("model_" + str((k-i)+1), model_replacements[k]);
 	}
+	res_list.insert(res_list.end(), model_replacements.begin(), model_replacements.end());
 }

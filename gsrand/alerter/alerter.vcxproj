@@ -63,19 +63,20 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level1</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Ws2_32.lib;OpenAL32.lib;ALut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -89,17 +90,13 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Keyvalue.h" />
-    <ClInclude Include="MDL.h" />
     <ClInclude Include="modelList.h" />
     <ClInclude Include="model_util.h" />
     <ClInclude Include="sentences.h" />
-    <ClInclude Include="Sound.h" />
     <ClInclude Include="soundlists.h" />
     <ClInclude Include="sound_util.h" />
     <ClInclude Include="spriteList.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="studio.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="tex_util.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Wad.h" />
@@ -109,14 +106,8 @@
     <ClCompile Include="ent_util.cpp" />
     <ClCompile Include="gsrand.cpp" />
     <ClCompile Include="Keyvalue.cpp" />
-    <ClCompile Include="MDL.cpp" />
     <ClCompile Include="model_util.cpp" />
-    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="sound_util.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="tex_util.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Wad.cpp" />

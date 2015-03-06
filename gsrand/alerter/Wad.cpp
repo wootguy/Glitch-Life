@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 #include "Wad.h"
 #include "Util.h"
 #include <iostream>

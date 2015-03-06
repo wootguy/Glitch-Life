@@ -1,6 +1,5 @@
 // alerter.cpp : Defines the entry point for the console application.
 //
-#include "stdafx.h"
 #include "gsrand.h"
 #include <sys/stat.h>
 #include <conio.h>
@@ -83,6 +82,8 @@ vector<string> controller_whitelist; // w_ and player models also ok
 vector<string> monster_sprites;
 vector<string> dont_replace; // shouldn't be replaced
 vector<string> weapon_types;
+
+vector<string> res_list;
 
 void readConfigFile()
 {
@@ -598,7 +599,7 @@ int randomize_maps()
 		char choice = _getch();
 		if (choice == '1') return 1;
 		if (choice == '0') break;
-	}
+	} 
 
 	Entity *** entLists = new Entity**[files.size()];
 	int idx = 0;
@@ -607,6 +608,7 @@ int randomize_maps()
 
 	for (uint f = 0; f < files.size(); f++)
 	{
+		res_list.clear();
 		string mapName = getSubStr(files[f], 0, files[f].length()-4);
 		if (verbose)
 		{
@@ -638,7 +640,7 @@ int randomize_maps()
 		}	
 		
 		if (mdlMode != MDL_NONE)
-			do_model_replacement(map, ents, path);
+			do_model_replacement(map, ents, path, mapName);
 
 		if (sndMode != SND_NONE)
 			do_ent_sounds(ents, map->name);
@@ -1012,7 +1014,7 @@ void printHelp()
 	
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
  	srand ( (uint)time(NULL) );
 	//srand (1337);

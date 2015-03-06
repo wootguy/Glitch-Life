@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 #include "tex_util.h"
 #include "gsrand.h"
 

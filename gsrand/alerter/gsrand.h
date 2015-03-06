@@ -249,106 +249,6 @@ struct SPRHEADER
 	//short paletteSz; // always 256??
 };
 
-struct MDLHEADER 
-{
-	int					id;
-	int					version;
-
-	char				name[64];
-	int					length;
-
-	vec3				eyeposition;	// ideal eye position
-	vec3				min;			// ideal movement hull size
-	vec3				max;			
-
-	vec3				bbmin;			// clipping bounding box
-	vec3				bbmax;		
-
-	int					flags;
-
-	int					numbones;			// bones
-	int					boneindex;
-
-	int					numbonecontrollers;		// bone controllers
-	int					bonecontrollerindex;
-
-	int					numhitboxes;			// complex bounding boxes
-	int					hitboxindex;			
-
-	int					numseq;				// animation sequences
-	int					seqindex;
-
-	int					numseqgroups;		// demand loaded sequences
-	int					seqgroupindex;
-
-	int					numtextures;		// raw textures
-	int					textureindex;
-	int					texturedataindex;
-
-	int					numskinref;			// replaceable textures
-	int					numskinfamilies;
-	int					skinindex;
-
-	int					numbodyparts;		
-	int					bodypartindex;
-
-	int					numattachments;		// queryable attachable points
-	int					attachmentindex;
-
-	int					soundtable;
-	int					soundindex;
-	int					soundgroups;
-	int					soundgroupindex;
-
-	int					numtransitions;		// animation node to animation node transition graph
-	int					transitionindex;
-};
-
-struct MDLSEQUENCE
-{
-	char				label[32];	// sequence label
-
-	float				fps;		// frames per second	
-	int					flags;		// looping/non-looping flags
-
-	int					activity;
-	int					actweight;
-
-	int					numevents;
-	int					eventindex;
-
-	int					numframes;	// number of frames per sequence
-
-	int					numpivots;	// number of foot pivots
-	int					pivotindex;
-
-	int					motiontype;	
-	int					motionbone;
-	vec3				linearmovement;
-	int					automoveposindex;
-	int					automoveangleindex;
-
-	vec3				bbmin;		// per sequence bounding box
-	vec3				bbmax;		
-
-	int					numblends;
-	int					animindex;		// mstudioanim_t pointer relative to start of sequence group data
-	// [blend][bone][X, Y, Z, XR, YR, ZR]
-
-	int					blendtype[2];	// X, Y, Z, XR, YR, ZR
-	float				blendstart[2];	// starting value
-	float				blendend[2];	// ending value
-	int					blendparent;
-
-	int					seqgroup;		// sequence group for demand loading
-
-	int					entrynode;		// transition node at entry
-	int					exitnode;		// transition node at exit
-	int					nodeflags;		// transition rules
-
-	int					nextseq;		// auto advancing sequences
-};
-
 struct membuf : std::streambuf
 {
 	membuf(char* begin, int len) {
@@ -414,6 +314,8 @@ extern vector<string> user_p_models;
 extern vector<string> user_w_models;
 extern vector<string> user_apache_models;
 extern vector<string> user_player_models;
+
+extern vector<string> res_list;
 
 extern int total_model_count;
 

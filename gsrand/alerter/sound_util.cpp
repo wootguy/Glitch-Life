@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 #include "sound_util.h"
 #include "ent_util.h"
 #include "gsrand.h"
