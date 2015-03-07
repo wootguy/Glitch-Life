@@ -38,3 +38,8 @@ void Entity::addKeyvalue(const std::string& key, const std::string& value)
 {
 	keyvalues[key] = value;
 }
+
+bool Entity::hasKey(const std::string& key)
+{
+	return keyvalues.find(key) != keyvalues.end();
+}

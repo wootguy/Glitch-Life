@@ -489,7 +489,6 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 
 		string cname = toLowerCase(ents[i]->keyvalues["classname"]);
 
-
 		if (cname.find("monstermaker") != string::npos || cname.find("env_xenmaker") != string::npos)
 			cname = toLowerCase(ents[i]->keyvalues["monstertype"]);
 
@@ -529,6 +528,14 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 				ent_models[toLowerCase(ents[i]->keyvalues["EndSprite"])] = cname;
 			potential_additions+=2;
 		}
+		if (cname.find("func_tank") == 0)
+		{
+			if (ents[i]->hasKey("spritesmoke"))
+				ent_models[toLowerCase(ents[i]->keyvalues["spritesmoke"])] = cname;
+			if (ents[i]->hasKey("spriteflash"))
+				ent_models[toLowerCase(ents[i]->keyvalues["spriteflash"])] = cname;
+			potential_additions+=2;
+		}
 		if (matchStr(cname, "item_recharge") || matchStr(cname, "item_healthcharger"))
 		{
 			if (ents[i]->keyvalues.find("model_juice") != ents[i]->keyvalues.end())
@@ -557,8 +564,8 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 		// and levels tend to have a lot of doors
 
 		if (cname.find("monster_") == 0 || cname.find("ammo_") != string::npos 
-			|| cname.find("item_") != string::npos || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon")
-			|| matchStr(cname, "cycler_sprite") || matchStr(cname, "env_beverage") || matchStr(cname, "env_glow")
+			|| cname.find("item_") != string::npos || cname.find("cycler") == 0
+			|| matchStr(cname, "env_beverage") || matchStr(cname, "env_glow")
 			|| matchStr(cname, "env_sprite") || matchStr(cname, "env_spritetrain") || matchStr(cname, "weaponbox"))
 		{
 			if (!matchStr(cname, "monster_cockroach") && !matchStr(cname, "monster_kingpin") && 
@@ -594,13 +601,13 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 		else if (cname.find("weapon_") != string::npos)
 		{
 			if (ents[i]->keyvalues.find("wpn_v_model") != ents[i]->keyvalues.end())
-				ent_models[toLowerCase(ents[i]->keyvalues["wpn_v_model"])] = cname;
+				ents[i]->keyvalues["wpn_v_model"] = "";
 
 			if (ents[i]->keyvalues.find("wpn_w_model") != ents[i]->keyvalues.end())
-				ent_models[toLowerCase(ents[i]->keyvalues["wpn_w_model"])] = cname;
+				ents[i]->keyvalues["wpn_w_model"] = "";
 
 			if (ents[i]->keyvalues.find("wpn_p_model") != ents[i]->keyvalues.end())
-				ent_models[toLowerCase(ents[i]->keyvalues["wpn_p_model"])] = cname;
+				ents[i]->keyvalues["wpn_p_model"] = "";
 		}
 	}
 
@@ -714,7 +721,8 @@ string get_random_replacement(string model, vector<string>& replaced, vector<str
 				break;
 			// using a replacement model that's been replaced in this file can cause Host Precache error
 		} while (find(replaced.begin(), replaced.end(), replacement) != replaced.end() ||
-				 find(replace_models.begin(), replace_models.end(), replacement) != replace_models.end());
+				 find(replace_models.begin(), replace_models.end(), replacement) != replace_models.end() ||
+				 !is_safe_model_replacement("", model, replacement));
 	}
 	return replacement;
 }
@@ -726,6 +734,8 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 
 	replace_models.insert(replace_models.end(), monster_sprites.begin(), monster_sprites.end());
 	replace_models.insert(replace_models.end(), default_precache_models.begin(), default_precache_models.end()); 
+	if (replace_level == 2)
+		replace_models.insert(replace_models.end(), default_gib_models.begin(), default_gib_models.end());
 
 	if (replace_level == 0) // load the old GMR file and replace models only if no new models are precached
 	{
@@ -799,6 +809,7 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 	ofstream myfile;
 	myfile.open(new_gmr_path);
 
+	vector<string> models_used_as_replacements;
 	for (uint i = 0; i < replace_models.size(); i++)
 	{
 		if (matchStr(replace_models[i], "models/player.mdl"))
@@ -809,11 +820,11 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 		if (find(dont_replace.begin(), dont_replace.end(), first) != dont_replace.end())
 			continue;
 		string second;
-		do { second = get_random_replacement(first, replaced, replace_models); }
-		while(!is_safe_model_replacement("", first, second));
+		second = get_random_replacement(first, replaced, replace_models);
 		if (!second.length())
 			continue;
-		replaced.push_back(second);
+		replaced.push_back(first);
+		models_used_as_replacements.push_back(second);
 		myfile << '\"' << first << "\" \"" << second << '\"' << '\n';
 	}
 
@@ -822,14 +833,14 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 	{
 		myfile << '\"' << it->first << "\" \"" << it->second << '\"' << '\n';
 		replaced.push_back(it->first);
-		replace_models.push_back(it->second);
+		models_used_as_replacements.push_back(it->second);
 	}
 	myfile.close();
 
-	if (replace_models.size() > 255)
-		print("TOO MANY MODELS: " + str(replaced.size()));
-	
-	return replace_models;
+	if (replaced.size() > 255)
+		print("TOO MANY MODELS: " + str(replaced.size()) + ". ");
+
+	return models_used_as_replacements;
 }
 
 string replace_entity_model(Entity * ent, string model_key, int model_type, int& potential_additions)
@@ -912,10 +923,10 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 		{
 			string cname = it->second;
 			it->second = "";
-			if (cname.find("env_shooter") != string::npos)
+			if (cname.find("env_shooter") == 0)
 				it->second = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
 
-			if (cname.find("func_breakable") != string::npos)
+			if (cname.find("func_breakable") == 0)
 				it->second = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
 
 			else if (matchStr(cname, "env_beam"))
@@ -923,10 +934,9 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 			else if (matchStr(cname, "env_funnel"))
 				it->second = "sprites/" + get_random_sprite(SPRITE_TYPE_GENERIC) + ".spr";
 			else if (matchStr(cname, "env_laser"))
-			{
 				it->second = "sprites/" + get_random_sprite(SPRITE_TYPE_GENERIC) + ".spr";
+			else if (cname.find("func_tank") == 0)
 				it->second = "sprites/" + get_random_sprite(SPRITE_TYPE_GENERIC) + ".spr";
-			}
 			else if (matchStr(cname, "item_recharge") || matchStr(cname, "item_healthcharger"))
 				it->second = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
 			else if (matchStr(cname, "env_sprite") || matchStr(cname, "cycler_sprite") || matchStr(cname, "env_glow"))
@@ -942,8 +952,8 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 				if (!r) it->second = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
 				else    it->second = "sprites/" + get_random_sprite(SPRITE_TYPE_GENERIC) + ".spr";
 			}
-			else if (cname.find("monster_") == 0 || cname.find("ammo_") != string::npos || cname.find("item_") != string::npos 
-			    || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon") || cname.find("weapon_") == 0
+			else if (cname.find("monster_") == 0 || cname.find("ammo_") == 0 || cname.find("item_") == 0 
+			    || cname.find("cycler") == 0 || cname.find("weapon_") == 0
 				||  matchStr(cname, "env_beverage") || matchStr(cname, "weaponbox"))
 			{
 				if (matchStr(cname, "monster_kingpin") || matchStr(cname, "monster_tentacle"))
@@ -1044,7 +1054,6 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 			else
 			{
 				replaced.push_back(it->first);
-				res_list.push_back(it->second);
 			}
 		}
 	}
@@ -1094,6 +1103,11 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 				new_model = replace_entity_sprite(ents[i], "texture", SPRITE_TYPE_GENERIC, potential_additions);
 				new_model = replace_entity_sprite(ents[i], "EndSprite", SPRITE_TYPE_GENERIC, potential_additions);
 			}
+			else if (cname.find("func_tank") == 0)
+			{
+				new_model = replace_entity_sprite(ents[i], "spritesmoke", SPRITE_TYPE_GENERIC, potential_additions);
+				new_model = replace_entity_sprite(ents[i], "spriteflash", SPRITE_TYPE_GENERIC, potential_additions);
+			}
 			else if (matchStr(cname, "item_recharge") || matchStr(cname, "item_healthcharger"))
 			{
 				new_model = replace_entity_model(ents[i], "model_juice", MODEL_TYPE_GENERIC, potential_additions);
@@ -1112,9 +1126,8 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 				if (!r) new_model = replace_entity_model(ents[i], "model", MODEL_TYPE_GENERIC, potential_additions);
 				else    new_model = replace_entity_sprite(ents[i], "model", SPRITE_TYPE_GENERIC, potential_additions);
 			}
-			else if (cname.find("monster_") == 0 || cname.find("ammo_") != string::npos || cname.find("item_") != string::npos 
-			    || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon")
-				||  matchStr(cname, "env_beverage") || matchStr(cname, "weaponbox"))
+			else if (cname.find("monster_") == 0 || cname.find("ammo_") == 0 || cname.find("item_") == 0
+			    || cname.find("cycler") == 0 ||  matchStr(cname, "env_beverage") || matchStr(cname, "weaponbox"))
 			{
 				if (matchStr(cname, "monster_kingpin") || matchStr(cname, "monster_tentacle"))
 				{
@@ -1183,9 +1196,6 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 				}
 			}
 
-			if (new_model.length())
-				res_list.push_back(new_model);
-
 			if (potential_additions <= 0)
 			{
 				print("RAN OUT OF MODEL ADDITIONS");
@@ -1194,15 +1204,18 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 		} 
 	}
 
+	res_list.insert("maps/" + new_gmr_path);
+
 	vector<string> model_replacements = writeGMR(path + new_gmr_path, old_gmr_path, ent_models, replace_level);
 
 	// make super sure model replacements are precached
+	// this will also make these models visible to the RES generator
 	for (uint i = 0; i < model_replacements.size(); i += 9)
 	{
+		res_list.insert(model_replacements[i]);
 		Entity * ent = add_new_entity(ents, "custom_precache");
 		if (!ent) break;
 		for (uint k = i; k < i+9 && k < model_replacements.size(); ++k)
 			ent->addKeyvalue("model_" + str((k-i)+1), model_replacements[k]);
 	}
-	res_list.insert(res_list.end(), model_replacements.begin(), model_replacements.end());
 }

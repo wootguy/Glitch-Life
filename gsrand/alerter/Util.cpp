@@ -7,7 +7,6 @@
 #include <Windows.h>
 #include "Globals.h"
 #include <algorithm>
-
 #include <direct.h>
 #define GetCurrentDir _getcwd
 
@@ -160,7 +159,7 @@ string getSubStr(const string& s, int beginIndex, int endIndex)
     int max = s.length();
     if (beginIndex < 0 || beginIndex >= max)
     {
-        println("getSubStr: Invalid begin index " + str(beginIndex));
+        println("getSubStr: Invalid begin index " + str(beginIndex) + " '" + s + "'");
         return "";
     }
     if (endIndex < 0 || endIndex > max)
@@ -184,7 +183,7 @@ string getSubStr(const string& s, int beginIndex)
     string result = "";
     int max = s.size();
     if (beginIndex < 0 || beginIndex >= max)
-        println("getSubStr: Invalid begin index " + str(beginIndex) + " " + s);
+        println("getSubStr: Invalid begin index " + str(beginIndex) + " '" + s + "'");
 
     for (int i = beginIndex; i < max; i++)
         result += s.at(i);
@@ -668,4 +667,19 @@ void insert_unique(const vector<string>& insert, vector<string>& insert_into)
 		if (!exists)
 			insert_into.push_back(insert[i]);
 	}
+}
+
+vector<string> splitString( string str, char * delimitters )
+{
+	vector<string> split;
+	string copy = new char[str.length()+1];
+	copy = str;
+	char * tok = strtok((char *)copy.c_str(), delimitters);
+
+	while (tok != NULL)
+	{
+		split.push_back(tok);
+		tok = strtok(NULL, delimitters);
+	}
+	return split;
 }

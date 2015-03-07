@@ -77,112 +77,6 @@ extern int contentMode;
 //string wadPath = "wad/";
 extern string wadPath;
 
-#define NUM_DEFAULT_WADS 48
-static const char * default_wads[NUM_DEFAULT_WADS] = 
-{
-	"afrikakorps",
-	"afrikakorps2",
-	"auspices",
-	"barney",
-	"bmt",
-	//"cached",
-	"CHANGELEVEL",
-	"coopcris",
-	"cs_bdog",
-	"deathmission",
-	//"decals",
-	"decay",
-	"escape_series",
-	"extension",
-	"fonts",
-	//"gfx",
-	"gmantowers",
-	"halflife",
-	"hammerhead",
-	"jailbreak2",
-	"kk1",
-	"kk2",
-	"last",
-	"liquids",
-	"megamonstermassacre",
-	"mistral",
-	"neilm2",
-	"neilm4",
-	"neilm_sc",
-	"nightmare",
-	"nw",
-	"nw_xeno",
-	"Opfor",
-	"osprey",
-	"quarter",
-	"sandstone",
-	"scopfor",
-	"scrpg2",
-	"sc_mazing",
-	"sc_tetris",
-	"sectore",
-	"spraypaint",
-	"stadium",
-	"storage",
-	"submerged",
-	"svencoop1",
-	"svencoop2",
-	//"tempdecal",
-	"vger",
-	"xeno",
-	"zero",
-	"zhlt",
-};
-
-#define NUM_SKIES 44
-static const char * SKIES[NUM_STATIC_SPRITES] =
-{
-	"ac_",
-	"arcn",
-	"carnival",
-	"coliseum",
-	"desnoon",
-	"dfcliff",
-	"doom1",
-	"dustbowl",
-	"fodrian",
-	"forest512_",
-	"gmcity",
-	"grassy",
-	"hplanet",
-	"hydramanti",
-	"parallax-errorlf256_",
-	"sandstone",
-	"sky_blu_",
-	"tetris",
-	"theyh2",
-	"theyh3",
-	"thn",
-	"toon",
-	"tornsky",
-	"twildes",
-	"vreality_sky",
-	"2desert",
-	"alien1",
-	"alien2",
-	"alien3",
-	"black",
-	"city",
-	"cliff",
-	"desert",
-	"dusk",
-	"morning",
-	"neb1",
-	"neb2b",
-	"neb6",
-	"neb7",
-	"night",
-	"space",
-	"xen10",
-	"xen8",
-	"xen9",
-};
-
 #define MAX_MAP_TEXTURES     512
 #define MAX_MAP_ENTITIES     8192		// increased from 1024
 #define MAX_MAP_MODELS       512 // Really more like 511
@@ -302,8 +196,12 @@ extern int total_map_models;
 extern string_hashmap random_monster_models;
 extern string_hashmap random_weapon_models;
 
+typedef tr1::unordered_map< string, vector<string> > list_hashmap;
+
 // lists of everything the program could find
 extern vector<string> user_sounds; 
+extern vector<string> user_sound_dirs; // for sentences
+extern list_hashmap user_voices;
 extern vector<string> user_animated_sprites;
 extern vector<string> user_sprites;
 extern vector<string> user_skies; 
@@ -315,7 +213,7 @@ extern vector<string> user_w_models;
 extern vector<string> user_apache_models;
 extern vector<string> user_player_models;
 
-extern vector<string> res_list;
+extern set<string> res_list;
 
 extern int total_model_count;
 

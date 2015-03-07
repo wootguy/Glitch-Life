@@ -182,9 +182,9 @@ bool needsRipent(BSP * map, Entity** ents)
 	string newWadString = "";
 	if (texMode == TEX_MASTERWAD)
 		newWadString = "gsrand";
-	else if (!prefixMode != PREFIX_NONE)
+	else if (prefixMode != PREFIX_NONE)
 		newWadString = MAP_PREFIX + map->name;
-	else 
+	else
 		newWadString = map->name;
 
 	newWadString += ".wad;zhlt.wad";
@@ -196,6 +196,11 @@ bool needsRipent(BSP * map, Entity** ents)
 			ents[0]->keyvalues["wad"] = newWadString;
 			return true;
 		}
+	}
+	if (texMode == TEX_MAP)
+	{
+		ents[0]->keyvalues["wad"] = "";
+		return true;
 	}
 
 	return false;
@@ -343,13 +348,15 @@ Entity ** getMapEnts(BSP * map, bool printInfo, int& numEnts)
 
 void randomize_skybox(Entity ** ents)
 {
+	if (!user_skies.size())
+		return;
 	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 	{
 		if (ents[i] == NULL) 
 			break;
 		string cname = ents[i]->keyvalues["classname"];
 
-		if (matchStr(cname,"worldspawn") && user_skies.size())
+		if (matchStr(cname,"worldspawn"))
 			ents[i]->keyvalues["skyname"] = user_skies[rand() % user_skies.size()];
 	}
 }
@@ -623,42 +630,48 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			string mtype = getSubStr(cname,8);
 
+			if (mdlMode != MDL_NONE && rand() % 3) // less effects when using model replacement
+				continue;
 			if (entMode == ENT_SUPER || entMode == ENT_APPEAR)
 			{
-				// random render effects
-				int fxint = rand()%6;
-				if (fxint == 0)
-					fxint = 1;
-				else if (fxint == 1)
-					fxint = 2;
-				else if (fxint == 2)
-					fxint = 15;
-				else if (fxint == 3)
-					fxint = 16;
-				else if (fxint == 4)
-					fxint = 18;
-				else if (fxint == 5)
-					fxint = 19;
-				ents[i]->keyvalues["renderfx"] = to_string((_Longlong)fxint);
-				ents[i]->keyvalues["renderamt"] = to_string((_Longlong)(rand()%2)*155 + 100);
-				ents[i]->keyvalues["rendercolor"] = to_string((_Longlong)rand()%256) + " " + 
-					to_string((_Longlong)rand()%256) + " " + 
-					to_string((_Longlong)rand()%256);
-
-				int rstyle = rand() % 3;
-				if (rstyle == 0)
+				// 50% chance of weird effect
+				if (rand() % 2)
 				{
-					ents[i]->keyvalues["rendermode"] = "0";
-					ents[i]->keyvalues["renderfx"] = "19";
-					fxint = 19;
-				}
-				else if (rstyle == 1)
-					ents[i]->keyvalues["rendermode"] = "2";
-				else
-					ents[i]->keyvalues["rendermode"] = "5";
+					int fxint = rand()%6;
+					if (fxint == 0)
+						fxint = 1;
+					else if (fxint == 1)
+						fxint = 2;
+					else if (fxint == 2)
+						fxint = 15;
+					else if (fxint == 3)
+						fxint = 16;
+					else if (fxint == 4)
+						fxint = 18;
+					else if (fxint == 5)
+						fxint = 19;
+					ents[i]->keyvalues["renderfx"] = to_string((_Longlong)fxint);
+					ents[i]->keyvalues["renderamt"] = to_string((_Longlong)(rand()%2)*155 + 100);
+					ents[i]->keyvalues["rendercolor"] = to_string((_Longlong)rand()%256) + " " + 
+						to_string((_Longlong)rand()%256) + " " + 
+						to_string((_Longlong)rand()%256);
 
-				if (fxint == 19)
-					ents[i]->keyvalues["renderamt"] = to_string((_Longlong)(rand()%2)*254 + 1);
+					int rstyle = rand() % 3;
+					if (rstyle == 0)
+					{
+						ents[i]->keyvalues["rendermode"] = "0";
+						ents[i]->keyvalues["renderfx"] = "19";
+						fxint = 19;
+					}
+					else if (rstyle == 1)
+						ents[i]->keyvalues["rendermode"] = "2";
+					else
+						ents[i]->keyvalues["rendermode"] = "5";
+
+					if (fxint == 19)
+						ents[i]->keyvalues["renderamt"] = to_string((_Longlong)(rand()%2)*254 + 1); 
+				}
+
 
 				// 1/3 chance of rotating monster
 				if (rand() % 3 == 0)

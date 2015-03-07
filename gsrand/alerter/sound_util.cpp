@@ -16,6 +16,7 @@ void getAllSounds()
 	vector<string> dirs = getAllSubdirs(soundPath);
 
 	user_sounds.clear();
+	user_sound_dirs.clear();
 	for (uint i = 0; i < dirs.size(); i++)
 	{
 		string prefix = "";
@@ -25,15 +26,13 @@ void getAllSounds()
 			prefix = getSubStr(dirs[i], 6); // skip sound/
 			vdir = getSubStr(prefix,0,prefix.length()-1);
 		}
-		bool validDir = false;
+	
 		for (int e = 0; e < num_exts; e++)
 		{
 			vector<string> results = getDirFiles(dirs[i], exts[e]);
 			for (uint k = 0; k < results.size(); k++)
-			{
 				if (results[k].find("null") != 0)
 					user_sounds.push_back(prefix + results[k]);
-			}
 		}
 	}
 
@@ -65,6 +64,28 @@ void getAllSounds()
 		}
 		user_sounds = filtered_sounds;
 	}
+
+	set<string> sound_dirs;
+	for (uint i = 0; i < user_sounds.size(); ++i)
+	{
+		string sound;
+		string sound_dir;
+		int dirfind = user_sounds[i].find_last_of("/\\");
+		if (dirfind != string::npos)
+		{
+			sound = getSubStr(user_sounds[i], dirfind+1, user_sounds[i].length()-4); // strip dirs and .wav/.ogg/etc.
+			sound_dir = getSubStr(user_sounds[i], 0, dirfind);
+		}
+		else
+		{
+			sound = user_sounds[i];
+			sound_dir = "/";
+		}
+		sound_dirs.insert(sound_dir);
+		user_voices[sound_dir].push_back(sound);
+	}
+	for (set<string>::iterator it = sound_dirs.begin(); it != sound_dirs.end(); ++it)
+		user_sound_dirs.push_back(*it);
 }
 
 void getAllVoices()
@@ -342,9 +363,6 @@ vector<sound> getReplacableSounds(bool printInfo)
 	
 	if (printInfo) println("Wrote material sounds: " + str(writable.size()));
 	*/
-
-	for (uint i = 0; i < ambients.size(); i++)
-		writable.push_back(sound(ambients[i]));
 	
 	if (printInfo) println("Wrote ambient sounds: " + str(writable.size()));
 
@@ -374,6 +392,7 @@ void writeMonsterSoundLists(string mapname)
 					i--;
 					continue;
 				}
+				res_list.insert("sound/" + randSnd);
 				myfile << '\"';
 				if (i != ASLAVE)
 					myfile << mdirs[i] << '/';
@@ -384,6 +403,8 @@ void writeMonsterSoundLists(string mapname)
 			//println("Wrote " + mdirs[i] + ": " + str(msize[i]));
 			monsters[i] = 0; // so we don't pick it again
 			monsterWrites++;
+
+			res_list.insert(filename);
 		}
 	}
 }
@@ -401,18 +422,36 @@ void writeGSR(string filename, vector<sound> writeList)
 			i--;
 			continue;
 		}
-		
+		res_list.insert("sound/" + randSnd);
 		myfile << '\"' << writeList[i].filename << "\" \"" << randSnd << '\"' << '\n';
 	}
 	myfile.close();
-
 	//println("wrote " + str(writeList.size()) + " sound replacements");
 }
 
 string constructSentence()
 {
+	string sentence;
+
+	if (contentMode == CONTENT_CUSTOM || rand() % 4 == 0)
+	{
+		int randVoice = rand() % user_sound_dirs.size();
+		sentence = string(user_sound_dirs[randVoice] ) + "/";
+		if (user_voices.find(user_sound_dirs[randVoice]) == user_voices.end())
+			println("VOICE DIR IS EMPTY: " + user_sound_dirs[randVoice]);
+		else
+		{
+			for (int i = 0, words = (rand() % 5) + 1; i < words; i++)
+			{
+				int r = rand() % user_voices[user_sound_dirs[randVoice]].size();
+				sentence += user_voices[user_sound_dirs[randVoice]][r] + ' ';
+			}
+			return sentence;
+		}
+	}
+
 	int randVoice = rand() % NUM_VOICE_DIRS;
-	string sentence = string(voice_dirs[randVoice]) + '/';
+	sentence = string(voice_dirs[randVoice]) + '/';
 		
 	for (int i = 0, words = (rand() % 5) + 1; i < words; i++)
 	{
@@ -533,18 +572,8 @@ void do_ent_sounds(Entity** ents, string mapname)
 		if (matchStr(cname, "ambient_generic"))
 		{
 			string snd = ents[i]->keyvalues["message"];
-			bool repeat = false;
-			for (uint k = 0; k < ambients.size(); k++)
-			{
-				if (matchStr(snd,ambients[k]))
-				{
-					repeat = true;
-					break;
-				}
-			}
-			if (repeat)
-				continue;
-			ambients.push_back(snd);
+			ents[i]->keyvalues["message"] = get_random_sound();
+			res_list.insert("sound/" + ents[i]->keyvalues["message"]);
 			continue;
 		}
 
@@ -663,20 +692,10 @@ void do_ent_sounds(Entity** ents, string mapname)
 		string child = "";
 
 		if (matchStr(cname, "monstermaker"))
-		{
-			if (entMode == ENT_SUPER)
-				ents[i]->keyvalues["classname"] = cname = "squadmaker"; // just make a squadmaker so we have more options
-		}
+			ents[i]->keyvalues["classname"] = cname = "squadmaker"; // just make a squadmaker so we have more options
 
 		if (matchStr(cname, "squadmaker"))
-		{
-			if (entMode == ENT_SUPER)
-			{
-				if (rand() % 3) ents[i]->keyvalues["change_rendermode"] = "1";
-				ents[i]->keyvalues["notsolid"] = "1";
-			}
-			child = ents[i]->keyvalues["monstertype"];
-		}		
+			child = ents[i]->keyvalues["monstertype"];	
 
 		int wep_id = get_weapon_id(cname);
 		if (wep_id == -1)

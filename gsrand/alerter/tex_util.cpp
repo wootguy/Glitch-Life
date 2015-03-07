@@ -56,7 +56,7 @@ void get_all_skies()
 
 	/*
 	println("#define NUM_SKIES " + str(user_skies.size()));
-	println("static const char * SKIES[NUM_STATIC_SPRITES] =");
+	println("static const char * SKIES[NUM_SKIES] =");
 	println("{");
 	for (uint s = 0; s < user_skies.size(); s++)
 		println("\t\"" + user_skies[s] + "\",");

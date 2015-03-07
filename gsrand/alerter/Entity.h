@@ -14,5 +14,7 @@ public:
 
 	void addKeyvalue(Keyvalue& k);
 	void addKeyvalue(const std::string& key, const std::string& value);
+
+	bool hasKey(const std::string& key);
 };
 

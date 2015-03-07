@@ -221,7 +221,6 @@ static void init_black_lists()
 	controller_whitelist.push_back("models/greysnake/hgrunt_opfor.mdl");
 	controller_whitelist.push_back("models/hunger/franklin2.mdl");
 	controller_whitelist.push_back("models/hunger/heart.mdl");
-	controller_whitelist.push_back("models/hunger/hungerhound.mdl");
 	controller_whitelist.push_back("models/hunger/zgrunt.mdl");
 	controller_whitelist.push_back("models/infiltrate/david.mdl");
 	controller_whitelist.push_back("models/it_has_leaks/wizard.mdl");

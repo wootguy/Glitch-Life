@@ -46,6 +46,8 @@ int monsters[MONSTER_TYPES];
 int total_map_models = 0;
 
 vector<string> user_sounds;
+vector<string> user_sound_dirs;
+list_hashmap user_voices;
 vector<string> user_models;
 vector<string> user_skies;
 vector<string> user_animated_sprites;
@@ -83,7 +85,8 @@ vector<string> monster_sprites;
 vector<string> dont_replace; // shouldn't be replaced
 vector<string> weapon_types;
 
-vector<string> res_list;
+vector<string> default_content;
+set<string> res_list;
 
 void readConfigFile()
 {
@@ -279,6 +282,51 @@ string get_weapon_name(int id)
 	return "";
 }
 
+void init_default_content()
+{
+	initMasterList();
+	
+	for (uint d = 0; d < NUM_MASTER_DIRS; ++d)
+		for (uint s = 0; s < masterSize[d]; ++s)
+			default_content.push_back(string("sound/") + masterDirs[d] + string("/") + masterList[d][s]);
+	default_content.push_back("sound/thunder.wav"); // the only default sound not in a folder
+
+	for (uint s = 0; s < NUM_MODEL_V; ++s)
+		default_content.push_back(string("models/") + MODEL_V[s] + string(".mdl"));
+	for (uint s = 0; s < NUM_MODEL_P; ++s)
+		default_content.push_back(string("models/") + MODEL_P[s] + string(".mdl"));
+	for (uint s = 0; s < NUM_MODEL_W; ++s)
+		default_content.push_back(string("models/") + MODEL_W[s] + string(".mdl"));
+	for (uint s = 0; s < NUM_MODEL_PROPS; ++s)
+		default_content.push_back(string("models/") + MODEL_PROPS[s] + string(".mdl"));
+	for (uint s = 0; s < NUM_MODEL_MONSTERS; ++s)
+		default_content.push_back(string("models/") + MODEL_MONSTERS[s] + string(".mdl"));
+	for (uint s = 0; s < NUM_MODEL_PLAYERS; ++s)
+		default_content.push_back(string("models/") + MODEL_PLAYERS[s] + string(".mdl"));
+
+	for (uint i = 0; i < NUM_ANIMATED_SPRITES; ++i)
+		default_content.push_back(string("sprites/") + ANIMATED_SPRITES[i] + string(".spr"));
+	for (uint i = 0; i < NUM_STATIC_SPRITES; ++i)
+		default_content.push_back(string("sprites/") + STATIC_SPRITES[i] + string(".spr"));
+
+	for (uint i = 0; i < NUM_DEFAULT_WADS; ++i)
+		default_content.push_back(string(default_wads[i]) + ".wad");
+	default_content.push_back("cached.wad");
+	default_content.push_back("gfx.wad");
+	default_content.push_back("decals.wad");
+	default_content.push_back("tempdecal.wad");
+
+	for (uint i = 0; i < NUM_SKIES; ++i)
+	{
+		default_content.push_back(string("gfx/env/") + SKIES[i] + string("ft.tga"));
+		default_content.push_back(string("gfx/env/") + SKIES[i] + string("bk.tga"));
+		default_content.push_back(string("gfx/env/") + SKIES[i] + string("up.tga"));
+		default_content.push_back(string("gfx/env/") + SKIES[i] + string("dn.tga"));
+		default_content.push_back(string("gfx/env/") + SKIES[i] + string("lf.tga"));
+		default_content.push_back(string("gfx/env/") + SKIES[i] + string("rt.tga"));
+	}
+}
+
 bool createCFG(string path, string mapname)
 {
 	vector<string> text;
@@ -313,10 +361,11 @@ bool createCFG(string path, string mapname)
 	if (prefixMode != PREFIX_NONE)
 		mapname = MAP_PREFIX + mapname;
 
+	res_list.insert("maps/" + mapname + ".cfg");
 	fout.open (path + mapname + ".cfg", ios::out | ios::trunc);
 	if (text.size() > 0)
 	{
-		bool has_grapple;
+		bool has_grapple = false;
 		for (uint i = 0; i < text.size(); i++)
 		{
 			if (text[i][0] == '#') // comment
@@ -365,42 +414,6 @@ bool createCFG(string path, string mapname)
 	if (mdlMode != MDL_NONE)
 		fout << "globalmodellist ../../maps/" << mapname << "_gmr.gsrand\n";
 	fout.close();
-
-	return true;
-}
-
-bool restoreCFG(string path, string mapname)
-{
-	vector<string> text;
-	string line;
-
-	ifstream myfile (path + mapname + ".cfg.bak");
-	if (myfile.is_open())
-	{
-		while ( !myfile.eof() )
-		{
-			getline (myfile,line);
-			text.push_back(line);
-		}
-	}
-	else
-		return false;
-	myfile.close();
-
-	ofstream fout;
-
-	if (prefixMode != PREFIX_NONE)
-		mapname = MAP_PREFIX + mapname;
-
-	fout.open (path + mapname + ".cfg", ios::out | ios::trunc);
-	if (text.size() > 0)
-	{
-		for (uint i = 0; i < text.size()-1; i++)
-			fout << text[i] << endl;
-		fout << text[text.size()-1];
-	}
-	fout.close();
-	remove( string(path + mapname + ".cfg.bak").c_str() );
 
 	return true;
 }
@@ -486,6 +499,244 @@ void saveLumpBackup(BSP * map, int lump, string suffix)
 	ofstream fout(filename, ios::out | ios::binary | ios::trunc);
 	fout.write((char*)map->lumps[lump], map->header.lump[lump].nLength); 
 	fout.close();
+}
+
+vector<string> create_res_list(Entity ** ents)
+{
+	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+	{
+		if (ents[i] == NULL)
+			break;
+		string cname = toLowerCase(ents[i]->keyvalues["classname"]);
+
+		if (matchStr(cname, "worldspawn"))
+		{
+			if (ents[i]->hasKey("wad"))
+			{
+				vector<string> wads = splitString(ents[i]->keyvalues["wad"], ";");
+				for (uint i = 0; i < wads.size(); ++i)
+				{
+					int dirfind = wads[i].find_last_of("\\/");
+					if (dirfind) wads[i] = getSubStr(wads[i], dirfind+1);
+					res_list.insert(wads[i]);
+				}
+			}
+			if (ents[i]->hasKey("skyname"))
+			{
+				res_list.insert("gfx/env/" + ents[i]->keyvalues["skyname"] + "ft.tga");
+				res_list.insert("gfx/env/" + ents[i]->keyvalues["skyname"] + "bk.tga");
+				res_list.insert("gfx/env/" + ents[i]->keyvalues["skyname"] + "up.tga");
+				res_list.insert("gfx/env/" + ents[i]->keyvalues["skyname"] + "dn.tga");
+				res_list.insert("gfx/env/" + ents[i]->keyvalues["skyname"] + "lf.tga");
+				res_list.insert("gfx/env/" + ents[i]->keyvalues["skyname"] + "rt.tga");
+			}
+		}
+
+		//
+		// find custom entity sounds
+		//
+		if (matchStr(cname, "ambient_generic") || matchStr(cname, "func_rotating"))
+			if (ents[i]->hasKey("message"))
+				res_list.insert("sound/" + ents[i]->keyvalues["message"]);
+		else if (matchStr(cname, "custom_precache"))
+			for (string_hashmap::iterator it = ents[i]->keyvalues.begin(); it != ents[i]->keyvalues.end(); ++it)
+				if (it->first.find("model_") == 0 || it->first.find("sound_") == 0)
+					res_list.insert(it->second);
+		// rest of the sounds set in global replacement function		
+
+		//
+		// find custom entity models
+		//
+
+		if (cname.find("monstermaker") != string::npos || cname.find("env_xenmaker") != string::npos)
+			cname = toLowerCase(ents[i]->keyvalues["monstertype"]);
+
+		string custom_monster_model_key = "model";
+		if (cname.find("squadmaker") != string::npos)
+		{
+			cname = toLowerCase(ents[i]->keyvalues["monstertype"]);
+			custom_monster_model_key = "new_model";
+		}
+
+		if (matchStr(cname, "env_shooter") && ents[i]->hasKey("shootmodel"))
+			res_list.insert(ents[i]->keyvalues["shootmodel"]);
+		else if (matchStr(cname, "env_beam") && ents[i]->hasKey("texture"))
+			res_list.insert(ents[i]->keyvalues["texture"]);
+		else if (matchStr(cname, "env_funnel") && ents[i]->hasKey("sprite"))
+			res_list.insert(ents[i]->keyvalues["sprite"]);
+		else if (matchStr(cname, "env_laser"))
+		{
+			if (ents[i]->hasKey("texture"))
+				res_list.insert(ents[i]->keyvalues["texture"]);
+			if (ents[i]->hasKey("EndSprite"))
+				res_list.insert(ents[i]->keyvalues["EndSprite"]);
+		}
+		else if (cname.find("func_tank") == 0)
+		{
+			if (ents[i]->hasKey("spritesmoke"))
+				res_list.insert(ents[i]->keyvalues["spritesmoke"]);
+			if (ents[i]->hasKey("spriteflash"))
+				res_list.insert(ents[i]->keyvalues["spriteflash"]);
+		}
+		else if (matchStr(cname, "func_breakable") || matchStr(cname, "func_door") || matchStr(cname, "func_door_rotating") ||
+				 matchStr(cname, "momentary_door") || matchStr(cname, "func_pushable"))
+			if (ents[i]->hasKey("gibmodel"))
+				res_list.insert(ents[i]->keyvalues["gibmodel"]);	
+		else if (matchStr(cname, "item_recharge") || matchStr(cname, "item_healthcharger"))
+			if (ents[i]->hasKey("model_juice"))
+				res_list.insert(ents[i]->keyvalues["model_juice"]);			
+		
+
+		else if (cname.find("monster_") == 0 || cname.find("ammo_") == 0
+			|| cname.find("item_") == 0 || cname.find("cycler") == 0 || matchStr(cname, "env_beverage") 
+			|| matchStr(cname, "env_glow") || matchStr(cname, "env_sprite") || matchStr(cname, "env_spritetrain") 
+			|| matchStr(cname, "weaponbox") || matchStr(cname, "trigger_changemodel"))
+		{			
+
+			if (ents[i]->hasKey(custom_monster_model_key))
+				res_list.insert(ents[i]->keyvalues[custom_monster_model_key]);
+		}
+		else if (cname.find("weapon_") == 0 || matchStr(cname, "world_items"))
+		{
+			if (ents[i]->hasKey("wpn_v_model"))
+				res_list.insert(ents[i]->keyvalues["wpn_v_model"]);
+			if (ents[i]->hasKey("wpn_w_model"))
+				res_list.insert(ents[i]->keyvalues["wpn_w_model"]);
+			if (ents[i]->hasKey("wpn_p_model"))
+				res_list.insert(ents[i]->keyvalues["wpn_p_model"]);
+		}
+	}
+
+	vector<string> filtered;
+	// TODO: add T models and animation models "01" etc.
+	for (set<string>::iterator it = res_list.begin(); it != res_list.end(); ++it)
+	{
+		string name = *it;
+		while (name.length() > 1 && (name[0] =='/' || name[0] =='\\'))
+			name = getSubStr(*it, 1);
+		if (name.length() <= 1)
+			continue;
+
+		// filter default content out of res list
+		bool is_default = false;
+		for (uint i = 0; i < default_content.size(); ++i)
+		{
+			if (matchStr(name, default_content[i]))
+			{
+				is_default = true;
+				break;
+			}
+		}
+		if (is_default)
+			continue;
+
+		filtered.push_back(name);
+		if (!fileExists(name))
+		{
+			println("WARNING: Couldn't find map resource - '" + name + "'"); 
+			continue;
+		}
+		if (name.find(".mdl") != string::npos)
+		{
+			string m_name = getSubStr(name, 0, name.length()-4);
+			string t_model = name + "T.mdl";
+			if (fileExists(t_model))
+				filtered.push_back(t_model);
+
+			int id = 0;
+			string a_model = m_name + "01.mdl";
+			while (fileExists(a_model))
+			{
+				filtered.push_back(a_model);
+				a_model = m_name;
+				if (++id < 10)
+					a_model += "0";
+				a_model += string(str(id)) + ".mdl";
+			}
+		}
+	}
+	return filtered;
+}
+
+void create_res_file(Entity ** ents, string path, string mapname)
+{
+	vector<string> res_files = create_res_list(ents);
+
+	vector<string> text;
+	string line;
+
+	ifstream myfile (path + mapname + ".res");
+	if (myfile.is_open())
+	{
+		while ( !myfile.eof() )
+		{
+			getline (myfile,line);
+			text.push_back(line);
+		}
+	}
+	myfile.close();
+
+	ofstream fout;
+
+	// create a backup of the current res file
+	if (prefixMode == PREFIX_NONE)
+	{
+		fout.open (path + mapname + ".res.bak", ios::out | ios::trunc);
+		if (text.size() > 0)
+		{
+			for (uint i = 0; i < text.size()-1; i++)
+				fout << text[i] << endl;
+			fout << text[text.size()-1];
+		}
+		fout.close(); 
+	}
+
+	if (prefixMode != PREFIX_NONE)
+		mapname = MAP_PREFIX + mapname;
+
+	res_list.insert("maps/" + mapname + ".res");
+	fout.open (path + mapname + ".res", ios::out | ios::trunc);
+	fout << "// This resource file was generated by w00tguy's randomizer.\n";
+	fout << "// Listed resources include sounds, models, sprites, wads, and skyboxes not included with SC 4.8.\n";
+	fout << "// It also includes map cfgs, global sound/model replacement files, and this resource file.\n";
+	fout << "// Dependencies for models are included if they exist (e.g. Tor.mdl + TorT.mdl + Tor01.mdl).\n\n";
+	for (uint i = 0; i < res_files.size(); ++i)
+		fout << res_files[i] << endl;
+	
+	fout.close();
+}
+
+bool restore_map_txt_file(string path, string mapname, string ext)
+{
+	vector<string> text;
+	string line;
+
+	ifstream myfile (path + mapname + ext + ".bak");
+	if (myfile.is_open())
+	{
+		while ( !myfile.eof() )
+		{
+			getline (myfile,line);
+			text.push_back(line);
+		}
+	}
+	else
+		return false;
+	myfile.close();
+
+	ofstream fout;
+
+	fout.open (path + mapname + ext, ios::out | ios::trunc);
+	if (text.size() > 0)
+	{
+		for (uint i = 0; i < text.size()-1; i++)
+			fout << text[i] << endl;
+		fout << text[text.size()-1];
+	}
+	fout.close();
+	remove( string(path + mapname + ext + ".bak").c_str() );
+
+	return true;
 }
 
 string get_date_base36()
@@ -662,6 +913,7 @@ int randomize_maps()
 			{
 				writables = getReplacableSounds(verbose);
 				string gsrName = path + map->name + ".gsrand";
+				res_list.insert("maps/" + map->name + ".gsrand");
 				writeGSR(gsrName, writables);
 			}
 			if (sndMode != SND_WORLD)
@@ -682,6 +934,8 @@ int randomize_maps()
 			needsRipent(map, ents);
 			ripent(map, ents, false);
 		}
+
+		create_res_file(ents, path, mapName);
 
 		for (int i = 0; i < HEADER_LUMPS; i++)
 			delete [] map->lumps[i];
@@ -830,14 +1084,31 @@ void undoEverything()
 		}
 
 		files[f] = getSubStr(files[f],0,files[f].length()-4);
-		if (prefixMode == PREFIX_NONE)
-		{
-			if (restoreCFG(path, files[f]))
-				numUpdated++;
-		}
+		if (restore_map_txt_file(path, files[f], ".cfg"))
+			numUpdated++;
+		if (restore_map_txt_file(path, files[f], ".res"))
+			numUpdated++;
 	}
 	if (numUpdated > 0)
-		println("Restored " + str(numUpdated) + " CFGs.");
+		println("Restored " + str(numUpdated) + " CFG/RES files.");
+
+	files = getDirFiles(path,"res");
+	for (uint f = 0; f < files.size(); f++)
+	{
+		string prefix = "";
+		if (files[f].length() > 7)
+		{
+			prefix = getSubStr(files[f],0,7);
+			if (matchStr(prefix,"gsrand_"))
+			{
+				remove( string(path + files[f]).c_str() );
+				numRemoved++;
+				continue;
+			}
+		}
+	}
+	if (numRemoved > 0)
+		println("Deleted " + str(numRemoved) + " CFG/RES files.");
 
 	numRemoved = 0;
 	files = getDirFiles(getWorkDir(),"wad");
@@ -1017,6 +1288,7 @@ void printHelp()
 int main(int argc, char* argv[])
 {
  	srand ( (uint)time(NULL) );
+	init_default_content();
 	//srand (1337);
 	//genSoundList();
 	//genModelList();
@@ -1030,7 +1302,7 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system("cls"); // WINDOWS ONLY
-		cout << "Welcome to w00tguy's map randomizer!\n" << endl;
+		cout << "Welcome to w00tguy's map randomizer version 2!\n" << endl;
 
 		cout << "Options:\n";
 		cout << "1: Texture Mode: ";

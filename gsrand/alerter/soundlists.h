@@ -98,7 +98,7 @@ enum weapon_types
 	WEAPON_TYPES,
 };
 
-#define NUM_VOICE_DIRS 33
+#define NUM_VOICE_DIRS 32
 static const char * voice_dirs[NUM_VOICE_DIRS] = 
 {
 	"aslave",		 
@@ -117,7 +117,6 @@ static const char * voice_dirs[NUM_VOICE_DIRS] =
 	"fvox",
 
 	"agrunt",		 // 26 files
-	"apache",		 // 5 files
 	"barnacle",	 // 8
 	"bullchicken", // 26
 	"controller",  // 16
@@ -439,8 +438,8 @@ static const char * common[NUM_COMMON] =
 	"npc_step4",
 };
 
-// 9 of 384
-#define NUM_SCIENTIST 14
+// 38 of 384
+#define NUM_SCIENTIST 38
 static const char * scientist[NUM_SCIENTIST] =
 {
 	"sci_die1",
@@ -456,7 +455,31 @@ static const char * scientist[NUM_SCIENTIST] =
 	"sci_pain7",
 	"sci_pain8",
 	"sci_pain9",
-	"sci_pain10",
+	"sci_scream1",
+	"sci_scream2",
+	"sci_scream3",
+	"sci_scream4",
+	"sci_scream5",
+	"sci_scream6",
+	"sci_scream7",
+	"sci_scream8",
+	"sci_scream9",
+	"sci_scream10",
+	"sci_scream11",
+	"sci_scream12",
+	"sci_scream13",
+	"sci_scream14",
+	"sci_scream15",
+	"sci_scream16",
+	"sci_scream17",
+	"sci_scream18",
+	"sci_scream19",
+	"sci_scream20",
+	"sci_scream21",
+	"sci_scream22",
+	"sci_scream23",
+	"sci_scream24",
+	"sci_scream25",
 };
 
 // 29 out of 178
