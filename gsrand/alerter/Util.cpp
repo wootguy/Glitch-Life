@@ -584,6 +584,13 @@ DateTime DateTime::now()
 
 string DateTime::str()
 {
+	TIME_ZONE_INFORMATION tz;
+	GetTimeZoneInformation(&tz);
+	string zone = ::str(-tz.Bias / 60);
+	if (-tz.Bias > 0)
+		zone = "+" + zone;
+	zone = " (UTC" + zone + ")";
+
 	string suffix = "AM";
 	int s_hour = hour;
 	string s_min = minute < 10 ? ("0" + ::str(minute)) : ::str(minute);
@@ -593,7 +600,7 @@ string DateTime::str()
 		s_hour -= 12;
 		suffix = "PM";
 	}
-	return ::str(month) + "/" + ::str(day) + "/" + ::str(year) + " " + ::str(s_hour) + ":" + s_min + ":" + s_sec + " " + suffix;
+	return ::str(year) + "/" + ::str(month) + "/" + ::str(day) + " " + ::str(s_hour) + ":" + s_min + " " + suffix + " " + zone;
 }
 
 string DateTime::compact_str()

@@ -35,8 +35,9 @@ string get_random_model(int request_model_type)
 			return user_prop_models[rand() % user_prop_models.size()];
 		else
 		{
-			r = rand() % 4;
-			if (r && user_monster_models.size()) return user_monster_models[rand() % user_monster_models.size()];
+			r = rand() % 10;
+			if ((r && user_monster_models.size()) || !user_player_models.size()) 
+				return user_monster_models[rand() % user_monster_models.size()];
 			if (user_player_models.size())
 				return user_player_models[rand() % user_player_models.size()]; 
 		}
@@ -45,10 +46,11 @@ string get_random_model(int request_model_type)
 		return user_prop_models[rand() % user_prop_models.size()];
 	else if (request_model_type == MODEL_TYPE_MONSTER)
 	{
-		r = rand() % 4;
-			if (r && user_monster_models.size()) return user_monster_models[rand() % user_monster_models.size()];
-			if (user_player_models.size())
-				return user_player_models[rand() % user_player_models.size()]; 
+		r = rand() % 10;
+		if ((r && user_monster_models.size()) || !user_player_models.size()) 
+			return user_monster_models[rand() % user_monster_models.size()];
+		if (user_player_models.size())
+			return user_player_models[rand() % user_player_models.size()]; 
 	}
 	else if (request_model_type == MODEL_TYPE_P_WEAPON && user_p_models.size())
 		return user_p_models[rand() % user_p_models.size()];
@@ -475,10 +477,9 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 	total_models += 1; // BSP map model
 	//println("BSP Models: " + str(map_models));
 
-	total_models += default_gib_models.size(); // assume all gibs are precached
-
 	for (uint i = 0; i < default_precache_models.size(); ++i)
 		ent_models[default_precache_models[i]] = "default_precache_models";
+	total_models += default_weapon_models.size()*2; // p_ and v_ models
 
 	potential_additions = 0;
 	int potential_door_gibs = 0;
@@ -689,9 +690,6 @@ string random_model_replace(string model)
 		else
 		{
 			replacement = get_random_model(MODEL_TYPE_GENERIC);
-			if (matchStr(model, "models/w_satchel.mdl"))
-				while (find(satchel_blacklist.begin(), satchel_blacklist.end(), replacement) != satchel_blacklist.end())
-					replacement = get_random_model(MODEL_TYPE_GENERIC);	
 			replacement = "models/" + replacement + ".mdl";	
 		}
 	}
@@ -736,6 +734,71 @@ vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap
 	replace_models.insert(replace_models.end(), default_precache_models.begin(), default_precache_models.end()); 
 	if (replace_level == 2)
 		replace_models.insert(replace_models.end(), default_gib_models.begin(), default_gib_models.end());
+
+	for (string_hashmap::iterator it = default_weapon_models.begin(); it != default_weapon_models.end(); ++it)
+	{
+		string model = random_model_replace("models/v_"); // just let it know we're replacing a weapon model
+		bool is_safe = false;
+		for (uint i = 0; i < 100; ++i)
+		{
+			if (is_safe_model_replacement("", "v_", model))
+			{
+				is_safe = true;
+				break;
+			}
+			model = random_model_replace("models/v_"); // make sure it's a safe weapon replacement (v_/w_/p_ treated equally)
+		}
+		if (!is_safe)
+			break; // all of our current models must be unsafe!
+		
+		int findwep = model.find("v_");
+		if (findwep == string::npos) model.find("p_");
+		if (findwep == string::npos) model.find("w_");
+		if (findwep != string::npos)
+		{
+			string dir = getSubStr(model, 0, findwep);
+			string name = getSubStr(model, findwep+2); // strip .mdl and anything before name
+			string v_wep = "models/" + get_random_model(MODEL_TYPE_V_WEAPON) + ".mdl";
+			string p_wep = "models/" + get_random_model(MODEL_TYPE_P_WEAPON) + ".mdl";
+			string w_wep = "models/" + get_random_model(MODEL_TYPE_W_WEAPON) + ".mdl";
+			if (fileExists(dir + "v_" + name))
+				v_wep = dir + "v_" + name;
+			else
+			{
+				for (uint i = 0; i < user_v_models.size(); ++i)
+					if ((user_v_models[i] + ".mdl").find("v_" + name) != string::npos)
+						v_wep = "models/" + user_v_models[i] + ".mdl";
+			}
+			if (fileExists(dir + "p_" + name))
+				p_wep = dir + "p_" + name;
+			else
+			{
+				for (uint i = 0; i < user_p_models.size(); ++i)
+					if ((user_p_models[i] + ".mdl").find("p_" + name) != string::npos)
+						p_wep = "models/" + user_p_models[i] + ".mdl"; 
+			}
+			if (fileExists(dir + "w_" + name))
+				w_wep = dir + "w_" + name;
+			else
+			{
+				for (uint i = 0; i < user_w_models.size(); ++i)
+					if ((user_w_models[i] + ".mdl").find("w_" + name) != string::npos)
+						w_wep = "models/" + user_w_models[i] + ".mdl"; 
+			}
+				
+			ent_models["models/v_" + default_v_weapon_models[it->first] + ".mdl"] = v_wep;
+			ent_models["models/p_" + default_p_weapon_models[it->first] + ".mdl"] = p_wep;
+			ent_models["models/w_" + default_w_weapon_models[it->first] + ".mdl"] = w_wep;
+		}
+		else
+		{
+			// use the same model for all views so it at least kind of makes sense
+			ent_models["models/v_" + default_v_weapon_models[it->first] + ".mdl"] = model;
+			ent_models["models/p_" + default_p_weapon_models[it->first] + ".mdl"] = model;
+			ent_models["models/w_" + default_w_weapon_models[it->first] + ".mdl"] = model;
+		}
+
+	}
 
 	if (replace_level == 0) // load the old GMR file and replace models only if no new models are precached
 	{
@@ -875,14 +938,14 @@ bool is_safe_model_replacement(string classname, string model, string replacemen
 			if (hwgrunt_blacklist[i].find(replacement) != string::npos)
 				return false;
 	}
-	if (model.find("w_satchel") == 0)
+	if (model.find("w_") != string::npos || model.find("p_") != string::npos || model.find("v_") != string::npos)
 	{
-		for (uint i = 0; i < satchel_blacklist.size(); ++i)
-			if (satchel_blacklist[i].find(replacement) != string::npos)
+		for (uint i = 0; i < weapon_blacklist.size(); ++i)
+			if (weapon_blacklist[i].find(replacement) != string::npos)
 				return false;
 	}
 	if (replacement.find("models/doctor.mdl") == 0)
-		return false; // problematic model and model I use for indicating errors
+		return false; // problematic model (won't even load in the model viewer)
 	return true;
 }
 
@@ -1001,14 +1064,23 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 							it->second = "models/" + get_random_model(MODEL_TYPE_MONSTER) + ".mdl";
 					}
 				}
-				// rename monster to "model_name monster_name"
+				
 				if (cname.find("monster_") == 0)
 				{
+					string raw_model_name = it->second;
+					raw_model_name = getSubStr(raw_model_name, 0, raw_model_name.length()-4); // strip .mdl
+					raw_model_name = getSubStr(raw_model_name, raw_model_name.find_last_of("/\\")+1);
+					if (raw_model_name.find("v_") == 0 || raw_model_name.find("p_") == 0)
+						raw_model_name = getSubStr(raw_model_name, 2);
+
+					bool is_player_model = it->second.find("player/") != string::npos;
+
+					// find all monsters that will be using this replacement
 					for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 					{
 						if (ents[i] == NULL)
 							break;
-
+						
 						string cname2 = ents[i]->keyvalues["classname"];
 						if (cname2.find("monstermaker") != string::npos || cname2.find("env_xenmaker") != string::npos)
 						{
@@ -1025,11 +1097,17 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 						if (cname2.find(cname) != 0)
 							continue;
 
-						string raw_model_name = it->second;
-						raw_model_name = getSubStr(raw_model_name, 0, raw_model_name.length()-4); // strip .mdl
-						raw_model_name = getSubStr(raw_model_name, raw_model_name.find_last_of("/\\")+1);
-						if (raw_model_name.find("v_") == 0 || raw_model_name.find("p_") == 0)
-							raw_model_name = getSubStr(raw_model_name, 2);
+						if (is_player_model) 
+						{   
+							// player model origins arn't at the feet, so we need to offset the monster to compensate
+							int height = 36;
+							if (default_monster_heights.find(cname) != default_monster_heights.end())
+								height = default_monster_heights[cname] - 36;
+							ents[i]->keyvalues["minhullsize"] = "-16 -16 -36";
+							ents[i]->keyvalues["maxhullsize"] = "16 16 " + str(height);
+						}
+
+						// rename monster to "model_name monster_name"
 						string displayname = ents[i]->keyvalues["displayname"];
 						if (!displayname.length())
 							displayname = getSubStr(cname, string("monster_").length());
@@ -1181,6 +1259,16 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 							find(replace_models.begin(), replace_models.end(), ents[i]->keyvalues[custom_monster_model_key]) != replace_models.end() ||
 							!is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]))
 						new_model = replace_entity_model(ents[i], custom_monster_model_key, MODEL_TYPE_MONSTER, ++potential_additions);
+
+					if (ents[i]->keyvalues[custom_monster_model_key].find("player/") != string::npos) 
+					{   
+						// player model origins arn't at the feet, so we need to offset the monster to compensate
+						int height = 36;
+						if (default_monster_heights.find(cname) != default_monster_heights.end())
+							height = default_monster_heights[cname] - 36;
+						ents[i]->keyvalues["minhullsize"] = "-16 -16 -36";
+						ents[i]->keyvalues["maxhullsize"] = "16 16 " + str(height);
+					}
 
 					// rename monster to "model_name monster_name"
 					string raw_model_name = ents[i]->keyvalues[custom_monster_model_key];

@@ -5,11 +5,16 @@
 
 using namespace std;
 
+
 typedef tr1::unordered_map< string, string > string_hashmap;
+typedef tr1::unordered_map< string, int > height_hashmap;
 
 extern string_hashmap default_monster_models;
 extern string_hashmap default_friendly_monster_models;
 extern string_hashmap default_weapon_models;
+extern string_hashmap default_w_weapon_models;
+extern string_hashmap default_p_weapon_models;
+extern string_hashmap default_v_weapon_models;
 extern string_hashmap default_ammo_models;
 extern string_hashmap default_item_models;
 extern vector<string> default_gib_models;
@@ -18,7 +23,7 @@ extern vector<string> default_precache_models; // models that are precached by d
 extern vector<string> gmr_replace_only; // models only replacable through GMR
 
 // set of models that would crash the game if they were used as replacements
-extern vector<string> satchel_blacklist;
+extern vector<string> weapon_blacklist;
 extern vector<string> hwgrunt_blacklist;
 
 // set of models that are tested to be working for the monster (others likely cause a crash)
@@ -31,6 +36,8 @@ extern vector<string> dont_replace; // shouldn't be replaced
 
 extern vector<string> weapon_types;
 
+extern height_hashmap default_monster_heights;
+
 // to regenerate:
 // run "mcache" command
 // copy output to tet file. Edit with NP++
@@ -42,84 +49,22 @@ extern vector<string> weapon_types;
 static void init_default_precache_list()
 {
 	default_precache_models.clear();
-	default_precache_models.push_back("models/v_shotgun.mdl");
-	default_precache_models.push_back("models/p_shotgun.mdl");
 	default_precache_models.push_back("models/shotgunshell.mdl");
-	default_precache_models.push_back("models/v_crowbar.mdl");
-	default_precache_models.push_back("models/p_crowbar.mdl");
-	default_precache_models.push_back("models/v_pipe_wrench.mdl");
-	default_precache_models.push_back("models/p_pipe_wrench.mdl");
-	default_precache_models.push_back("models/v_medkit.mdl");
-	default_precache_models.push_back("models/p_medkit.mdl");
-	default_precache_models.push_back("models/v_minigun.mdl");
-	default_precache_models.push_back("models/p_minigunidle.mdl");
-	default_precache_models.push_back("models/p_minigunspin.mdl");
 	default_precache_models.push_back("models/shell.mdl");
-	default_precache_models.push_back("models/v_bgrap.mdl");
-	default_precache_models.push_back("models/p_bgrap.mdl");
-	default_precache_models.push_back("models/v_m40a1.mdl");
-	default_precache_models.push_back("models/p_m40a1.mdl");
 	default_precache_models.push_back("models/saw_shell.mdl");
-	default_precache_models.push_back("models/v_saw.mdl");
-	default_precache_models.push_back("models/p_saw.mdl");
-	default_precache_models.push_back("models/v_m16a2.mdl");
-	default_precache_models.push_back("models/p_m16.mdl");
 	default_precache_models.push_back("models/grenade.mdl");
-	default_precache_models.push_back("models/v_desert_eagle.mdl");
-	default_precache_models.push_back("models/p_desert_eagle.mdl");
-	default_precache_models.push_back("models/v_uzi.mdl");
-	default_precache_models.push_back("models/p_2uzis.mdl");
-	default_precache_models.push_back("models/p_2uzis_gold.mdl");
-	default_precache_models.push_back("models/p_uzi.mdl");
-	default_precache_models.push_back("models/p_uzi_gold.mdl");
-	default_precache_models.push_back("models/v_shock.mdl");
-	default_precache_models.push_back("models/w_shock_rifle.mdl");
-	default_precache_models.push_back("models/p_shock.mdl");
 	default_precache_models.push_back("models/shock_effect.mdl");
 	default_precache_models.push_back("models/spore.mdl");
-	default_precache_models.push_back("models/v_spore_launcher.mdl");
-	default_precache_models.push_back("models/w_spore_launcher.mdl");
-	default_precache_models.push_back("models/p_spore_launcher.mdl");
 	default_precache_models.push_back("models/spore_ammo.mdl");
-	default_precache_models.push_back("models/v_9mmhandgun.mdl");
-	default_precache_models.push_back("models/p_9mmhandgun.mdl");
-	default_precache_models.push_back("models/v_9mmAR.mdl");
-	default_precache_models.push_back("models/p_9mmAR.mdl");
-	default_precache_models.push_back("models/v_357.mdl");
-	default_precache_models.push_back("models/p_357.mdl");
-	default_precache_models.push_back("models/v_gauss.mdl");
-	default_precache_models.push_back("models/p_gauss.mdl");
-	default_precache_models.push_back("models/v_rpg.mdl");
-	default_precache_models.push_back("models/p_rpg.mdl");
-	default_precache_models.push_back("models/p_rpg_r.mdl");
 	default_precache_models.push_back("models/rpgrocket.mdl");
-	default_precache_models.push_back("models/v_crossbow.mdl");
-	default_precache_models.push_back("models/p_crossbow.mdl");
 	default_precache_models.push_back("models/crossbow_bolt.mdl");
-	default_precache_models.push_back("models/v_egon.mdl");
-	default_precache_models.push_back("models/p_egon.mdl");
-	default_precache_models.push_back("models/v_tripmine.mdl");
-	default_precache_models.push_back("models/p_tripmine.mdl");
-	default_precache_models.push_back("models/v_satchel.mdl");
-	default_precache_models.push_back("models/v_satchel_radio.mdl");
-	default_precache_models.push_back("models/w_satchel.mdl");
-	default_precache_models.push_back("models/p_satchel.mdl");
-	default_precache_models.push_back("models/p_satchel_radio.mdl");
-	default_precache_models.push_back("models/w_grenade.mdl");
-	default_precache_models.push_back("models/v_grenade.mdl");
-	default_precache_models.push_back("models/p_grenade.mdl");
 	default_precache_models.push_back("models/cretegibs.mdl");
-	default_precache_models.push_back("models/w_sqknest.mdl");
-	default_precache_models.push_back("models/v_squeak.mdl");
-	default_precache_models.push_back("models/p_squeak.mdl");
-	default_precache_models.push_back("models/w_squeak.mdl");
 	default_precache_models.push_back("models/chumtoad.mdl");
-	default_precache_models.push_back("models/v_hgun.mdl");
-	default_precache_models.push_back("models/p_hgun.mdl");
 	default_precache_models.push_back("models/hornet.mdl");
 	default_precache_models.push_back("models/player.mdl");
 	default_precache_models.push_back("models/hgibs.mdl");
 	default_precache_models.push_back("models/agibs.mdl");
+	default_precache_models.push_back("models/p_rpg_r.mdl");
 
 	default_precache_models.push_back("sprites/tongue.spr");
 	default_precache_models.push_back("sprites/blueflare1.spr");
@@ -149,9 +94,20 @@ static void init_default_precache_list()
 	default_precache_models.push_back("sprites/muzzleflash_saw.spr");
 }
 
+static void init_default_monster_heights()
+{
+	default_monster_heights["monster_headcrab"] = 24;
+	default_monster_heights["monster_chumtoad"] = 12;
+	default_monster_heights["monster_houndeye"] = 36;
+	default_monster_heights["monster_bullchicken"] = 64;
+	default_monster_heights["monster_alien_grunt"] = 64;
+	default_monster_heights["monster_ichthyosaur"] = 64;
+	default_monster_heights["monster_stukabat"] = 24;
+}
+
 static void init_black_lists()
 {
-	satchel_blacklist.clear();
+	weapon_blacklist.clear();
 	nih_whitelist.clear();
 	controller_whitelist.clear();
 
@@ -187,10 +143,94 @@ static void init_black_lists()
 	hwgrunt_blacklist.push_back("models/turr/betty.mdl");
 	hwgrunt_blacklist.push_back("models/turretfortress/friendly.mdl");
 
-	satchel_blacklist.push_back("apache");
-	satchel_blacklist.push_back("apachef");
-	satchel_blacklist.push_back("babygarg");
-	satchel_blacklist.push_back("babygargf");
+	weapon_blacklist.push_back("models/babygarg.mdl");
+	weapon_blacklist.push_back("models/babygargf.mdl");
+	weapon_blacklist.push_back("models/big_mom.mdl");
+	weapon_blacklist.push_back("models/blkop_osprey.mdl");
+	weapon_blacklist.push_back("models/controller.mdl");
+	weapon_blacklist.push_back("models/hair.mdl");
+	weapon_blacklist.push_back("models/hgrunt.mdl");
+	weapon_blacklist.push_back("models/hgruntf.mdl");
+	weapon_blacklist.push_back("models/hgrunt_opfor.mdl");
+	weapon_blacklist.push_back("models/hgrunt_opforf.mdl");
+	weapon_blacklist.push_back("models/icky.mdl");
+	weapon_blacklist.push_back("models/kingheadcrab.mdl");
+	weapon_blacklist.push_back("models/light.mdl");
+	weapon_blacklist.push_back("models/miniturret.mdl");
+	weapon_blacklist.push_back("models/rengine.mdl");
+	weapon_blacklist.push_back("models/santashelper.mdl");
+	weapon_blacklist.push_back("models/sentry.mdl");
+	weapon_blacklist.push_back("models/tentacle2.mdl");
+	weapon_blacklist.push_back("models/tree.mdl");
+	weapon_blacklist.push_back("models/turret.mdl");
+	weapon_blacklist.push_back("models/uplant2.mdl");
+	weapon_blacklist.push_back("models/assaultmesa2/biggarg.mdl");
+	weapon_blacklist.push_back("models/bmt/aqua/bullsquid.mdl");
+	weapon_blacklist.push_back("models/bmt/icky/icky.mdl");
+	weapon_blacklist.push_back("models/bshift/barney.mdl");
+	weapon_blacklist.push_back("models/bshift/gordon_scientist.mdl");
+	weapon_blacklist.push_back("models/bshift/hgrunt.mdl");
+	weapon_blacklist.push_back("models/bshift/wrangler.mdl");
+	weapon_blacklist.push_back("models/deadsimpleneo/babygarg.mdl");
+	weapon_blacklist.push_back("models/deadsimpleneo/sentry.mdl");
+	weapon_blacklist.push_back("models/escape/garg.mdl");
+	weapon_blacklist.push_back("models/escape/icky.mdl");
+	weapon_blacklist.push_back("models/escape_series/fast_zombie/zombie.mdl");
+	weapon_blacklist.push_back("models/hammerhead/civilian.mdl");
+	weapon_blacklist.push_back("models/hunger/babykelly.mdl");
+	weapon_blacklist.push_back("models/hunger/bullsquid.mdl");
+	weapon_blacklist.push_back("models/hunger/chicken.mdl");
+	weapon_blacklist.push_back("models/hunger/civ.mdl");
+	weapon_blacklist.push_back("models/hunger/franklin2.mdl");
+	weapon_blacklist.push_back("models/hunger/heart.mdl");
+	weapon_blacklist.push_back("models/hunger/hgrunt.mdl");
+	weapon_blacklist.push_back("models/hunger/hungerbarney.mdl");
+	weapon_blacklist.push_back("models/hunger/hungerhound.mdl");
+	weapon_blacklist.push_back("models/hunger/hungerslave.mdl");
+	weapon_blacklist.push_back("models/hunger/hungerzombie.mdl");
+	weapon_blacklist.push_back("models/hunger/lpzombie.mdl");
+	weapon_blacklist.push_back("models/hunger/megasquid.mdl");
+	weapon_blacklist.push_back("models/hunger/nurse.mdl");
+	weapon_blacklist.push_back("models/hunger/nursezombie.mdl");
+	weapon_blacklist.push_back("models/hunger/pilot.mdl");
+	weapon_blacklist.push_back("models/hunger/scientist.mdl");
+	weapon_blacklist.push_back("models/hunger/sheriff.mdl");
+	weapon_blacklist.push_back("models/hunger/zgrunt.mdl");
+	weapon_blacklist.push_back("models/hunger/zombie.mdl");
+	weapon_blacklist.push_back("models/hunger/zombie2.mdl");
+	weapon_blacklist.push_back("models/hunger/zombie3.mdl");
+	weapon_blacklist.push_back("models/hunger/zombierat.mdl");
+	weapon_blacklist.push_back("models/infiltrate/david.mdl");
+	weapon_blacklist.push_back("models/mmm/bullgiant.mdl");
+	weapon_blacklist.push_back("models/mmm/controllergiant.mdl");
+	weapon_blacklist.push_back("models/mmm/crabgiant.mdl");
+	weapon_blacklist.push_back("models/mmm/giant.mdl");
+	weapon_blacklist.push_back("models/mmm/houndgiant.mdl");
+	weapon_blacklist.push_back("models/mommamesa/bman_2.mdl");
+	weapon_blacklist.push_back("models/sandstone/rpggrunte.mdl");
+	weapon_blacklist.push_back("models/sandstone/rpggruntf.mdl");
+	weapon_blacklist.push_back("models/sc_activist/contrller.mdl");
+	weapon_blacklist.push_back("models/sc_activist/houndeye.mdl");
+	weapon_blacklist.push_back("models/sc_activist/icky.mdl");
+	weapon_blacklist.push_back("models/sc_mazing/babygarg.mdl");
+	weapon_blacklist.push_back("models/sc_psyko/redbabygarg.mdl");
+	weapon_blacklist.push_back("models/sc_psyko/yellowcontroller.mdl");
+	weapon_blacklist.push_back("models/sc_royals/anubis.mdl");
+	weapon_blacklist.push_back("models/sc_royals/mummy.mdl");
+	weapon_blacklist.push_back("models/sc_royals/pharaoh.mdl");
+	weapon_blacklist.push_back("models/sc_tetris/controllerboss.mdl");
+	weapon_blacklist.push_back("models/sc_tetris/controllerguardian.mdl");
+	weapon_blacklist.push_back("models/spaceviking/cbarney.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/bogcreature.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/dragon.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/grylion.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/heretic.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/hydra.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/monster.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/rat.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/sheep.mdl");
+	weapon_blacklist.push_back("models/svencooprpg2/zombie.mdl");
+	weapon_blacklist.push_back("models/turretfortress/zombie.mdl");
 
 	controller_whitelist.push_back("models/baby_voltigore.mdl");
 	controller_whitelist.push_back("models/barney_vest.mdl");
@@ -598,7 +638,7 @@ static void init_default_model_lists()
 	default_weapon_models["grapple"]       = "bgrap";
 	default_weapon_models["handgrenade"]   = "grenade";
 	default_weapon_models["hornetgun"]     = "hgun";
-	default_weapon_models["m16"]           = "m16a2";
+	default_weapon_models["m16"]           = "m16";
 	default_weapon_models["m249"]          = "saw";
 	default_weapon_models["medkit"]        = "medkit";
 	default_weapon_models["minigun"]       = "minigun";
@@ -610,9 +650,23 @@ static void init_default_model_lists()
 	default_weapon_models["sniperrifle"]   = "m40a1";
 	default_weapon_models["sporelauncher"] = "spore_launcher";
 	default_weapon_models["tripmine"]      = "tripmine";
-	default_weapon_models["uzi"]           = "uzi";  // special conditions! (uzi_gold, 2uzis, 2uzis_gold)
-	default_weapon_models["uziakimbo"]     = "uzi_gold";
+	default_weapon_models["uzi"]           = "uzi";
+	default_weapon_models["uziakimbo"]     = "2uzis";
+	default_weapon_models["uzi_gold"]      = "uzi_gold"; 
+	default_weapon_models["uziakimbo_gold"]= "2uzis_gold";
 	default_weapon_models["satchel_radio"] = "satchel_radio";
+
+	for (string_hashmap::iterator it = default_weapon_models.begin(); it != default_weapon_models.end(); ++it)
+	{
+		default_w_weapon_models[it->first] = it->second;
+		default_p_weapon_models[it->first] = it->second;
+		default_v_weapon_models[it->first] = it->second;
+	}
+	default_v_weapon_models["m16"] = "m16a2";
+	default_p_weapon_models["9mmar"] = "9mmAR";
+	default_v_weapon_models["uziakimbo"] = "uzi";
+	default_v_weapon_models["uzi_gold"] = "uzi";
+	default_v_weapon_models["uziakimbo_gold"] = "uzi";
 
 	default_ammo_models["357"]        = "357ammo"; // maybe ammobox?
 	default_ammo_models["556"]        = "saw_clip";
@@ -645,6 +699,7 @@ static void init_default_model_lists()
 		weapon_types.push_back(it->first);
 
 	init_default_precache_list();
+	init_default_monster_heights();
 }
 
 #define NUM_APACHE_MODELS 124
