@@ -183,6 +183,8 @@ void insert_unique(const vector<string>& insert, vector<string>& insert_into);
 
 vector<string> splitString( string str, char * delimitters);
 
+string trimSpaces(string str); // remove spaces at the beginning and end of the string
+
 struct DateTime
 {
 	int year, month, day;

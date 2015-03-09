@@ -1,0 +1,43 @@
+[settings]
+
+// If gmr_only is set to "1" then model replacement will only occur via GMR files.
+// If set to "0" then model replacement will also be done per-entity.
+// It's generally safer to have this set to 1, and any model-related crashes
+// can be fixed by editing/deleting the maps _gmr file. The trade-off is
+// that all entities of the same type will use the same model (less random).
+
+gmr_only = 1
+
+// If grapple_mode is "1" or "2" then a barnacle grapple weapon will be provided 
+// when using model randomization or both texture and entity randomization.
+// If set to "2" then the grapple will attach to walls when using texture replacement.
+// If set to "1" then the grapple will not attach to walls.
+// If set to "0" then the grapple will not be provided no matter what options are used.
+// The grapple is useful for bypassing buggy map sections caused by entity randomization
+// or gibbing monsters that won't die or get out of the way due to their replacement model.
+
+grapple_mode = 2
+
+
+// If random_seed is used, the randomizer will produce the same results every time
+// you run it, as long as all the inputs are the same. If any options or content
+// changes then so will the randomizations.
+
+// random_seed = random text goes here (special characters are ok).
+
+
+// [maps] is a list of maps that gsrand will randomize.
+// If you don't add any map names here, then the randomizer will use EVERY map.
+//
+// There are a few special map names you can use to select all maps in a series:
+//     *hlsp = Half-Life      (c0a0 to c5a1)
+//     *op4  = Opposing Force (of0a0 to of6a5)
+//     *bs   = Blue Shift     (-blueshift to ba_outro)
+//     *they = They Hunger    (-They_Hunger_Ep1 to they29)
+//     *esc  = Escape Series  (escape_series_1a to escape_series_3e)
+
+[maps]
+stadium3
+loz1_forest
+*hlsp
+         

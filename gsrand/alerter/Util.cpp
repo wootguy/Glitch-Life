@@ -676,6 +676,22 @@ void insert_unique(const vector<string>& insert, vector<string>& insert_into)
 	}
 }
 
+string trimSpaces(string s)
+{
+	// Remove white space indents
+	int lineStart = s.find_first_not_of(" \t\n\r");
+	if (lineStart == string::npos)
+		return "";
+	s = s.substr(lineStart);
+
+	// Remove spaces after the last character
+	int lineEnd = s.find_last_not_of(" \t\n\r");
+	if (lineEnd != string::npos && lineEnd < s.length() - 1)
+		s = s.substr(0, lineEnd+1);
+
+	return s;
+}
+
 vector<string> splitString( string str, char * delimitters )
 {
 	vector<string> split;

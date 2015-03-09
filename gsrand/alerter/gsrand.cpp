@@ -20,8 +20,10 @@ int contentMode = 0;
 string gsrand_motd_identifier;
 string gsrand_res_identifier;
 
-bool barnacle_grapple_hook = true; 
+bool gmr_only = false;
+int grapple_mode = GRAPPLE_HOOK;
 string MAP_PREFIX = "gsrand_";
+string random_seed;
 
 int numOverflow = 0;
 bool sparks;
@@ -48,6 +50,7 @@ string mdirs[MONSTER_TYPES];
 int monsters[MONSTER_TYPES];
 int total_map_models = 0;
 
+vector<string> user_maps;
 vector<string> user_sounds;
 vector<string> user_sound_dirs;
 list_hashmap user_voices;
@@ -96,6 +99,9 @@ height_hashmap default_monster_heights;
 vector<string> default_content;
 set<string> res_list;
 
+list_hashmap monster_whitelists;
+list_hashmap monster_blacklists;
+
 DateTime generation_date;
 
 void readConfigFile()
@@ -110,7 +116,6 @@ void readConfigFile()
 void initLists()
 {
 	init_default_model_lists();
-	init_black_lists();
 
 	wlists[WEP_PIPEWRENCH] = wrench;
 	wlists[WEP_PIPEWRENCH] = crowbar;
@@ -337,6 +342,117 @@ void init_default_content()
 	}
 }
 
+enum parse_modes
+{
+	PARSE_SETTINGS,
+	PARSE_MAPS,
+	PARSE_MODES
+};
+
+void parse_settings_file()
+{
+	user_maps.clear();
+	random_seed = 0;
+	grapple_mode = GRAPPLE_HOOK;
+	gmr_only = false;
+
+	ifstream myfile(getWorkDir() + "gsrand_config.txt");
+	if (myfile.is_open())
+	{
+		int parse_mode = PARSE_SETTINGS;
+		while ( !myfile.eof() )
+		{
+			string line;
+			getline (myfile,line);
+			int comments = line.find("//");
+			if (comments != string::npos)
+			{
+				if (comments > 0)
+					line = getSubStr(line, 0, comments);
+				else
+					continue;
+			}
+			line = trimSpaces(line);
+
+			int begin_header = line.find("[");
+			if (begin_header != string::npos)
+			{
+				int end_header = line.find("]");
+				if (end_header != string::npos)
+				{
+					
+					string name = trimSpaces(getSubStr(line, begin_header+1, end_header));
+					if (matchStr("settings", name))
+						parse_mode = PARSE_SETTINGS;
+					else if (matchStr("maps", name))
+						parse_mode = PARSE_MAPS;
+					else
+						println("gsrand_settings.txt - Unknown category: '" + name + "'");
+				}
+				continue;
+			}
+
+			if (parse_mode == PARSE_SETTINGS)
+			{
+				int equal = line.find_first_of("=");
+				if (equal == string::npos || equal == line.size()-1)
+					continue;
+				string setting_name = trimSpaces(getSubStr(line, 0, equal));
+				string setting_value = trimSpaces(getSubStr(line, equal+1));
+				if (setting_name.find("gmr_only") == 0)
+					gmr_only = atoi(setting_value.c_str()) != 0;
+				if (setting_name.find("grapple_mode") == 0)
+					grapple_mode = atoi(setting_value.c_str());
+				if (setting_name.find("random_seed") == 0)
+				{
+					random_seed = setting_value;
+					uint seed = 0x12345678;
+					for (uint i = 0; i < setting_value.size(); ++i)
+						seed = seed*101 + setting_value[i];
+					srand(seed);
+				}
+			}
+			else if (parse_mode == PARSE_MAPS)
+			{
+				if (line.length() < 1)
+					continue;
+				if (matchStr(line, "*hlsp"))
+				{
+					for (int i = 0; i < NUM_HLSP_MAPS; ++i)
+						user_maps.push_back(hlsp_maps[i] + string(".bsp"));
+				}
+				else if (matchStr(line, "*op4"))
+				{
+					for (int i = 0; i < NUM_OP4_MAPS; ++i)
+						user_maps.push_back(op4_maps[i] + string(".bsp"));
+				}
+				else if (matchStr(line, "*bs"))
+				{
+					for (int i = 0; i < NUM_BLUESHIFT_MAPS; ++i)
+						user_maps.push_back(blueshift_maps[i] + string(".bsp"));
+				}
+				else if (matchStr(line, "*they"))
+				{
+					for (int i = 0; i < NUM_HUNGER_MAPS; ++i)
+						user_maps.push_back(hunger_maps[i] + string(".bsp"));
+				}
+				else if (matchStr(line, "*esc"))
+				{
+					for (int i = 0; i < NUM_ESCAPE_MAPS; ++i)
+						user_maps.push_back(escape_maps[i] + string(".bsp"));
+				}
+				else
+					user_maps.push_back(line + string(".bsp"));
+
+			}
+			
+		}
+		myfile.close();
+	}
+	else
+		println("WARNING: gsrand_config.txt is missing.");
+}
+
 bool createCFG(string path, string mapname)
 {
 	vector<string> text;
@@ -412,7 +528,7 @@ bool createCFG(string path, string mapname)
 				fout << endl;
 		}
 
-		if (!has_grapple && (mdlMode != MDL_NONE || entMode == ENT_SUPER))
+		if (!has_grapple && (mdlMode != MDL_NONE || entMode == ENT_SUPER) && grapple_mode != GRAPPLE_DISABLE)
 			fout << "\nweapon_grapple\n";
 	}
 	
@@ -519,6 +635,11 @@ bool createMOTD(string path, string mapname)
 	fout << "    Map Prefix: ";
 	if (prefixMode == PREFIX_NONE)   fout << "No prefix\n";
 	else							 fout << MAP_PREFIX + "\n";
+
+	fout << "    grapple_mode: " << grapple_mode << endl;
+	fout << "    gmr_only: " << (int)gmr_only << endl;
+	if (random_seed.length())
+		fout << "    random_seed: " << random_seed << endl;
 
 	if (text.size() > 0)
 	{
@@ -899,10 +1020,30 @@ string get_date_base36()
 
 int randomize_maps()
 {
-	string path = getWorkDir() + "maps/";
-	vector<string> files = getDirFiles(getWorkDir() + "maps/","bsp");
+	parse_settings_file();
 
-	cout << "Found " << files.size() << " maps\n\n";
+	string path = getWorkDir() + "maps/";
+	vector<string> files = user_maps;
+
+	int missing = 0;
+	if (user_maps.empty())
+		files = getDirFiles(getWorkDir() + "maps/","bsp");
+	else
+	{
+		for (uint i = 0; i < files.size(); ++i)
+		{
+			if (!fileExists(path + files[i]))
+			{
+				files.erase(files.begin() + i--);
+				missing++;
+			}
+		}
+	}
+
+	if (user_maps.empty())
+		cout << "Found " << files.size() << " maps\n\n";
+	else
+		cout << "Found " << files.size() << " of " << (files.size() + missing) << " maps\n\n";
 
 	if (contentMode == CONTENT_EVERYTHING) println("Finding content...");
 	if (contentMode == CONTENT_DEFAULT) println("Finding default content...");

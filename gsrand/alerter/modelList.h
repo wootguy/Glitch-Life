@@ -2,10 +2,12 @@
 #include <string>
 #include <set>
 #include <unordered_map>
+#include <fstream>
+#include "Util.h"
 
 using namespace std;
 
-
+typedef tr1::unordered_map< string, vector<string> > list_hashmap;
 typedef tr1::unordered_map< string, string > string_hashmap;
 typedef tr1::unordered_map< string, int > height_hashmap;
 
@@ -22,20 +24,13 @@ extern vector<string> default_gib_models;
 extern vector<string> default_precache_models; // models that are precached by default
 extern vector<string> gmr_replace_only; // models only replacable through GMR
 
-// set of models that would crash the game if they were used as replacements
-extern vector<string> weapon_blacklist;
-extern vector<string> hwgrunt_blacklist;
+extern list_hashmap monster_whitelists; // set of models that are tested to be working for the monster
+extern list_hashmap monster_blacklists; // set of models that would crash the game if they were used as replacements
 
-// set of models that are tested to be working for the monster (others likely cause a crash)
-extern vector<string> nih_whitelist; // w_ and player models are ok but not in this list
-extern vector<string> controller_whitelist; // w_ and player models also ok
 
 extern vector<string> monster_sprites;
-
 extern vector<string> dont_replace; // shouldn't be replaced
-
 extern vector<string> weapon_types;
-
 extern height_hashmap default_monster_heights;
 
 // to regenerate:
@@ -105,380 +100,62 @@ static void init_default_monster_heights()
 	default_monster_heights["monster_stukabat"] = 24;
 }
 
-static void init_black_lists()
+static void parse_model_lists()
 {
-	weapon_blacklist.clear();
-	nih_whitelist.clear();
-	controller_whitelist.clear();
+	ifstream myfile(getWorkDir() + "gsrand_models.txt");
+	if (myfile.is_open())
+	{
+		vector<string> current_targets; // which classnames the models apply to
+		list_hashmap * current_list = &monster_blacklists; // whether we're in a whitelist or blacklist mode
 
-	hwgrunt_blacklist.push_back("models/big_mom.mdl");
-	hwgrunt_blacklist.push_back("models/friendly.mdl");
-	hwgrunt_blacklist.push_back("models/hassault.mdl");
-	hwgrunt_blacklist.push_back("models/headcrab.mdl");
-	hwgrunt_blacklist.push_back("models/kingheadcrab.mdl");
-	hwgrunt_blacklist.push_back("models/pit_drone.mdl");
-	hwgrunt_blacklist.push_back("models/stukabat.mdl");
-	hwgrunt_blacklist.push_back("models/bmt/aqua/bullsquid.mdl");
-	hwgrunt_blacklist.push_back("models/bshift/houndeye.mdl");
-	hwgrunt_blacklist.push_back("models/hunger/chicken.mdl");
-	hwgrunt_blacklist.push_back("models/hunger/hungercrab.mdl");
-	hwgrunt_blacklist.push_back("models/hunger/thehand.mdl");
-	hwgrunt_blacklist.push_back("models/hunger/zombie3.mdl");
-	hwgrunt_blacklist.push_back("models/mmm/bullgiant.mdl");
-	hwgrunt_blacklist.push_back("models/mmm/controllergiant.mdl");
-	hwgrunt_blacklist.push_back("models/mmm/crabgiant.mdl");
-	hwgrunt_blacklist.push_back("models/mmm/houndgiant.mdl");
-	hwgrunt_blacklist.push_back("models/sc_activist/chumcrab.mdl");
-	hwgrunt_blacklist.push_back("models/sc_activist/houndeye.mdl");
-	hwgrunt_blacklist.push_back("models/sc_mazing/pit_drone.mdl");
-	hwgrunt_blacklist.push_back("models/sc_psyko/pigdrone.mdl");
-	hwgrunt_blacklist.push_back("models/sc_royals/headcrabp.mdl");
-	hwgrunt_blacklist.push_back("models/sc_tetris/big_big_mom.mdl");
-	hwgrunt_blacklist.push_back("models/sc_tetris/mushroom_red_large.mdl");
-	hwgrunt_blacklist.push_back("models/sc_tetris/mushroom_red_small.mdl");
-	hwgrunt_blacklist.push_back("models/sc_tetris/panther.mdl");
-	hwgrunt_blacklist.push_back("models/sectore/glassdrone.mdl");
-	hwgrunt_blacklist.push_back("models/sp/green_headc.mdl");
-	hwgrunt_blacklist.push_back("models/svencooprpg2/rat.mdl");
-	hwgrunt_blacklist.push_back("models/turr/betty.mdl");
-	hwgrunt_blacklist.push_back("models/turretfortress/friendly.mdl");
+		while ( !myfile.eof() )
+		{
+			string line;
+			getline (myfile,line);
+			int comments = line.find("//");
+			if (comments != string::npos)
+			{
+				if (comments > 0)
+					line = getSubStr(line, 0, comments);
+				else
+					continue;
+			}
+			line = trimSpaces(line);
 
-	weapon_blacklist.push_back("models/babygarg.mdl");
-	weapon_blacklist.push_back("models/babygargf.mdl");
-	weapon_blacklist.push_back("models/big_mom.mdl");
-	weapon_blacklist.push_back("models/blkop_osprey.mdl");
-	weapon_blacklist.push_back("models/controller.mdl");
-	weapon_blacklist.push_back("models/hair.mdl");
-	weapon_blacklist.push_back("models/hgrunt.mdl");
-	weapon_blacklist.push_back("models/hgruntf.mdl");
-	weapon_blacklist.push_back("models/hgrunt_opfor.mdl");
-	weapon_blacklist.push_back("models/hgrunt_opforf.mdl");
-	weapon_blacklist.push_back("models/icky.mdl");
-	weapon_blacklist.push_back("models/kingheadcrab.mdl");
-	weapon_blacklist.push_back("models/light.mdl");
-	weapon_blacklist.push_back("models/miniturret.mdl");
-	weapon_blacklist.push_back("models/rengine.mdl");
-	weapon_blacklist.push_back("models/santashelper.mdl");
-	weapon_blacklist.push_back("models/sentry.mdl");
-	weapon_blacklist.push_back("models/tentacle2.mdl");
-	weapon_blacklist.push_back("models/tree.mdl");
-	weapon_blacklist.push_back("models/turret.mdl");
-	weapon_blacklist.push_back("models/uplant2.mdl");
-	weapon_blacklist.push_back("models/assaultmesa2/biggarg.mdl");
-	weapon_blacklist.push_back("models/bmt/aqua/bullsquid.mdl");
-	weapon_blacklist.push_back("models/bmt/icky/icky.mdl");
-	weapon_blacklist.push_back("models/bshift/barney.mdl");
-	weapon_blacklist.push_back("models/bshift/gordon_scientist.mdl");
-	weapon_blacklist.push_back("models/bshift/hgrunt.mdl");
-	weapon_blacklist.push_back("models/bshift/wrangler.mdl");
-	weapon_blacklist.push_back("models/deadsimpleneo/babygarg.mdl");
-	weapon_blacklist.push_back("models/deadsimpleneo/sentry.mdl");
-	weapon_blacklist.push_back("models/escape/garg.mdl");
-	weapon_blacklist.push_back("models/escape/icky.mdl");
-	weapon_blacklist.push_back("models/escape_series/fast_zombie/zombie.mdl");
-	weapon_blacklist.push_back("models/hammerhead/civilian.mdl");
-	weapon_blacklist.push_back("models/hunger/babykelly.mdl");
-	weapon_blacklist.push_back("models/hunger/bullsquid.mdl");
-	weapon_blacklist.push_back("models/hunger/chicken.mdl");
-	weapon_blacklist.push_back("models/hunger/civ.mdl");
-	weapon_blacklist.push_back("models/hunger/franklin2.mdl");
-	weapon_blacklist.push_back("models/hunger/heart.mdl");
-	weapon_blacklist.push_back("models/hunger/hgrunt.mdl");
-	weapon_blacklist.push_back("models/hunger/hungerbarney.mdl");
-	weapon_blacklist.push_back("models/hunger/hungerhound.mdl");
-	weapon_blacklist.push_back("models/hunger/hungerslave.mdl");
-	weapon_blacklist.push_back("models/hunger/hungerzombie.mdl");
-	weapon_blacklist.push_back("models/hunger/lpzombie.mdl");
-	weapon_blacklist.push_back("models/hunger/megasquid.mdl");
-	weapon_blacklist.push_back("models/hunger/nurse.mdl");
-	weapon_blacklist.push_back("models/hunger/nursezombie.mdl");
-	weapon_blacklist.push_back("models/hunger/pilot.mdl");
-	weapon_blacklist.push_back("models/hunger/scientist.mdl");
-	weapon_blacklist.push_back("models/hunger/sheriff.mdl");
-	weapon_blacklist.push_back("models/hunger/zgrunt.mdl");
-	weapon_blacklist.push_back("models/hunger/zombie.mdl");
-	weapon_blacklist.push_back("models/hunger/zombie2.mdl");
-	weapon_blacklist.push_back("models/hunger/zombie3.mdl");
-	weapon_blacklist.push_back("models/hunger/zombierat.mdl");
-	weapon_blacklist.push_back("models/infiltrate/david.mdl");
-	weapon_blacklist.push_back("models/mmm/bullgiant.mdl");
-	weapon_blacklist.push_back("models/mmm/controllergiant.mdl");
-	weapon_blacklist.push_back("models/mmm/crabgiant.mdl");
-	weapon_blacklist.push_back("models/mmm/giant.mdl");
-	weapon_blacklist.push_back("models/mmm/houndgiant.mdl");
-	weapon_blacklist.push_back("models/mommamesa/bman_2.mdl");
-	weapon_blacklist.push_back("models/sandstone/rpggrunte.mdl");
-	weapon_blacklist.push_back("models/sandstone/rpggruntf.mdl");
-	weapon_blacklist.push_back("models/sc_activist/contrller.mdl");
-	weapon_blacklist.push_back("models/sc_activist/houndeye.mdl");
-	weapon_blacklist.push_back("models/sc_activist/icky.mdl");
-	weapon_blacklist.push_back("models/sc_mazing/babygarg.mdl");
-	weapon_blacklist.push_back("models/sc_psyko/redbabygarg.mdl");
-	weapon_blacklist.push_back("models/sc_psyko/yellowcontroller.mdl");
-	weapon_blacklist.push_back("models/sc_royals/anubis.mdl");
-	weapon_blacklist.push_back("models/sc_royals/mummy.mdl");
-	weapon_blacklist.push_back("models/sc_royals/pharaoh.mdl");
-	weapon_blacklist.push_back("models/sc_tetris/controllerboss.mdl");
-	weapon_blacklist.push_back("models/sc_tetris/controllerguardian.mdl");
-	weapon_blacklist.push_back("models/spaceviking/cbarney.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/bogcreature.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/dragon.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/grylion.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/heretic.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/hydra.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/monster.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/rat.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/sheep.mdl");
-	weapon_blacklist.push_back("models/svencooprpg2/zombie.mdl");
-	weapon_blacklist.push_back("models/turretfortress/zombie.mdl");
+			int begin_header = line.find("[");
+			if (begin_header != string::npos)
+			{
+				int end_header = line.find("]");
+				if (end_header != string::npos)
+				{
+					
+					string name = trimSpaces(getSubStr(line, begin_header+1, end_header));
+					if (name.find("WHITELISTS_BEGIN") != string::npos)
+						current_list = &monster_whitelists;
+					else if (name.find("BLACKLISTS_BEGIN") != string::npos)
+						current_list = &monster_blacklists;
+					else
+					{
+						current_targets.clear();
+						int and = name.find("&");
+						if (and != string::npos)
+							current_targets = splitString(name, "&");
+						else
+							current_targets.push_back(name);
+					}
+				}
+				continue;
+			}
 
-	controller_whitelist.push_back("models/baby_voltigore.mdl");
-	controller_whitelist.push_back("models/barney_vest.mdl");
-	controller_whitelist.push_back("models/breather.mdl");
-	controller_whitelist.push_back("models/controller.mdl");
-	controller_whitelist.push_back("models/crashed_osprey.mdl");
-	controller_whitelist.push_back("models/gasbag.mdl");
-	controller_whitelist.push_back("models/geneworm.mdl");
-	controller_whitelist.push_back("models/hair.mdl");
-	controller_whitelist.push_back("models/hassassinf.mdl");
-	controller_whitelist.push_back("models/hgrunt_medic.mdl");
-	controller_whitelist.push_back("models/hgrunt_medicf.mdl");
-	controller_whitelist.push_back("models/highdef_otis.mdl");
-	controller_whitelist.push_back("models/intro_regular.mdl");
-	controller_whitelist.push_back("models/intro_saw.mdl");
-	controller_whitelist.push_back("models/intro_torch.mdl");
-	controller_whitelist.push_back("models/nihilanth.mdl");
-	controller_whitelist.push_back("models/player.mdl");
-	controller_whitelist.push_back("models/rengine.mdl");
-	controller_whitelist.push_back("models/sphere.mdl");
-	controller_whitelist.push_back("models/voltigore.mdl");
-	controller_whitelist.push_back("models/bmt/zombie/slime.mdl");
-	controller_whitelist.push_back("models/bshift/barney_vest.mdl");
-	controller_whitelist.push_back("models/bshift/ba_holo.mdl");
-	controller_whitelist.push_back("models/bshift/tool_box_sm.mdl");
-	controller_whitelist.push_back("models/deadsimpleneo/fastmedic.mdl");
-	controller_whitelist.push_back("models/demonprey/voltigore_elite.mdl");
-	controller_whitelist.push_back("models/greysnake/hgrunt_opfor.mdl");
-	controller_whitelist.push_back("models/hunger/franklin2.mdl");
-	controller_whitelist.push_back("models/hunger/heart.mdl");
-	controller_whitelist.push_back("models/hunger/zgrunt.mdl");
-	controller_whitelist.push_back("models/infiltrate/david.mdl");
-	controller_whitelist.push_back("models/it_has_leaks/wizard.mdl");
-	controller_whitelist.push_back("models/mommamesa/giantroach.mdl");
-	controller_whitelist.push_back("models/mommamesa/hevgrunt.mdl");
-	controller_whitelist.push_back("models/sandstone/engineer.mdl");
-	controller_whitelist.push_back("models/sandstone/ofhgrunte.mdl");
-	controller_whitelist.push_back("models/sandstone/ofhgruntf.mdl");
-	controller_whitelist.push_back("models/sandstone/ofmedicf.mdl");
-	controller_whitelist.push_back("models/sc_activist/contrller.mdl");
-	controller_whitelist.push_back("models/sc_activist/garg.mdl");
-	controller_whitelist.push_back("models/sc_activist/hgrunt.mdl");
-	controller_whitelist.push_back("models/sc_psyko/blueslime.mdl");
-	controller_whitelist.push_back("models/sc_psyko/lightgreenslime.mdl");
-	controller_whitelist.push_back("models/sc_psyko/orangeslime.mdl");
-	controller_whitelist.push_back("models/sc_psyko/pinkslime.mdl");
-	controller_whitelist.push_back("models/sc_psyko/redslime.mdl");
-	controller_whitelist.push_back("models/sc_psyko/yellowcontroller.mdl");
-	controller_whitelist.push_back("models/sc_psyko/yellowslime.mdl");
-	controller_whitelist.push_back("models/sc_tetris/block_hwgrunt.mdl");
-	controller_whitelist.push_back("models/sc_tetris/controllerboss.mdl");
-	controller_whitelist.push_back("models/sc_tetris/controllerguardian.mdl");
-	controller_whitelist.push_back("models/sc_tetris/mushroom_red_large.mdl");
-	controller_whitelist.push_back("models/sc_tetris/shockboss.mdl");
-	controller_whitelist.push_back("models/sectore/freeman.mdl");
-	controller_whitelist.push_back("models/sectore/panther.mdl");
-	controller_whitelist.push_back("models/svencoop2/sc2grunt.mdl");
-	controller_whitelist.push_back("models/toonrun/hgrunt.mdl");
-
-	nih_whitelist.push_back("models/baby_strooper.mdl");
-	nih_whitelist.push_back("models/baby_voltigore.mdl");
-	nih_whitelist.push_back("models/ball.mdl");
-	nih_whitelist.push_back("models/barnacle.mdl");
-	nih_whitelist.push_back("models/barney_vest.mdl");
-	nih_whitelist.push_back("models/base_flag.mdl");
-	nih_whitelist.push_back("models/bigrat.mdl");
-	nih_whitelist.push_back("models/blkop_osprey.mdl");
-	nih_whitelist.push_back("models/breather.mdl");
-	nih_whitelist.push_back("models/chair.mdl");
-	nih_whitelist.push_back("models/chubby.mdl");
-	nih_whitelist.push_back("models/chumtoad.mdl");
-	nih_whitelist.push_back("models/crashed_osprey.mdl");
-	nih_whitelist.push_back("models/drill.mdl");
-	nih_whitelist.push_back("models/flag.mdl");
-	nih_whitelist.push_back("models/forklift.mdl");
-	nih_whitelist.push_back("models/friendly.mdl");
-	nih_whitelist.push_back("models/gasbag.mdl");
-	nih_whitelist.push_back("models/geneworm.mdl");
-	nih_whitelist.push_back("models/gonome.mdl");
-	nih_whitelist.push_back("models/hair.mdl");
-	nih_whitelist.push_back("models/hassassin.mdl");
-	nih_whitelist.push_back("models/hassassinf.mdl");
-	nih_whitelist.push_back("models/hassault.mdl");
-	nih_whitelist.push_back("models/hgrunt_medic.mdl");
-	nih_whitelist.push_back("models/hgrunt_medicf.mdl");
-	nih_whitelist.push_back("models/highdef_otis.mdl");
-	nih_whitelist.push_back("models/houndeye.mdl");
-	nih_whitelist.push_back("models/hwgrunt.mdl");
-	nih_whitelist.push_back("models/hwgruntf.mdl");
-	nih_whitelist.push_back("models/icky.mdl");
-	nih_whitelist.push_back("models/intro_commander.mdl");
-	nih_whitelist.push_back("models/intro_medic.mdl");
-	nih_whitelist.push_back("models/intro_regular.mdl");
-	nih_whitelist.push_back("models/intro_saw.mdl");
-	nih_whitelist.push_back("models/intro_torch.mdl");
-	nih_whitelist.push_back("models/islave.mdl");
-	nih_whitelist.push_back("models/islavef.mdl");
-	nih_whitelist.push_back("models/kingpin.mdl");
-	nih_whitelist.push_back("models/light.mdl");
-	nih_whitelist.push_back("models/loader.mdl");
-	nih_whitelist.push_back("models/mini_osprey.mdl");
-	nih_whitelist.push_back("models/mortar.mdl");
-	nih_whitelist.push_back("models/nihilanth.mdl");
-	nih_whitelist.push_back("models/osprey.mdl");
-	nih_whitelist.push_back("models/osprey2.mdl");
-	nih_whitelist.push_back("models/player.mdl");
-	nih_whitelist.push_back("models/protozoa.mdl");
-	nih_whitelist.push_back("models/recruit.mdl");
-	nih_whitelist.push_back("models/rengine.mdl");
-	nih_whitelist.push_back("models/santashelper.mdl");
-	nih_whitelist.push_back("models/sat_globe.mdl");
-	nih_whitelist.push_back("models/scientist2.mdl");
-	nih_whitelist.push_back("models/scp_crossbow.mdl");
-	nih_whitelist.push_back("models/scp_m40a1.mdl");
-	nih_whitelist.push_back("models/sentry.mdl");
-	nih_whitelist.push_back("models/sphere.mdl");
-	nih_whitelist.push_back("models/spore_ammo.mdl");
-	nih_whitelist.push_back("models/stick.mdl");
-	nih_whitelist.push_back("models/stretcher.mdl");
-	nih_whitelist.push_back("models/strooper.mdl");
-	nih_whitelist.push_back("models/stukabat.mdl");
-	nih_whitelist.push_back("models/teleporter_blue_sprites.mdl");
-	nih_whitelist.push_back("models/teleporter_orange_rings.mdl");
-	nih_whitelist.push_back("models/Tor.mdl");
-	nih_whitelist.push_back("models/Torf.mdl");
-	nih_whitelist.push_back("models/tree.mdl");
-	nih_whitelist.push_back("models/uplant2.mdl");
-	nih_whitelist.push_back("models/voltigore.mdl");
-	nih_whitelist.push_back("models/wheelchair.mdl");
-	nih_whitelist.push_back("models/zombie_soldier.mdl");
-	nih_whitelist.push_back("models/bmt/barney/barney.mdl");
-	nih_whitelist.push_back("models/bmt/crowbar/df.mdl");
-	nih_whitelist.push_back("models/bmt/icky/icky.mdl");
-	nih_whitelist.push_back("models/bmt/zombie/slime.mdl");
-	nih_whitelist.push_back("models/bshift/ball.mdl");
-	nih_whitelist.push_back("models/bshift/barney.mdl");
-	nih_whitelist.push_back("models/bshift/barney_vest.mdl");
-	nih_whitelist.push_back("models/bshift/base_flag.mdl");
-	nih_whitelist.push_back("models/bshift/ba_holo.mdl");
-	nih_whitelist.push_back("models/bshift/chair.mdl");
-	nih_whitelist.push_back("models/bshift/chumtoad.mdl");
-	nih_whitelist.push_back("models/bshift/civ_paper_scientist.mdl");
-	nih_whitelist.push_back("models/bshift/console_civ_scientist.mdl");
-	nih_whitelist.push_back("models/bshift/gordon_scientist.mdl");
-	nih_whitelist.push_back("models/bshift/gun_mag.mdl");
-	nih_whitelist.push_back("models/bshift/holo.mdl");
-	nih_whitelist.push_back("models/bshift/houndeye.mdl");
-	nih_whitelist.push_back("models/bshift/outro_crowbar.mdl");
-	nih_whitelist.push_back("models/bshift/scientist.mdl");
-	nih_whitelist.push_back("models/bshift/scientist_cower.mdl");
-	nih_whitelist.push_back("models/bshift/tool_box_sm.mdl");
-	nih_whitelist.push_back("models/bshift/zombie.mdl");
-	nih_whitelist.push_back("models/danger_of_collapse/superhoundeye.mdl");
-	nih_whitelist.push_back("models/deadsimpleneo/fastmedic.mdl");
-	nih_whitelist.push_back("models/deadsimpleneo/sentry.mdl");
-	nih_whitelist.push_back("models/deadsimpleneo/Tor.mdl");
-	nih_whitelist.push_back("models/deadsimpleneo/Tor_melee.mdl");
-	nih_whitelist.push_back("models/demonprey/voltigore_elite.mdl");
-	nih_whitelist.push_back("models/escape/icky.mdl");
-	nih_whitelist.push_back("models/escape_series/fast_gonome/gonome.mdl");
-	nih_whitelist.push_back("models/escape_series/fast_zombie/zombie.mdl");
-	nih_whitelist.push_back("models/greysnake/hgrunt_opfor.mdl");
-	nih_whitelist.push_back("models/hammerhead/chubby.mdl");
-	nih_whitelist.push_back("models/hunger/civ.mdl");
-	nih_whitelist.push_back("models/hunger/diablo.mdl");
-	nih_whitelist.push_back("models/hunger/franklin2.mdl");
-	nih_whitelist.push_back("models/hunger/heart.mdl");
-	nih_whitelist.push_back("models/hunger/hungergonome.mdl");
-	nih_whitelist.push_back("models/hunger/hungerhound.mdl");
-	nih_whitelist.push_back("models/hunger/hungerzombie.mdl");
-	nih_whitelist.push_back("models/hunger/hungerzork.mdl");
-	nih_whitelist.push_back("models/hunger/lpzombie.mdl");
-	nih_whitelist.push_back("models/hunger/nurse.mdl");
-	nih_whitelist.push_back("models/hunger/scientist.mdl");
-	nih_whitelist.push_back("models/hunger/sheriff.mdl");
-	nih_whitelist.push_back("models/hunger/zgrunt.mdl");
-	nih_whitelist.push_back("models/hunger/zombie.mdl");
-	nih_whitelist.push_back("models/hunger/zombiebull.mdl");
-	nih_whitelist.push_back("models/hunger/vegitation/ouitz_tree1.mdl");
-	nih_whitelist.push_back("models/infiltrate/david.mdl");
-	nih_whitelist.push_back("models/it_has_leaks/wizard.mdl");
-	nih_whitelist.push_back("models/mmm/bullgiant.mdl");
-	nih_whitelist.push_back("models/mmm/crabgiant.mdl");
-	nih_whitelist.push_back("models/mmm/houndgiant.mdl");
-	nih_whitelist.push_back("models/mommamesa/giantroach.mdl");
-	nih_whitelist.push_back("models/mommamesa/hevgrunt.mdl");
-	nih_whitelist.push_back("models/nih/chubby.mdl");
-	nih_whitelist.push_back("models/opfor/scientist.mdl");
-	nih_whitelist.push_back("models/opfor/stretcher.mdl");
-	nih_whitelist.push_back("models/puchi/mountainbase/dead_headcrab.mdl");
-	nih_whitelist.push_back("models/puchi/spportal/chubby.mdl");
-	nih_whitelist.push_back("models/puchi/spportal/construction.mdl");
-	nih_whitelist.push_back("models/richard_boderman/Hassassin.mdl");
-	nih_whitelist.push_back("models/sandstone/engineer.mdl");
-	nih_whitelist.push_back("models/sandstone/hwgrunte.mdl");
-	nih_whitelist.push_back("models/sandstone/ofhgrunte.mdl");
-	nih_whitelist.push_back("models/sandstone/ofhgruntf.mdl");
-	nih_whitelist.push_back("models/sandstone/ofmedicf.mdl");
-	nih_whitelist.push_back("models/sc_activist/bullsquid.mdl");
-	nih_whitelist.push_back("models/sc_activist/garg.mdl");
-	nih_whitelist.push_back("models/sc_activist/hgrunt.mdl");
-	nih_whitelist.push_back("models/sc_activist/houndeye.mdl");
-	nih_whitelist.push_back("models/sc_activist/icky.mdl");
-	nih_whitelist.push_back("models/sc_activist/robohwgrunt.mdl");
-	nih_whitelist.push_back("models/sc_psyko/blueslime.mdl");
-	nih_whitelist.push_back("models/sc_psyko/greenhoundeye.mdl");
-	nih_whitelist.push_back("models/sc_psyko/lightgreenslime.mdl");
-	nih_whitelist.push_back("models/sc_psyko/orangeslime.mdl");
-	nih_whitelist.push_back("models/sc_psyko/pinkslime.mdl");
-	nih_whitelist.push_back("models/sc_psyko/redslime.mdl");
-	nih_whitelist.push_back("models/sc_psyko/tormaster.mdl");
-	nih_whitelist.push_back("models/sc_psyko/turquoisetrooper.mdl");
-	nih_whitelist.push_back("models/sc_psyko/yellowslime.mdl");
-	nih_whitelist.push_back("models/sc_royals/houndeyep.mdl");
-	nih_whitelist.push_back("models/sc_royals/islavep.mdl");
-	nih_whitelist.push_back("models/sc_royals/Torp.mdl");
-	nih_whitelist.push_back("models/sc_tetris/block_fassn.mdl");
-	nih_whitelist.push_back("models/sc_tetris/block_hwgrunt.mdl");
-	nih_whitelist.push_back("models/sc_tetris/block_leech.mdl");
-	nih_whitelist.push_back("models/sc_tetris/controllerboss.mdl");
-	nih_whitelist.push_back("models/sc_tetris/megaicky.mdl");
-	nih_whitelist.push_back("models/sc_tetris/mushroom_red_large.mdl");
-	nih_whitelist.push_back("models/sc_tetris/mushroom_red_small.mdl");
-	nih_whitelist.push_back("models/sc_tetris/panther.mdl");
-	nih_whitelist.push_back("models/sc_tetris/shockboss.mdl");
-	nih_whitelist.push_back("models/sectore/gordon.mdl");
-	nih_whitelist.push_back("models/sectore/panther.mdl");
-	nih_whitelist.push_back("models/sp/gonome2.mdl");
-	nih_whitelist.push_back("models/spaceviking/robobug2.mdl");
-	nih_whitelist.push_back("models/svencoop2/sc2grunt.mdl");
-	nih_whitelist.push_back("models/svencooprpg2/cattail.mdl");
-	nih_whitelist.push_back("models/svencooprpg2/dwarf.mdl");
-	nih_whitelist.push_back("models/svencooprpg2/grylion.mdl");
-	nih_whitelist.push_back("models/svencooprpg2/mage.mdl");
-	nih_whitelist.push_back("models/svencooprpg2/mushroom.mdl");
-	nih_whitelist.push_back("models/svencooprpg2/mushroom2.mdl");
-	nih_whitelist.push_back("models/svencooprpg2/priest.mdl");
-	nih_whitelist.push_back("models/toonrun/chubbina.mdl");
-	nih_whitelist.push_back("models/toonrun/hgrunt.mdl");
-	nih_whitelist.push_back("models/turr/igotcrabs.mdl");
-	nih_whitelist.push_back("models/turretfortress/friendly.mdl");
-	nih_whitelist.push_back("models/turretfortress/houndeye.mdl");
-	nih_whitelist.push_back("models/turretfortress/islave.mdl");
-	nih_whitelist.push_back("models/turretfortress/kingpin.mdl");
-	nih_whitelist.push_back("models/valve_hd/zombie.mdl");
-	nih_whitelist.push_back("models/vhe-models/spore_ammo_hammer.mdl");
-
-	
+			if (line.find("models") == 0)
+				for (uint i = 0; i < current_targets.size(); ++i)
+					(*current_list)[current_targets[i]].push_back(line);
+			
+		}
+		myfile.close();
+	}
+	else
+		println("WARNING: gsrand_models.txt is missing. I hope you know what you're doing D:");
 }
 
 static void init_default_model_lists()
@@ -514,7 +191,7 @@ static void init_default_model_lists()
 	// models that can only be replaced with GMR
 	gmr_replace_only.push_back("models/roach.mdl");
 
-	default_monster_models["alien_babyvoltigore"] = "babyvoltigore";
+	default_monster_models["alien_babyvoltigore"] = "baby_voltigore";
 	default_monster_models["alien_controller"]    = "controller";
 	default_monster_models["alien_grunt"]         = "agrunt";
 	default_monster_models["alien_slave"]         = "islave";
@@ -532,7 +209,7 @@ static void init_default_model_lists()
 	default_monster_models["bloater"]             = "floater";
 	default_monster_models["bodyguard"]           = "bgman";
 	default_monster_models["bullchicken"]         = "bullsquid";
-	default_monster_models["chumtoad"]            = "chubby";
+	default_monster_models["chumtoad"]            = "chumtoad";
 	default_monster_models["cleansuit_scientist"] = "cleansuit_scientist";
 	default_monster_models["cockroach"]           = "roach";
 	default_monster_models["flyer_flock"]         = "boid";
@@ -549,7 +226,7 @@ static void init_default_model_lists()
 	default_monster_models["human_assassin"]      = "massn";
 	default_monster_models["female_assassin"]     = "hassassin";
 	default_monster_models["human_grunt"]         = "hgrunt";
-	default_monster_models["human_grunt_ally"]    = "hgruntf";
+	default_monster_models["human_grunt_ally"]    = "hgrunt_opforf";
 	default_monster_models["human_grunt_ally_dead"] = "hgruntf";
 	default_monster_models["human_grunt_dead"]    = "hgrunt";
 	default_monster_models["human_medic"]         = "hgrunt_medic";
@@ -570,7 +247,7 @@ static void init_default_model_lists()
 	default_monster_models["otis"]                = "otis";
 	default_monster_models["otis_dead"]           = "otis";
 	default_monster_models["pitdrone"]            = "pit_drone";
-	default_monster_models["rat"]                 = "svencooprpg2/rat....."; // ???????????????????????
+	default_monster_models["rat"]                 = "bigrat";
 	default_monster_models["robogrunt"]           = "rgrunt";
 	default_monster_models["robogrunt_repel"]     = "rgrunt";
 	default_monster_models["satchel"]             = "w_satchel";
@@ -608,7 +285,7 @@ static void init_default_model_lists()
 	default_friendly_monster_models["hgrunt_dead"]         = "hgruntf";
 	default_friendly_monster_models["human_assassin"]      = "hassassinf";
 	default_friendly_monster_models["human_grunt"]         = "hgruntf";
-	default_friendly_monster_models["human_grunt_ally"]    = "hgrunt";
+	default_friendly_monster_models["human_grunt_ally"]    = "hgrunt_opfor";
 	default_friendly_monster_models["human_grunt_ally_dead"] = "hgrunt";
 	default_friendly_monster_models["human_medic_ally"]    = "hgrunt_medic";
 	default_friendly_monster_models["human_torch_ally"]    = "hgrunt_torch";

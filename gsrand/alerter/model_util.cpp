@@ -36,7 +36,7 @@ string get_random_model(int request_model_type)
 		else
 		{
 			r = rand() % 10;
-			if ((r && user_monster_models.size()) || !user_player_models.size()) 
+			if ((r || !user_player_models.size()) && user_monster_models.size()) 
 				return user_monster_models[rand() % user_monster_models.size()];
 			if (user_player_models.size())
 				return user_player_models[rand() % user_player_models.size()]; 
@@ -47,7 +47,7 @@ string get_random_model(int request_model_type)
 	else if (request_model_type == MODEL_TYPE_MONSTER)
 	{
 		r = rand() % 10;
-		if ((r && user_monster_models.size()) || !user_player_models.size()) 
+		if ((r || !user_player_models.size()) && user_monster_models.size()) 
 			return user_monster_models[rand() % user_monster_models.size()];
 		if (user_player_models.size())
 			return user_player_models[rand() % user_player_models.size()]; 
@@ -289,10 +289,38 @@ void get_all_models()
 	filter_default_model_content(user_apache_models);
 	filter_default_model_content(user_player_models);	
 
+	vector<string> all_user_models;
+	for (uint i = 0; i < user_monster_models.size(); ++i)
+		all_user_models.push_back("models/" + user_monster_models[i] + ".mdl");
+	for (uint i = 0; i < user_prop_models.size(); ++i)
+		all_user_models.push_back("models/" + user_prop_models[i] + ".mdl");
+	for (uint i = 0; i < user_v_models.size(); ++i)
+		all_user_models.push_back("models/" + user_v_models[i] + ".mdl");
+	for (uint i = 0; i < user_p_models.size(); ++i)
+		all_user_models.push_back("models/" + user_p_models[i] + ".mdl");
+	for (uint i = 0; i < user_w_models.size(); ++i)
+		all_user_models.push_back("models/" + user_w_models[i] + ".mdl");
+	for (uint i = 0; i < user_player_models.size(); ++i)
+		all_user_models.push_back("models/" + user_player_models[i] + ".mdl");
+
 	// i'll be using this model to indicate replacement errors
 	vector<string>::iterator it = find(user_prop_models.begin(), user_prop_models.end(), "not_precached");
 	if (it != user_prop_models.end())
 		user_prop_models.erase(it);
+
+	parse_model_lists(); // get all monster whitelists and blacklists
+	for (list_hashmap::iterator it = monster_whitelists.begin(); it != monster_whitelists.end(); ++it)
+	{
+		for (uint i = 0; i < it->second.size(); ++i)
+			if (find(all_user_models.begin(), all_user_models.end(), it->second[i]) == all_user_models.end())
+				it->second.erase(it->second.begin() + i--); // model doesn't exist in user's models
+	}
+	for (list_hashmap::iterator it = monster_blacklists.begin(); it != monster_blacklists.end(); ++it)
+	{
+		for (uint i = 0; i < it->second.size(); ++i)
+			if (find(all_user_models.begin(), all_user_models.end(), it->second[i]) == all_user_models.end())
+				it->second.erase(it->second.begin() + i--); // model doesn't exist in user's models
+	}
 
 	if (false)
 	{
@@ -932,17 +960,32 @@ string replace_entity_sprite(Entity * ent, string model_key, int sprite_type, in
 
 bool is_safe_model_replacement(string classname, string model, string replacement)
 {
-	if (classname.find("monster_hwgrunt") == 0)
+	if (monster_blacklists.find(classname) != monster_blacklists.end())
 	{
-		for (uint i = 0; i < hwgrunt_blacklist.size(); ++i)
-			if (hwgrunt_blacklist[i].find(replacement) != string::npos)
+		vector<string> blacklist = monster_blacklists[classname];
+		for (uint i = 0; i < blacklist.size(); ++i)
+			if (matchStr(blacklist[i], replacement))
 				return false;
+	}
+	if (classname.find("monster_") == 0)
+	{
+		if (monster_blacklists.find("monsters") != monster_blacklists.end())
+		{
+			vector<string> blacklist = monster_blacklists["monsters"];
+			for (uint i = 0; i < blacklist.size(); ++i)
+				if (matchStr(blacklist[i], replacement))
+					return false;
+		}
 	}
 	if (model.find("w_") != string::npos || model.find("p_") != string::npos || model.find("v_") != string::npos)
 	{
-		for (uint i = 0; i < weapon_blacklist.size(); ++i)
-			if (weapon_blacklist[i].find(replacement) != string::npos)
-				return false;
+		if (monster_blacklists.find("weapons") != monster_blacklists.end())
+		{
+			vector<string> wep_blacklist = monster_blacklists["weapons"];
+			for (uint i = 0; i < wep_blacklist.size(); ++i)
+				if (matchStr(wep_blacklist[i], replacement))
+					return false;
+		}
 	}
 	if (replacement.find("models/doctor.mdl") == 0)
 		return false; // problematic model (won't even load in the model viewer)
@@ -962,7 +1005,13 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 	if (total_models + potential_additions < max_model_limit)
 	{
 		replace_level = 2;
-		print(str(total_models + potential_additions) + " models. ");
+		if (gmr_only)
+		{
+			replace_level = 1;
+			print(str(total_models + potential_additions) + " models (GMR). ");
+		}
+		else
+			print(str(total_models + potential_additions) + " models. ");
 	}
 	else if (total_models + (int)default_weapon_models.size() < max_model_limit)
 	{
@@ -1024,18 +1073,6 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 					ent_models.erase(it--);
 					continue; // replacing would cause a crash
 				}
-				else if (matchStr(cname, "monster_alien_controller"))
-				{
-					// crash for reasons unknown. Only using models that have been manually tested.
-					int r = rand() % controller_whitelist.size();
-					it->second = controller_whitelist[r];
-				}
-				else if (matchStr(cname, "monster_nihilanth"))
-				{
-					// crash for reasons unknown. Only using models that have been manually tested.
-					int r = rand() % nih_whitelist.size();
-					it->second = nih_whitelist[r];
-				}
 				else if (matchStr(cname, "monster_apache") || matchStr(cname, "monster_sentry"))
 				{
 					// crash if model has less than 2 bone controllers
@@ -1043,6 +1080,13 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 						it->second = "models/" + user_apache_models[rand() % user_apache_models.size()] + ".mdl";
 					else
 						it->second = "models/" + string(APACHE_MODELS[rand() % NUM_APACHE_MODELS]) + ".mdl";
+				}
+				else if (monster_whitelists.find(cname) != monster_whitelists.end())
+				{
+					vector<string> whitelist = monster_whitelists[cname];
+					if (whitelist.size() > 0)
+						it->second = whitelist[rand() % whitelist.size()];
+					// otherwise don't replace since the user has none of the models on the whitelist
 				}
 				else
 				{
@@ -1073,7 +1117,8 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 					if (raw_model_name.find("v_") == 0 || raw_model_name.find("p_") == 0)
 						raw_model_name = getSubStr(raw_model_name, 2);
 
-					bool is_player_model = it->second.find("player/") != string::npos;
+					bool is_player_model = it->second.find("player/") != string::npos || 
+					                       it->second.find("barnacle") != string::npos;
 
 					// find all monsters that will be using this replacement
 					for (int i = 0; i < MAX_MAP_ENTITIES; i++)
@@ -1143,8 +1188,39 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 
 		ent_models.clear();
 
-		string rand_roach = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
-		string rand_nih = nih_whitelist[rand() % nih_whitelist.size()];
+		string rand_roach, rand_nih;
+		rand_roach = "models/roach.mdl";
+		rand_nih = "models/nihilanth.mdl";
+		if (monster_whitelists.find("monster_nihilanth") != monster_whitelists.end())
+		{
+			do {
+				vector<string> whitelist = monster_whitelists["monster_nihilanth"];
+				if (whitelist.size() == 0)
+					break;
+				rand_nih = whitelist[rand() % whitelist.size()];
+			} while(!is_safe_model_replacement("monster_nihilanth", "", rand_nih));
+		}
+		else
+		{
+			do { rand_nih = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
+			} while(!is_safe_model_replacement("monster_nihilanth", "", rand_nih));
+		}
+		if (monster_whitelists.find("monster_cockroach") != monster_whitelists.end())
+		{
+			do {
+				vector<string> whitelist = monster_whitelists["monster_cockroach"];
+				if (whitelist.size() == 0)
+					break;
+				rand_roach = whitelist[rand() % whitelist.size()];
+			} while(!is_safe_model_replacement("monster_cockroach", "", rand_roach));
+		}
+		else
+		{
+			do { rand_nih = "models/" + get_random_model(MODEL_TYPE_GENERIC) + ".mdl";
+			} while(!is_safe_model_replacement("monster_cockroach", "", rand_roach));
+		}
+		
+
 
 		for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 		{
@@ -1212,20 +1288,15 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 					ents[i]->keyvalues.erase(custom_monster_model_key);
 					continue; // replacing would cause a crash
 				}
-				else if (matchStr(cname, "monster_nihilanth"))
+				else if (matchStr(cname, "monster_nihilanth")) // GMR replace only
 				{
 					ents[i]->keyvalues[custom_monster_model_key] = rand_nih;
 					ent_models["models/" + default_monster_models["nihilanth"] + ".mdl"] = rand_nih;
 				}
-				else if (matchStr(cname, "monster_cockroach"))
+				else if (matchStr(cname, "monster_cockroach")) // GMR replace only
 				{
 					ents[i]->keyvalues[custom_monster_model_key] = rand_roach;
 					ent_models["models/" + default_monster_models["cockroach"] + ".mdl"] = rand_roach;
-				}
-				else if (matchStr(cname, "monster_alien_controller"))
-				{
-					int r = rand() % controller_whitelist.size();
-					ents[i]->keyvalues[custom_monster_model_key] = controller_whitelist[r];
 				}
 				else if (matchStr(cname, "monster_apache") || matchStr(cname, "monster_sentry"))
 				{
@@ -1240,6 +1311,13 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 						int r = rand() % NUM_APACHE_MODELS;
 						ents[i]->keyvalues[custom_monster_model_key] = "models/" + string(APACHE_MODELS[r]) + ".mdl";
 					}
+				}
+				else if (monster_whitelists.find(cname) != monster_whitelists.end())
+				{
+					vector<string> whitelist = monster_whitelists[cname];
+					if (whitelist.size() > 0)
+						ents[i]->keyvalues[custom_monster_model_key] = whitelist[rand() % whitelist.size()];					
+					// otherwise don't replace since the user has none of the models on the whitelist
 				}
 				else
 				{
@@ -1256,11 +1334,11 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 					while (ents[i]->keyvalues[custom_monster_model_key].find("/w_") != string::npos ||
 							ents[i]->keyvalues[custom_monster_model_key].find("/p_") != string::npos ||
 							ents[i]->keyvalues[custom_monster_model_key].find("/v_") != string::npos ||
-							find(replace_models.begin(), replace_models.end(), ents[i]->keyvalues[custom_monster_model_key]) != replace_models.end() ||
 							!is_safe_model_replacement(cname, "", ents[i]->keyvalues[custom_monster_model_key]))
 						new_model = replace_entity_model(ents[i], custom_monster_model_key, MODEL_TYPE_MONSTER, ++potential_additions);
 
-					if (ents[i]->keyvalues[custom_monster_model_key].find("player/") != string::npos) 
+					if (ents[i]->keyvalues[custom_monster_model_key].find("player/") != string::npos || 
+						ents[i]->keyvalues[custom_monster_model_key].find("barnacle") != string::npos) 
 					{   
 						// player model origins arn't at the feet, so we need to offset the monster to compensate
 						int height = 36;
