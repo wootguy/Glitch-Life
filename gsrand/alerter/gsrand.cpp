@@ -21,9 +21,12 @@ string gsrand_motd_identifier;
 string gsrand_res_identifier;
 
 bool gmr_only = false;
+bool printRejects = false;
 int grapple_mode = GRAPPLE_HOOK;
+int tex_embed_mode = EMBED_NORMAL;
 string MAP_PREFIX = "gsrand_";
 string random_seed;
+int modelSafety = MODEL_SAFETY_TEX_LIMIT;
 
 int numOverflow = 0;
 bool sparks;
@@ -65,6 +68,7 @@ vector<string> user_p_models;
 vector<string> user_w_models;
 vector<string> user_apache_models;
 vector<string> user_player_models;
+string_hashmap every_random_replacement;
 int total_model_count = 0;
 
 string wadPath = "";
@@ -352,7 +356,7 @@ enum parse_modes
 void parse_settings_file()
 {
 	user_maps.clear();
-	random_seed = 0;
+	random_seed = "";
 	grapple_mode = GRAPPLE_HOOK;
 	gmr_only = false;
 
@@ -399,10 +403,11 @@ void parse_settings_file()
 					continue;
 				string setting_name = trimSpaces(getSubStr(line, 0, equal));
 				string setting_value = trimSpaces(getSubStr(line, equal+1));
-				if (setting_name.find("gmr_only") == 0)
-					gmr_only = atoi(setting_value.c_str()) != 0;
-				if (setting_name.find("grapple_mode") == 0)
-					grapple_mode = atoi(setting_value.c_str());
+				if (setting_name.find("gmr_only")       == 0) gmr_only = atoi(setting_value.c_str()) != 0;
+				if (setting_name.find("print_rejects")  == 0) printRejects = atoi(setting_value.c_str()) != 0;
+				if (setting_name.find("grapple_mode")   == 0) grapple_mode = atoi(setting_value.c_str());
+				if (setting_name.find("tex_embed_mode") == 0) tex_embed_mode = atoi(setting_value.c_str());
+				if (setting_name.find("model_safety")   == 0) modelSafety = atoi(setting_value.c_str());
 				if (setting_name.find("random_seed") == 0)
 				{
 					random_seed = setting_value;
@@ -638,6 +643,7 @@ bool createMOTD(string path, string mapname)
 
 	fout << "    grapple_mode: " << grapple_mode << endl;
 	fout << "    gmr_only: " << (int)gmr_only << endl;
+	fout << "    tex_embed_mode: " << tex_embed_mode << endl;
 	if (random_seed.length())
 		fout << "    random_seed: " << random_seed << endl;
 
@@ -657,6 +663,36 @@ bool createMOTD(string path, string mapname)
 	fout.close();
 
 	return true;
+}
+
+// only load the texture data from a map
+byte * loadTextureChunk(string mapname, int& lump_len)
+{
+	string filename = getWorkDir() + "maps/" + mapname + ".bsp";
+	if (!fileExists(filename))
+	{
+		err("file does not exist: " + filename);
+		return NULL;
+	}
+
+	// Read all BSP Data
+	ifstream fin (filename, ios::binary);
+
+	BSP map;
+	fin.read((char*)&map.header.nVersion, sizeof(int));
+	for (int i = 0; i < HEADER_LUMPS; i++)
+		fin.read((char*)&map.header.lump[i], sizeof(BSPLUMP));
+		
+	byte * tex_lump = new byte[map.header.lump[LUMP_TEXTURES].nLength];
+	fin.seekg(map.header.lump[LUMP_TEXTURES].nOffset);
+	if (fin.eof())
+		println("FAILED TO READ LUMP " + str(LUMP_TEXTURES));
+	else
+		fin.read((char*)tex_lump, map.header.lump[LUMP_TEXTURES].nLength);
+	fin.close();
+
+	lump_len = map.header.lump[LUMP_TEXTURES].nLength;
+	return tex_lump;
 }
 
 BSP * loadBSP(string mapname, bool loadAll)
@@ -777,8 +813,16 @@ vector<string> create_res_list(Entity ** ents)
 		// find custom entity sounds
 		//
 		if (matchStr(cname, "ambient_generic") || matchStr(cname, "func_rotating"))
-			if (ents[i]->hasKey("message"))
-				res_list.insert("sound/" + ents[i]->keyvalues["message"]);
+		{
+			if (ents[i]->hasKey("message") && ents[i]->keyvalues["message"].find(".") != string::npos)
+			{
+				string msg = ents[i]->keyvalues["message"];
+				if (msg[0] == '*' || msg[0] == '/')
+					msg = getSubStr(msg, 1);
+				msg = relative_path_to_absolute("sound", msg);
+				res_list.insert(msg);
+			}
+		}
 		else if (matchStr(cname, "custom_precache"))
 			for (string_hashmap::iterator it = ents[i]->keyvalues.begin(); it != ents[i]->keyvalues.end(); ++it)
 				if (it->first.find("model_") == 0 || it->first.find("sound_") == 0)
@@ -949,7 +993,7 @@ void create_res_file(Entity ** ents, string path, string mapname)
 	fout.close();
 }
 
-bool restore_map_txt_file(string path, string mapname, string ext)
+int restore_map_txt_file(string path, string mapname, string ext)
 {
 	vector<string> text;
 	string line;
@@ -982,9 +1026,12 @@ bool restore_map_txt_file(string path, string mapname, string ext)
 			}
 			myfile.close();
 			if (gsrand_file) // probably safe to delete it. probably :>
+			{
 				remove( string(path + mapname + ext).c_str() );
+				return -1;
+			}
 		}
-		return false;
+		return 0;
 	}
 	
 
@@ -1001,7 +1048,7 @@ bool restore_map_txt_file(string path, string mapname, string ext)
 	
 	remove( string(path + mapname + ext + ".bak").c_str() );
 
-	return true;
+	return 1;
 }
 
 string get_date_base36()
@@ -1077,7 +1124,18 @@ int randomize_maps()
 	if (texMode == TEX_MAP || texMode == TEX_WADS)
 	{
 		wads = getWads();
-		println("Found " + str(wads.size()) + " wads");
+		if (tex_embed_mode != EMBED_DISABLE)
+			create_tex_embed_wad(wads);
+		if (tex_embed_mode == EMBED_ONLY)
+		{
+			vector<Wad> new_wads;
+			new_wads.push_back(wads[wads.size()-1]);
+			wads.clear();
+			wads = new_wads;
+		}
+		else
+			println("Found " + str(wads.size()) + " wads");
+		
 		get_all_skies();
 		println("Found " + str(user_skies.size()) + " skyboxes");
 	}	
@@ -1123,6 +1181,9 @@ int randomize_maps()
 		}
 	}
 
+	if (printRejects)
+		writeLog();
+
 	if (prefixMode == PREFIX_NONE)
 		cout << "\nDANGER: Closing the program before this finishes will likely corrupt a map!\n";
 	cout << "\nThe randomizer is ready.\n\n";
@@ -1144,6 +1205,8 @@ int randomize_maps()
 	int idx = 0;
 
 	system("cls");
+
+	every_random_replacement.clear();
 
 	for (uint f = 0; f < files.size(); f++)
 	{
@@ -1177,19 +1240,19 @@ int randomize_maps()
 			if (!verbose)
 				print(str(tex) + " textures. ");
 		}	
-		
-		if (mdlMode != MDL_NONE)
-			do_model_replacement(map, ents, path, mapName);
 
 		if (sndMode != SND_NONE)
 			do_ent_sounds(ents, map->name);
 
 		if (entMode != ENT_NONE)
 		{
-			if (!verbose && entMode != ENT_NONE)
+			if (!verbose)
 				print(str(numEnts) + " ents. ");
 			do_entity_randomization(ents, map->name);
 		}
+
+		if (mdlMode != MDL_NONE)
+			do_model_replacement(map, ents, path, mapName);
 
 		if (sndMode != SND_NONE || prefixMode != PREFIX_NONE || mdlMode != MDL_NONE)
 			createCFG(path, mapName);
@@ -1373,12 +1436,15 @@ void undoEverything()
 		}
 
 		files[f] = getSubStr(files[f],0,files[f].length()-4);
-		if (restore_map_txt_file(path, files[f], ".cfg")) numUpdated++;
-		else numRemoved++;
-		if (restore_map_txt_file(path, files[f], ".res")) numUpdated++;
-		else numRemoved++;
-		if (restore_map_txt_file(path, files[f], "_motd.txt")) numUpdated++;
-		else numRemoved++;
+		int cfg_ret = restore_map_txt_file(path, files[f], ".cfg");
+		int res_ret = restore_map_txt_file(path, files[f], ".res");
+		int motd_ret = restore_map_txt_file(path, files[f], "_motd.txt");
+		if (cfg_ret > 0) numUpdated++;
+		else if (cfg_ret < 0) numRemoved++;
+		if (res_ret > 0) numUpdated++;
+		else if (res_ret < 0) numRemoved++;
+		if (motd_ret > 0) numUpdated++;
+		else if (motd_ret < 0) numRemoved++;
 	}
 	if (numUpdated > 0)
 		println("Restored " + str(numUpdated) + " CFG/RES/MOTD files.");
@@ -1584,7 +1650,7 @@ int main(int argc, char* argv[])
 	init_default_content();
 	//srand (1337);
 	//genSoundList();
-	//genModelList();
+	//get_all_models();
 	//genSpriteList();
 	//get_all_skies();
 	//return 0;

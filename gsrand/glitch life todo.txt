@@ -4,8 +4,7 @@ update help pages
 grapple hook if entity mode enabled but not texture mode
 monster models aren't all actually monsters
 pack everything into a zip when finished
-
-probably should just do thorough testing on each monster type...
+murdoor setting
 
 Nice-to-haves:
 
@@ -16,8 +15,5 @@ bypass all players must be inside  c1a4b c2a5b (c3a1a?) c3a1b
 c1a2e (how did this changelevel ever work?)
 multiplayer packer (include non-default sounds/models/etc.)
 dont make spinning things and doors take forever
-equally random wad textrues
-better osprey replacements?
-load textures from maps
-user-defined voice directories
+better osprey replacements? Apache player model chance?
 game-text randomization

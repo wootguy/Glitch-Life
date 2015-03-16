@@ -85,15 +85,14 @@ WADTEX * Wad::readTexture( const string& texname )
 	string path = getWorkDir() + filename;
 	const char * file = (path.c_str());
 
-	if (!fileExists(file))
-		return NULL;
-
 	ifstream fin(file, ifstream::in|ios::binary);
+	if (!fin.good())
+		return NULL;
 
 	int idx = -1;
 	for (int d = 0; d < header.nDir; d++)
 	{
-		if (matchStr(texname, dirEntries[d].szName))
+		if (texname.find(dirEntries[d].szName) == 0)
 		{
 			idx = d;
 			break;
@@ -121,8 +120,7 @@ WADTEX * Wad::readTexture( const string& texname )
 	int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
 
 	byte * data = new byte[szAll];
-	for (int i = 0; i < szAll; i++)
-		fin.read((char*)&data[i], sizeof(byte));
+	fin.read((char*)data, szAll);		
 	
 	fin.close();
 
@@ -185,9 +183,7 @@ bool Wad::write( std::string filename, WADTEX ** textures, int numTex )
 		miptex.nOffsets[3] = sizeof(BSPMIPTEX) + sz + sz2 + sz3;
 
 		myFile.write ((char*)&miptex, sizeof(BSPMIPTEX));
-
-		for (int k = 0; k < szAll; k++)
-			myFile.write ((char*)&textures[i]->data[k], sizeof(byte));
+		myFile.write ((char*)textures[i]->data, szAll);			
 	}
 
 	int offset = 12;

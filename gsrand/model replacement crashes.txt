@@ -12,12 +12,32 @@ Replacing models for the following will cause a crash:
  - Tentacle (cause unknown, crash isn't immediate)
  - Any Monster (immediate crash if using a w_ model, probably due to w_svencoop_pickup.mdl)
 
+There are many other monsters that will cause a crash when using the wrong model as a
+replacement. The hwgrunt, for example, will crash if you use a model meant for a headcrab.
+See model_blacklist.txt for more examples.
+
 GMR can cause a crash if a replacement model has been replaced in the same file. Example:
-	"models/zombie.mdl" "models/rat.mdl"
-        "models/barney.mdl" "models/zombie.mdl" ("Host no precache" error)
-That example doesn't actually work, I forgot to write down the few cases where this happened
+	"models/w_grenade.mdl" "models/gman.mdl"
+        "models/gman.mdl" "models/islave.mdl" 
+The order of lines doesn't matter. This will cause "Host no precache: islave.mdl" error.
+islave.mdl can be anything. Only certain models can take w_grenade's spot (e.g. w_uzi)
+
+GMR can't find models with spaces in the file path (e.g. models/KscT/MasterChief Model/weapon/v_9mmAR.mdl)
 
 The game will crash if you are 1 model under the model limit (won't give you the 512 models error)
 
+Sprites will crash the game if both of the following conditions are met:
+- The sprite format is "Normal" or "Additive"
+- The number of pixels of any frame (Width x Height) is not divisible by 4 
 
-  
+After loading a lot of model/sprite textures (accumulated across level changes), 
+the game will crash with this error: 'Texture Overflow: MAX_GLTEXTURES'. 
+
+After loading a lot of models in general (accumulated across level changes)
+the game will crash with no error or "Alloc Block: Full".
+
+custom_precache will crash with certain models:
+txas/servers.mdl
+zombie_nights/zombie.mdl
+
+

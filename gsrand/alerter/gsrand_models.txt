@@ -4,7 +4,7 @@
 //
 // Here's how the file format works:
 // [monster_headcrab] <-- The name of the monster that's causing crashes.
-//                        You can join multiple names with '&'.
+//                        You can join multiple monster names with '&'.
 // models/p_enis.mdl  <-- path to a problematic or safe model replacement
 //                        (depends on whether we're in blacklist or whitelist mode)
 //
@@ -14,6 +14,20 @@
 // Note: blacklists for a monster will be ignored if there is a whitelist for it.
 //       This file only allows you to make lists for monsters. 
 //       Weapons are all under [weapons] - you can't make lists for specific ones.
+//
+// There are a few special model names you can use to specify types of models:
+//     *headcrab  = Headcrab models
+//     *houndeye  = Houndeye models
+//     *pitdrone  = Pit Drone models
+//     *garg      = Babygarg and Garg models
+//     *bigmomma  = Big Momma/Gonarch models
+//     *bullsquid = Bullsquid/Bullchicken models
+//     *friendly  = Friendly models (the weird alien thing)
+//     *stukabat  = Stukabat models
+//     *apache    = Apache/Helicopter models
+//     *tmodel    = Any model that uses an external model for textures 
+//                  Example: (zombie.mdl + zombieT.mdl)
+
 
 
 [WHITELISTS_BEGIN]
@@ -275,20 +289,33 @@ models/toonrun/hgrunt.mdl
 
 [BLACKLISTS_BEGIN]
 
-[monsters] // unsafe for ANY monster replacement
-models/babygarg.mdl
-models/babygargf.mdl
-models/sc_mazing/babygarg.mdl
-models/sc_psyko/redbabygarg.mdl
-models/deadsimpleneo/babygarg.mdl
-models/apache.mdl
-models/apachef.mdl
-models/apache2.mdl
+[anything] // unsafe to use for any kind of replacement
+models/doctor.mdl // problematic model (won't even load in the model viewer)
+
+// non-default models found with limited testing:
+// These models crash when used with custom_precache
+models/zombie_nights/zombie.mdl
+models/zombie_nights/zombiet.mdl // not sure why this one is picked up
+models/txas/servers.mdl
+models/snwcam.mdl
+
+[monsters] // unsafe to use as a monster model replacement
+// Some of these might actually work if the monster is spawned from a squadmaker
+// but the monster_* entities will crash if we use these as replacements
+*garg
+*apache
 models/hunger/zombie3.mdl
 models/mmm/controllergiant.mdl
 models/bmt/aqua/bullsquid.mdl
 
-[monster_bigmomma & monster_bullchicken]
+// non-default models found with limited testing:
+models/snwcam.mdl
+models/keen/hungerzombieblack.mdl
+
+[monster_barney]
+models/hq/hev_barn.mdl // causes crash with scripted_sequences
+
+[monster_bigmomma & monster_bullchicken & monster_pitdrone]
 models/bshift/scientist_cower.mdl
 
 [monster_alien_babyvoltigore]
@@ -297,135 +324,22 @@ models/hunger/nursezombie.mdl
 [monster_alien_grunt]
 models/pipe_bubbles.mdl
 
-[monster_babygarg]
-models/headcrab.mdl
-models/kingheadcrab.mdl
-models/hunger/hungercrab.mdl
-models/sc_activist/chumcrab.mdl
-models/sc_royals/headcrabp.mdl
-models/sp/green_headc.mdl
-models/svencooprpg2/rat.mdl
-
-[monster_hwgrunt]
-models/big_mom.mdl
-models/friendly.mdl
-models/hassault.mdl
-models/headcrab.mdl
-models/kingheadcrab.mdl
-models/pit_drone.mdl
-models/stukabat.mdl
-models/bmt/aqua/bullsquid.mdl
-models/bshift/houndeye.mdl
-models/hunger/chicken.mdl
-models/hunger/hungercrab.mdl
-models/hunger/thehand.mdl
-models/hunger/zombie3.mdl
+[monster_babygarg & monster_gargantua & monster_shocktrooper & monster_hwgrunt]
+*headcrab
+*pitdrone
+*bigmomma
 models/mmm/bullgiant.mdl
-models/mmm/controllergiant.mdl
-models/mmm/crabgiant.mdl
-models/mmm/houndgiant.mdl
-models/sc_activist/chumcrab.mdl
-models/sc_activist/houndeye.mdl
-models/sc_mazing/pit_drone.mdl
-models/sc_psyko/pigdrone.mdl
-models/sc_royals/headcrabp.mdl
-models/sc_tetris/big_big_mom.mdl
+
+[monster_babygarg & monster_gargantua]
+*bullsquid
+models/mommamesa/giantroach.mdl
+
+[monster_shocktrooper & monster_hwgrunt]
+*friendly
+*houndeye
+*stukabat
 models/sc_tetris/mushroom_red_large.mdl
 models/sc_tetris/mushroom_red_small.mdl
-models/sc_tetris/panther.mdl
-models/sectore/glassdrone.mdl
-models/sp/green_headc.mdl
-models/svencooprpg2/rat.mdl
-models/turr/betty.mdl
-models/turretfortress/friendly.mdl
-
 
 [weapons]
-models/babygarg.mdl
-models/babygargf.mdl
-models/big_mom.mdl
-models/blkop_osprey.mdl
-models/controller.mdl
-models/hair.mdl
-models/hgrunt.mdl
-models/hgruntf.mdl
-models/hgrunt_opfor.mdl
-models/hgrunt_opforf.mdl
-models/icky.mdl
-models/kingheadcrab.mdl
-models/light.mdl
-models/miniturret.mdl
-models/rengine.mdl
-models/santashelper.mdl
-models/sentry.mdl
-models/tentacle2.mdl
-models/tree.mdl
-models/turret.mdl
-models/uplant2.mdl
-models/assaultmesa2/biggarg.mdl
-models/bmt/aqua/bullsquid.mdl
-models/bmt/icky/icky.mdl
-models/bshift/barney.mdl
-models/bshift/gordon_scientist.mdl
-models/bshift/hgrunt.mdl
-models/bshift/wrangler.mdl
-models/deadsimpleneo/babygarg.mdl
-models/deadsimpleneo/sentry.mdl
-models/escape/garg.mdl
-models/escape/icky.mdl
-models/escape_series/fast_zombie/zombie.mdl
-models/hammerhead/civilian.mdl
-models/hunger/babykelly.mdl
-models/hunger/bullsquid.mdl
-models/hunger/chicken.mdl
-models/hunger/civ.mdl
-models/hunger/franklin2.mdl
-models/hunger/heart.mdl
-models/hunger/hgrunt.mdl
-models/hunger/hungerbarney.mdl
-models/hunger/hungerhound.mdl
-models/hunger/hungerslave.mdl
-models/hunger/hungerzombie.mdl
-models/hunger/lpzombie.mdl
-models/hunger/megasquid.mdl
-models/hunger/nurse.mdl
-models/hunger/nursezombie.mdl
-models/hunger/pilot.mdl
-models/hunger/scientist.mdl
-models/hunger/sheriff.mdl
-models/hunger/zgrunt.mdl
-models/hunger/zombie.mdl
-models/hunger/zombie2.mdl
-models/hunger/zombie3.mdl
-models/hunger/zombierat.mdl
-models/infiltrate/david.mdl
-models/mmm/bullgiant.mdl
-models/mmm/controllergiant.mdl
-models/mmm/crabgiant.mdl
-models/mmm/giant.mdl
-models/mmm/houndgiant.mdl
-models/mommamesa/bman_2.mdl
-models/sandstone/rpggrunte.mdl
-models/sandstone/rpggruntf.mdl
-models/sc_activist/contrller.mdl
-models/sc_activist/houndeye.mdl
-models/sc_activist/icky.mdl
-models/sc_mazing/babygarg.mdl
-models/sc_psyko/redbabygarg.mdl
-models/sc_psyko/yellowcontroller.mdl
-models/sc_royals/anubis.mdl
-models/sc_royals/mummy.mdl
-models/sc_royals/pharaoh.mdl
-models/sc_tetris/controllerboss.mdl
-models/sc_tetris/controllerguardian.mdl
-models/spaceviking/cbarney.mdl
-models/svencooprpg2/bogcreature.mdl
-models/svencooprpg2/dragon.mdl
-models/svencooprpg2/grylion.mdl
-models/svencooprpg2/heretic.mdl
-models/svencooprpg2/hydra.mdl
-models/svencooprpg2/monster.mdl
-models/svencooprpg2/rat.mdl
-models/svencooprpg2/sheep.mdl
-models/svencooprpg2/zombie.mdl
-models/turretfortress/zombie.mdl
+*tmodel

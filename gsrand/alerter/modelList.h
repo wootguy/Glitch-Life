@@ -21,7 +21,6 @@ extern string_hashmap default_ammo_models;
 extern string_hashmap default_item_models;
 extern vector<string> default_gib_models;
 
-extern vector<string> default_precache_models; // models that are precached by default
 extern vector<string> gmr_replace_only; // models only replacable through GMR
 
 extern list_hashmap monster_whitelists; // set of models that are tested to be working for the monster
@@ -41,53 +40,6 @@ extern height_hashmap default_monster_heights;
 // select all text, right click, set to lowercase
 // remove the entries that aren't actually models (e.g. "(!P)" or "maps/mapname.bsp")
 // remove doctor.mdl (seems to be a broken model in HL?)
-static void init_default_precache_list()
-{
-	default_precache_models.clear();
-	default_precache_models.push_back("models/shotgunshell.mdl");
-	default_precache_models.push_back("models/shell.mdl");
-	default_precache_models.push_back("models/saw_shell.mdl");
-	default_precache_models.push_back("models/grenade.mdl");
-	default_precache_models.push_back("models/shock_effect.mdl");
-	default_precache_models.push_back("models/spore.mdl");
-	default_precache_models.push_back("models/spore_ammo.mdl");
-	default_precache_models.push_back("models/rpgrocket.mdl");
-	default_precache_models.push_back("models/crossbow_bolt.mdl");
-	default_precache_models.push_back("models/cretegibs.mdl");
-	default_precache_models.push_back("models/chumtoad.mdl");
-	default_precache_models.push_back("models/hornet.mdl");
-	default_precache_models.push_back("models/player.mdl");
-	default_precache_models.push_back("models/hgibs.mdl");
-	default_precache_models.push_back("models/agibs.mdl");
-	default_precache_models.push_back("models/p_rpg_r.mdl");
-
-	default_precache_models.push_back("sprites/tongue.spr");
-	default_precache_models.push_back("sprites/blueflare1.spr");
-	default_precache_models.push_back("sprites/redflare2.spr");
-	default_precache_models.push_back("sprites/glow01.spr");
-	default_precache_models.push_back("sprites/spore_exp_01.spr");
-	default_precache_models.push_back("sprites/spore_exp_c_01.spr");
-	default_precache_models.push_back("sprites/pitdronespit.spr");
-	default_precache_models.push_back("sprites/hotglow.spr");
-	default_precache_models.push_back("sprites/smoke.spr");
-	default_precache_models.push_back("sprites/laserdot.spr");
-	default_precache_models.push_back("sprites/streak.spr");
-	default_precache_models.push_back("sprites/xbeam1.spr");
-	default_precache_models.push_back("sprites/XSpark1.spr");
-	default_precache_models.push_back("sprites/muz1.spr");
-	default_precache_models.push_back("sprites/laserbeam.spr");
-	default_precache_models.push_back("sprites/zerogxplode.spr");
-	default_precache_models.push_back("sprites/WXplo1.spr");
-	default_precache_models.push_back("sprites/steam1.spr");
-	default_precache_models.push_back("sprites/bubble.spr");
-	default_precache_models.push_back("sprites/bloodspray.spr");
-	default_precache_models.push_back("sprites/blood.spr");
-	default_precache_models.push_back("sprites/wep_smoke_01.spr");
-	default_precache_models.push_back("sprites/explode1.spr");
-	default_precache_models.push_back("sprites/saveme.spr");
-	default_precache_models.push_back("sprites/grenade.spr");
-	default_precache_models.push_back("sprites/muzzleflash_saw.spr");
-}
 
 static void init_default_monster_heights()
 {
@@ -147,7 +99,7 @@ static void parse_model_lists()
 				continue;
 			}
 
-			if (line.find("models") == 0)
+			if (line.find("models") == 0 || line.find("*") == 0)
 				for (uint i = 0; i < current_targets.size(); ++i)
 					(*current_list)[current_targets[i]].push_back(line);
 			
@@ -349,9 +301,13 @@ static void init_default_model_lists()
 	default_ammo_models["556"]        = "saw_clip";
 	default_ammo_models["762"]        = "m40a1clip";
 	default_ammo_models["argrenades"] = "argrenade";
+	default_ammo_models["mp5grenades"] = "argrenade";
 	default_ammo_models["9mmar"]      = "9mmarclip";
 	default_ammo_models["9mmbox"]     = "chainammo";
 	default_ammo_models["9mmclip"]    = "9mmarclip";
+	default_ammo_models["mp5clip"]    = "9mmarclip";
+	default_ammo_models["9mmarclip"]  = "9mmarclip";
+	default_ammo_models["glockclip"]  = "9mmarclip";
 	default_ammo_models["buckshot"]   = "shotbox";
 	default_ammo_models["crossbow"]   = "crossbow_clip";
 	default_ammo_models["gaussclip"]  = "gaussammo";
@@ -361,7 +317,7 @@ static void init_default_model_lists()
 
 	// TODO: ACtually find the default models. None of these are right
 	default_item_models["airtank"] = "airtank";
-	default_item_models["antidote"] = "antidoe";
+	default_item_models["antidote"] = "antidote";
 	default_item_models["armorvest"] = "armorvest";
 	default_item_models["battery"] = "battery";
 	default_item_models["healthcharger"] = "healthcharger";
@@ -375,9 +331,57 @@ static void init_default_model_lists()
 	for (string_hashmap::iterator it = default_weapon_models.begin(); it != default_weapon_models.end(); ++it)
 		weapon_types.push_back(it->first);
 
-	init_default_precache_list();
 	init_default_monster_heights();
 }
+
+// weapons are precached too but we handle those differently
+#define NUM_DEFAULT_PRECACHE 42
+static const char * DEFAULT_PRECACHE[NUM_DEFAULT_PRECACHE] =
+{
+	"models/shotgunshell.mdl",
+	"models/shell.mdl",
+	"models/saw_shell.mdl",
+	"models/grenade.mdl",
+	"models/shock_effect.mdl",
+	"models/spore.mdl",
+	"models/spore_ammo.mdl",
+	"models/rpgrocket.mdl",
+	"models/crossbow_bolt.mdl",
+	"models/cretegibs.mdl",
+	"models/chumtoad.mdl",
+	"models/hornet.mdl",
+	"models/player.mdl",
+	"models/hgibs.mdl",
+	"models/agibs.mdl",
+	"models/p_rpg_r.mdl",
+
+	"sprites/tongue.spr",
+	"sprites/blueflare1.spr",
+	"sprites/redflare2.spr",
+	"sprites/glow01.spr",
+	"sprites/spore_exp_01.spr",
+	"sprites/spore_exp_c_01.spr",
+	"sprites/pitdronespit.spr",
+	"sprites/hotglow.spr",
+	"sprites/smoke.spr",
+	"sprites/laserdot.spr",
+	"sprites/streak.spr",
+	"sprites/xbeam1.spr",
+	"sprites/XSpark1.spr",
+	"sprites/muz1.spr",
+	"sprites/laserbeam.spr",
+	"sprites/zerogxplode.spr",
+	"sprites/WXplo1.spr",
+	"sprites/steam1.spr",
+	"sprites/bubble.spr",
+	"sprites/bloodspray.spr",
+	"sprites/blood.spr",
+	"sprites/wep_smoke_01.spr",
+	"sprites/explode1.spr",
+	"sprites/saveme.spr",
+	"sprites/grenade.spr",
+	"sprites/muzzleflash_saw.spr",
+};
 
 #define NUM_APACHE_MODELS 124
 static const char * APACHE_MODELS[NUM_APACHE_MODELS] =

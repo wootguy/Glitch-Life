@@ -194,10 +194,10 @@ bool matchStr(const string& str, const string& str2)
 {
     if (str.length() == str2.length())
     {
-        for (int i = 0; i < (int)str.length(); i++)
+        for (int i = 0, len = (int)str.length(); i < len; i++)
         {
-            char l1 = str.at(i);
-            char l2 = str2.at(i);
+            char l1 = str[i];
+            char l2 = str2[i];
             if (l1 != l2 && !matchLetter(l1, l2))
                 return false;
         }
@@ -235,9 +235,7 @@ bool matchStrCase(const string& str, const string& str2)
 
 bool isLetter(char c)
 {
-    if (( c >= 65 && c <= 90) || (c >= 97 && c <= 122) )
-        return true;
-    return false;
+    return ( c >= 65 && c <= 90) || (c >= 97 && c <= 122);
 }
 
 bool isNumeric(char c)
@@ -321,8 +319,12 @@ string toLowerCase(string str)
 
 bool fileExists(const string& file)
 {
-    ifstream ifile(file.c_str());
-    return ifile;
+    if (FILE *f = fopen(file.c_str(), "r")) {
+        fclose(f);
+        return true;
+    } else {
+        return false;
+    }   
 }
 
 string getPath(const string& file)

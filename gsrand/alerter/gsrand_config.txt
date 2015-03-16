@@ -6,7 +6,7 @@
 // can be fixed by editing/deleting the maps _gmr file. The trade-off is
 // that all entities of the same type will use the same model (less random).
 
-gmr_only = 1
+gmr_only = 0
 
 // If grapple_mode is "1" or "2" then a barnacle grapple weapon will be provided 
 // when using model randomization or both texture and entity randomization.
@@ -18,12 +18,39 @@ gmr_only = 1
 
 grapple_mode = 2
 
-
 // If random_seed is used, the randomizer will produce the same results every time
 // you run it, as long as all the inputs are the same. If any options or content
 // changes then so will the randomizations.
 
 // random_seed = random text goes here (special characters are ok).
+
+// If tex_embed_mode is "1" or "2" then a wad will be generated containing
+// embedded textures from your maps. 
+// If set to "2" then the randomizer will use ONLY these embedded textures.
+// If set to "0" then embedded textures won't be used at all.
+// Warning: Some people embed porn textures in their maps :>
+
+tex_embed_mode = 1
+
+// the purpose of model_safety is to prevent client crashes caused by model replacment.
+// If set to "0", no safety features will be enabled (very random maps).
+// If set to "1", models and sprites with more than 16 textures won't be used.
+// If set to "2", model replacement will be the same for every map.
+// "0" is the least stable - you might crash after only about 2-6 map changes.
+// "1" is fairly stable - you'll crash about every 6-12 map changes. 
+// "2" is the most stable - but you'll still crash about every 20-40 map changes.
+// These crashes do not mean the maps are broken - you only need to restart your game.
+// That said, there's always the possibility that the randomizer uses a bad
+// model replacement. In that you will need randomize again or edit the _gmr file.
+
+model_safety = 0
+
+// If print_rejects is set to "1", then any content that is rejected will be
+// shown in the console with a reason why it was rejected. This does not include
+// content excluded because of blacklists/whitelists and content modes. Check 
+// gsrand.log to see the full output in case there's too much to fit in the console.
+
+print_rejects = 0
 
 
 // [maps] is a list of maps that gsrand will randomize.
@@ -37,7 +64,4 @@ grapple_mode = 2
 //     *esc  = Escape Series  (escape_series_1a to escape_series_3e)
 
 [maps]
-stadium3
-loz1_forest
-*hlsp
-         
+*hlsp  

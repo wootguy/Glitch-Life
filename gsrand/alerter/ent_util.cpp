@@ -70,7 +70,7 @@ void ripent(BSP * map, Entity** entData, bool restore)
 				break;
 			eSize += 4; // "{ \n } \n"
 			
-			hashmap hmap = entData[i]->keyvalues;
+			hashmap& hmap = entData[i]->keyvalues;
 			for (hashmap::iterator it = hmap.begin(); it != hmap.end(); ++it)
 				eSize += 6 + it->first.length() + it->second.length();
 			
@@ -126,7 +126,7 @@ void ripent(BSP * map, Entity** entData, bool restore)
 				if (entData[k] == NULL)
 					break;
 				chunk += "{\n";
-				hashmap hmap = entData[k]->keyvalues;
+				hashmap& hmap = entData[k]->keyvalues;
 				for (hashmap::iterator it = hmap.begin(); it != hmap.end(); ++it)
 				{
 					if (matchStr(it->first, "classname"))
@@ -298,6 +298,21 @@ Entity ** getMapEnts(BSP * map, bool printInfo, int& numEnts)
 		ent->addKeyvalue("message", "350");
 		ent->addKeyvalue("targetname", "gsrand_cvars");
 		ents[idx++] = ent;
+		
+		if (texMode != TEX_NONE && grapple_mode == GRAPPLE_HOOK && rand() % 5)
+		{
+			ent = new Entity();
+			ent->addKeyvalue("classname", "trigger_setcvar");
+			ent->addKeyvalue("m_iszCVarToChange", "sv_gravity");
+			
+			int r = rand() % 3;
+			if (r == 0) ent->addKeyvalue("message", "4000");
+			if (r == 1) ent->addKeyvalue("message", "400");
+			if (r == 2) ent->addKeyvalue("message", "100");
+
+			ent->addKeyvalue("targetname", "gsrand_cvars");
+			ents[idx++] = ent;
+		}
 
 		ent = new Entity();
 		ent->addKeyvalue("classname", "trigger_setcvar");
@@ -384,6 +399,26 @@ void update_changelevels(Entity** ents, string mapname)
 
 void do_entity_randomization(Entity** ents, string mapname)
 {	
+	vector<string> game_text_words;
+	vector<string> vote_text_words;
+	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+	{
+		if (ents[i] == NULL) 
+			break;
+		string cname = ents[i]->keyvalues["classname"];
+		if (matchStr(cname, "game_text") || matchStr(cname, "worldspawn"))
+		{
+			vector<string> words = splitString(ents[i]->keyvalues["message"], " ");
+			if (words.size())
+				game_text_words.insert(game_text_words.end(), words.begin(), words.end());
+		}
+		if (matchStr(cname, "trigger_vote"))
+		{
+			vector<string> words = splitString(ents[i]->keyvalues["message"], " ");
+			vote_text_words.insert(vote_text_words.end(), words.begin(), words.end());
+		}
+	}
+
 	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 	{
 		if (ents[i] == NULL) 
@@ -401,6 +436,149 @@ void do_entity_randomization(Entity** ents, string mapname)
 				ents[i]->keyvalues["spawnflags"] = str( atoi(ents[i]->keyvalues["spawnflags"].c_str()) | 32 ); // c2a1 crash
 			if (matchStr(cname, "func_door_rotating") && matchStr(ents[i]->keyvalues["targetname"],"c3a2d_petals"))
 				ents[i]->keyvalues["classname"] = cname = "func_breakable"; // anything these doors do crashes (except tiny moves) 
+			if (matchStr(cname, "func_train") && matchStr(ents[i]->keyvalues["targetname"],"broken_airlock"))
+				continue; // this doesn't move sometimes (c1a0c)
+		}
+
+		if (matchStr(cname,"cycler_sprite") || matchStr(cname,"cycler_wreckage") || matchStr(cname,"env_beam") ||
+			matchStr(cname, "env_sprite"))
+		{
+			int r = rand() % 3;
+			if (r == 0) ents[i]->keyvalues["framerate"] = "20";
+			if (r == 1) ents[i]->keyvalues["framerate"] = "1";
+		}
+
+		if (matchStr(cname,"cycler_wreckage") || matchStr(cname, "env_sprite") || matchStr(cname, "env_spritetrain"))
+		{
+			int r = rand() % 4;
+			if (r == 0) ents[i]->keyvalues["scale"] = str( atof(ents[i]->keyvalues["scale"].c_str())*2.0f );
+			if (r == 1) ents[i]->keyvalues["scale"] = str( atof(ents[i]->keyvalues["scale"].c_str())/2.0f );
+			if (r == 2)
+			{
+				r = rand() % 2;
+				if (r == 0) ents[i]->keyvalues["scale"] = str( atof(ents[i]->keyvalues["scale"].c_str())*10.0f );
+				if (r == 1) ents[i]->keyvalues["scale"] = str( atof(ents[i]->keyvalues["scale"].c_str())/10.0f );
+			}
+			// else normal
+		}
+
+		if (matchStr(cname,"env_xenmaker"))
+		{
+			ents[i]->keyvalues["m_iBeamCount"] = "511"; // max possible
+			ents[i]->keyvalues["m_flBeamRadius"] = "4096";
+			ents[i]->keyvalues["m_vBeamColor"] = str(rand() % 256) + " " + str(rand() % 256) + " " + str(rand() % 256);
+		}
+
+		if (matchStr(cname,"env_blood"))
+		{
+			ents[i]->keyvalues["amount"] = "9999";
+		}
+
+		if (matchStr(cname,"env_bubbles"))
+		{
+			if (rand() % 2) ents[i]->keyvalues["density"] = "1000";
+			if (rand() % 2) ents[i]->keyvalues["frequency"] = "20";
+			ents[i]->keyvalues["current"] = str(rand() % 1000);
+		}
+
+		if (matchStr(cname, "env_fade") || matchStr(cname, "env_fog") || matchStr(cname, "env_laser") || 
+		    matchStr(cname, "env_beam"))
+		{
+			ents[i]->keyvalues["rendercolor"] = str(rand() % 256) + " " + str(rand() % 256) + " " + str(rand() % 256);
+		}
+
+		if (matchStr(cname, "env_funnel"))
+		{
+			int spawnflags = 2;
+			if (rand() % 2)
+				spawnflags = 3;
+			ents[i]->keyvalues["spawnflags"] = str(spawnflags);
+		}
+
+		if (matchStr(cname, "env_laser") || matchStr(cname, "env_beam"))
+		{
+			string width = matchStr(cname, "env_laser") ? "width" : "BoltWidth";
+			ents[i]->keyvalues["renderamt"] = "255";
+			int r = rand() % 4;
+			if (r == 0) ents[i]->keyvalues[width] = "2";
+			if (r == 1) ents[i]->keyvalues[width] = "32";
+			if (r == 2) ents[i]->keyvalues[width] = "255";
+
+			r = rand() % 4;
+			if (r == 0) ents[i]->keyvalues["NoiseAmplitude"] = "0";
+			else if (r == 1) ents[i]->keyvalues["NoiseAmplitude"] = "32";
+			else if (r == 2) ents[i]->keyvalues["NoiseAmplitude"] = "255";
+
+			r = rand() % 4;
+			if (r == 0) ents[i]->keyvalues["TextureScroll"] = "0";
+			else if (r == 1) ents[i]->keyvalues["TextureScroll"] = "10";
+			else if (r == 2) ents[i]->keyvalues["TextureScroll"] = "100";
+		}
+
+		if (matchStr(cname, "env_shake"))
+		{
+			ents[i]->keyvalues["amplitude"] = str( (rand() % 15) + 1 );
+			ents[i]->keyvalues["duration"] = str( (rand() % 9) + 1 );
+			ents[i]->keyvalues["frequency"] = str( rand() % 255 );
+		}
+
+		if (matchStr(cname, "env_shooter") || matchStr(cname, "gibshooter"))
+		{
+			int gibs = atoi(ents[i]->keyvalues["m_iGibs"].c_str());
+			float delay = atof(ents[i]->keyvalues["delay"].c_str());
+			float time = min(0.1f, gibs*delay);
+			float new_delay = 0.01f;
+			int new_gibs = time / new_delay;
+			ents[i]->keyvalues["m_iGibs"] = str(new_gibs);
+			ents[i]->keyvalues["delay"] = str(new_delay);
+			ents[i]->keyvalues["m_flVelocity"] = str( max(900, atoi(ents[i]->keyvalues["m_flVelocity"].c_str())) );
+			int r = rand() % 4;
+			if (r == 0) ents[i]->keyvalues["m_flVariance"] = "0.02";
+			else if (r == 1) ents[i]->keyvalues["m_flVariance"] = "1";
+			// else keep the same
+			ents[i]->keyvalues["shootsounds"] = str(rand() % 5);
+		}
+
+		if (matchStr(cname, "env_spark"))
+		{
+			if (rand() % 5)
+				ents[i]->keyvalues["MaxDelay"] = "0.2";
+		}
+
+		if (matchStr(cname, "game_text"))
+		{
+			if (game_text_words.size())
+			{
+				int numWords = splitString(ents[i]->keyvalues["message"], " ").size();
+				ents[i]->keyvalues["message"] = "";
+				for (int k = 0; k < numWords; k++)
+				{
+					ents[i]->keyvalues["message"] += game_text_words[rand() % game_text_words.size()]; 
+					if (k != numWords-1)
+						ents[i]->keyvalues["message"] += " ";
+				}
+			}
+		}
+
+		if (matchStr(cname, "trigger_vote"))
+		{
+			if (vote_text_words.size())
+			{
+				int numWords = splitString(ents[i]->keyvalues["message"], " ").size();
+				ents[i]->keyvalues["message"] = "";
+				for (int k = 0; k < numWords; k++)
+				{
+					ents[i]->keyvalues["message"] += vote_text_words[rand() % vote_text_words.size()]; 
+					if (k != numWords-1)
+						ents[i]->keyvalues["message"] += " ";
+				}
+			}
+		}
+
+		if (matchStr(cname, "item_healthkit") || matchStr(cname, "item_battery"))
+		{
+			ents[i]->keyvalues["health"] = "200";
+			ents[i]->keyvalues["healthcap"] = "999";
 		}
 
 		if (matchStr(cname,"func_breakable"))
@@ -415,6 +593,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 				ents[i]->keyvalues["weapon"] = to_string((_Longlong)randWeap);
 				// disable "only trigger" and "immune to clients" breakables (can stop map progression)
 				ents[i]->keyvalues["spawnflags"] = str((atoi(ents[i]->keyvalues["spawnflags"].c_str()) & ~65) | 32);
+				if (!(rand() % 3)) ents[i]->keyvalues["explodemagnitude"] = "100";
 			}
 			continue;
 		}
@@ -423,10 +602,51 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			if (entMode == ENT_SUPER)
 			{
+				if (rand() % 3)
+				{
+					bool first_path = false; // don't randomize first paths
+					for (int k = 0; k < MAX_MAP_ENTITIES; k++)
+					{
+						if (ents[k] == NULL) 
+							break;
+
+						if (ents[k]->keyvalues["classname"].find("train") != string::npos)
+						{
+							if (ents[k]->keyvalues["target"].find(ents[i]->keyvalues["targetname"]) != string::npos)
+							{
+								first_path = true;
+								break;
+							}
+						} 
+					}
+					if (!first_path)
+					{
+						vector<string> coords = splitString(ents[i]->keyvalues["origin"], " ");
+						
+						if (coords.size() == 3)
+						{
+							string old_ori = ents[i]->keyvalues["origin"];
+							ents[i]->keyvalues["origin"] = "";
+							for (int z = 0; z < 3; z++)
+							{
+								int rand_shift = (int)pow(2.0,(rand()%7+1));
+								if (rand() % 2)
+									rand_shift *= -1;
+								int coord = atoi(coords[z].c_str()) + rand_shift;
+								ents[i]->keyvalues["origin"] += str(coord);
+								if (z != 2)
+									ents[i]->keyvalues["origin"] += " ";
+							}
+							string new_ori = ents[i]->keyvalues["origin"];
+						} 
+						
+					}
+
+				}
 				int randSpeed = (int)pow(2.0,(rand()%5+7));
 				int randSpeed2 = (int)pow(2.0,rand()%14);
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
-				//ents[i]->keyvalues["yaw_speed"] = to_string((_Longlong)randSpeed);
+				ents[i]->keyvalues["yaw_speed"] = to_string((_Longlong)randSpeed);
 			}
 		}
 
@@ -439,6 +659,8 @@ void do_entity_randomization(Entity** ents, string mapname)
 				int randRot2 = (int)pow(2.0,rand()%10);
 				int randRot3 = (int)pow(2.0,rand()%10);
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
+				if (rand() % 3)
+					ents[i]->keyvalues["avelocity"] = str(randRot1) + " " + str(randRot2) + " " + str(randRot3);
 			}
 		}
 
@@ -483,7 +705,8 @@ void do_entity_randomization(Entity** ents, string mapname)
 			}
 		}
 
-		if (matchStr(cname,"func_conveyor") || matchStr(cname,"func_plat") || matchStr(cname,"func_platrot"))
+		if (matchStr(cname,"func_conveyor") || matchStr(cname,"func_plat") || matchStr(cname,"func_platrot") || 
+		    matchStr(cname,"func_pendulum"))
 		{
 			if (entMode == ENT_SUPER)
 			{
@@ -581,9 +804,23 @@ void do_entity_randomization(Entity** ents, string mapname)
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
 				ents[i]->keyvalues["breakable"] = "1";
 				ents[i]->keyvalues["material"] = to_string((_Longlong)randMat);
-				ents[i]->keyvalues["dmg"] = "9999";
-				ents[i]->keyvalues["health"] = "100";
-				ents[i]->keyvalues["displayname"] = "possible murdoor";
+				
+				if (rand() % 4)
+				{
+					ents[i]->keyvalues["displayname"] = "Safe Door";
+					ents[i]->keyvalues["dmg"] = "0";
+					ents[i]->keyvalues["health"] = "100";
+				}
+				else
+				{
+					ents[i]->keyvalues["displayname"] = "POTENTIAL MURDOOR\nDanger: Yes";
+					ents[i]->keyvalues["dmg"] = "9999";
+					ents[i]->keyvalues["explodemagnitude"] = "100";
+					ents[i]->keyvalues["classify"] = "14";
+					ents[i]->keyvalues["health"] = "50";
+				}
+				if (rand() % 2) 
+				
 				ents[i]->keyvalues["showhudinfo"] = "1";
 				ents[i]->keyvalues["repairable"] = "1";
 			}
@@ -596,6 +833,37 @@ void do_entity_randomization(Entity** ents, string mapname)
 			{
 				if (atoi(ents[i]->keyvalues["wait"].c_str()) >= 0)
 					ents[i]->keyvalues["wait"] = "1";
+				int spawnflags = atoi(ents[i]->keyvalues["spawnflags"].c_str());
+				if (!(spawnflags & 1)) // moves
+				{
+					int r = rand() % 3;
+					if (r == 0) 
+					{
+						ents[i]->keyvalues["speed"] = str( atof(ents[i]->keyvalues["speed"].c_str())*2.0f );
+						ents[i]->keyvalues["lip"] = str( atof(ents[i]->keyvalues["lip"].c_str())*2.0f );
+					}
+					if (r == 1)
+					{
+						ents[i]->keyvalues["speed"] = str( atof(ents[i]->keyvalues["speed"].c_str())/2.0f );
+						ents[i]->keyvalues["lip"] = str( atof(ents[i]->keyvalues["lip"].c_str())/2.0f );
+					} 
+					if (r == 2)
+					{
+						r = rand() % 2;
+						if (r == 0)
+						{
+							ents[i]->keyvalues["speed"] = str( atof(ents[i]->keyvalues["speed"].c_str())*10.0f );
+							ents[i]->keyvalues["lip"] = str( atof(ents[i]->keyvalues["lip"].c_str())*10.0f );
+						}
+						if (r == 1) 
+						{
+							ents[i]->keyvalues["speed"] = str( atof(ents[i]->keyvalues["speed"].c_str())/10.0f );
+							ents[i]->keyvalues["lip"] = str( atof(ents[i]->keyvalues["lip"].c_str())/10.0f );
+						}
+					}
+					if (rand() % 2)
+						ents[i]->keyvalues["lip"] = str( atof(ents[i]->keyvalues["lip"].c_str())*-1.0f );
+				}
 			}
 
 			continue;

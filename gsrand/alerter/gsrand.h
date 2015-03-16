@@ -66,7 +66,6 @@ enum content_modes
 };
 
 extern bool verbose;
-extern bool superRandom;
 extern int texMode;
 extern int entMode;
 extern int sndMode;
@@ -126,6 +125,14 @@ struct BSP
 	BSPHEADER header;
 	byte ** lumps;
 	BSPTEXDATA * texdata;
+};
+
+enum sprite_formats
+{
+	SPR_NORMAL,
+	SPR_ADDITIVE,
+	SPR_INDEXALPHA,
+	SPR_ALPHATEST
 };
 
 struct SPRHEADER
@@ -212,6 +219,7 @@ extern vector<string> user_p_models;
 extern vector<string> user_w_models;
 extern vector<string> user_apache_models;
 extern vector<string> user_player_models;
+extern string_hashmap every_random_replacement; // every entity type gets a single model replacement
 
 extern set<string> res_list;
 
@@ -221,13 +229,30 @@ extern string MAP_PREFIX;
 
 enum grapple_modes
 {
-	GRAPPLE_HOOK, // all walls can be grappled
-	GRAPPLE_NORMAL,
 	GRAPPLE_DISABLE,
+	GRAPPLE_NORMAL,
+	GRAPPLE_HOOK, // all walls can be grappled
+};
+
+enum tex_embed_modes
+{
+	EMBED_DISABLE,
+	EMBED_NORMAL,
+	EMBED_ONLY, // only embedded textures will be used	
+};
+
+enum model_safety_modes
+{
+	MODEL_SAFETY_NONE,
+	MODEL_SAFETY_TEX_LIMIT,
+	MODEL_SAFETY_GLOBAL_ONLY,
 };
 
 extern bool gmr_only;
 extern int grapple_mode;
+extern int modelSafety;
+extern bool superRandom;
+extern bool printRejects;
 
 enum model_types
 {
@@ -251,7 +276,9 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 
 Keyvalue extractKeyvalue(std::string line);
 
-BSP * loadBSP(std::string mapname);
+byte * loadTextureChunk(string mapname, int& lump_len);
+
+BSP * loadBSP(std::string mapname, bool loadAll);
 
 void loadLumpBackup(BSP * map, int lump, std::string suffix);
 

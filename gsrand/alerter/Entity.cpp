@@ -16,7 +16,7 @@ Entity::~Entity(void)
 void Entity::addKeyvalue( Keyvalue& k )
 {
 	int dup = 1;
-	if (keyvalues[k.key].length() <= 0)
+	if (keyvalues.find(k.key) == keyvalues.end())
 		keyvalues[k.key] = k.value;
 	else
 	{

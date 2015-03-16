@@ -22,11 +22,11 @@ bool parse_gmr_line(string line, string& a, string& b);
 int count_map_models(BSP * map, Entity** ents, string path, int& total_models, int& potential_additions,
 					string& gmr_path, string_hashmap& ent_models, string original_map_name);
 
-string random_model_replace(string model);
+string random_model_replace(string model, string_hashmap& ent_models);
 
-string get_random_replacement(string model, vector<string>& replaced, vector<string>& replace_models);
+string get_random_replacement(string model, string_hashmap& ent_models);
 
-vector<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap& ent_models, int replace_level);
+set<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap& ent_models, int replace_level);
 
 string replace_entity_model(Entity * ent, string model_key, int model_type, int& potential_additions);
 

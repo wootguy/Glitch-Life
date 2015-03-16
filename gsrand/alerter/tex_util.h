@@ -8,6 +8,8 @@ using namespace std;
 
 vector<Wad> getWads();
 
+void create_tex_embed_wad(vector<Wad>& wads);
+
 void get_all_skies();
 
 void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname);

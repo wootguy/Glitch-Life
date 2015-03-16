@@ -4,8 +4,10 @@
 
 string get_random_sound()
 {
+	if (user_sounds.size() == 0)
+		return "ambience/_comma.wav";
 	return user_sounds[rand() % user_sounds.size()];
-	return "";
+	
 }
 
 void getAllSounds()
@@ -431,6 +433,8 @@ void writeGSR(string filename, vector<sound> writeList)
 
 string constructSentence()
 {
+	if (user_sound_dirs.empty())
+		return "";
 	string sentence;
 
 	if (contentMode == CONTENT_CUSTOM || rand() % 4 == 0)
@@ -470,7 +474,7 @@ void writeSentences(string mapName)
 	ofstream fout;
 	fout.open (file2, ios::out | ios::trunc);
 	for (int i = 0; i < NUM_SENTENCES; i++)
-		fout << sentences[i] << " " << constructSentence() << endl;
+		fout << sentences[i] << " " << constructSentence() << "\n";
 
 	fout.close();
 }
@@ -573,8 +577,31 @@ void do_ent_sounds(Entity** ents, string mapname)
 		{
 			string snd = ents[i]->keyvalues["message"];
 			ents[i]->keyvalues["message"] = get_random_sound();
+			// TODO: chance to use random sentence
+			// if (snd.find(".") == string::npos)
 			res_list.insert("sound/" + ents[i]->keyvalues["message"]);
 			continue;
+		}
+
+		if (matchStr(cname, "env_sentence"))
+		{
+			int words = rand() % 10;
+			ents[i]->keyvalues["_text"] = "";
+			for (uint i = 0; i < words; i++)
+			{
+				string w = MASTER_vox[rand() % NUM_MASTER_vox];
+				ents[i]->keyvalues["_text"] += getSubStr(w, 0, w.length()-4);
+				if (i != words-1)
+				{
+					if (rand() % 4) ents[i]->keyvalues["_text"] += " ";
+					else ents[i]->keyvalues["_text"] += ".";
+				}
+			}
+		}
+
+		if (matchStr(cname, "env_sound"))
+		{
+			ents[i]->keyvalues["roomtype"] = str((rand() % 27) + 1);
 		}
 
 		if (matchStr(cname,"func_breakable"))
