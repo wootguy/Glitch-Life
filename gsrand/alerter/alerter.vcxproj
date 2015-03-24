@@ -70,6 +70,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -77,13 +78,19 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>false</Profile>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bsp_util.h" />
+    <ClInclude Include="ent_data.h" />
     <ClInclude Include="ent_util.h" />
     <ClInclude Include="gsrand.h" />
     <ClInclude Include="masterList.h" />
@@ -102,6 +109,7 @@
     <ClInclude Include="Wad.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bsp_util.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="ent_util.cpp" />
     <ClCompile Include="gsrand.cpp" />

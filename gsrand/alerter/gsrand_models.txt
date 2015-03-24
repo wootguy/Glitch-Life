@@ -32,6 +32,7 @@
 
 [WHITELISTS_BEGIN]
 
+// Tested with default SC 4.8 models
 
 [monster_nihilanth]
 // w_ models and player models are ok but I didn't put those in this list
@@ -222,6 +223,7 @@ models/turretfortress/islave.mdl
 models/turretfortress/kingpin.mdl
 models/valve_hd/zombie.mdl
 models/vhe-models/spore_ammo_hammer.mdl
+// any other model is instant crash
 
 
 [monster_alien_controller]
@@ -283,7 +285,7 @@ models/sectore/freeman.mdl
 models/sectore/panther.mdl
 models/svencoop2/sc2grunt.mdl
 models/toonrun/hgrunt.mdl
-
+// any other model is instant crash
 
 
 
@@ -313,7 +315,7 @@ models/snwcam.mdl
 models/keen/hungerzombieblack.mdl
 
 [monster_barney]
-models/hq/hev_barn.mdl // causes crash with scripted_sequences
+models/hq/hev_barn.mdl // non-default, causes crash with scripted_sequences
 
 [monster_bigmomma & monster_bullchicken & monster_pitdrone]
 models/bshift/scientist_cower.mdl

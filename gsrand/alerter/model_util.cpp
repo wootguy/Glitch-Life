@@ -1290,8 +1290,8 @@ string replace_entity_sprite(Entity * ent, string model_key, int sprite_type, in
 		{
 			model = "sprites/flare6.spr";
 		}
-		else if (false && !model.length())
-			println("No sprite for this? " + ent->keyvalues["classname"]);
+		//else if (false && !model.length())
+		//	println("No sprite for this? " + ent->keyvalues["classname"]);
 	}
 
 	if (mdlMode == MDL_NONE || !potential_additions)

@@ -8,6 +8,10 @@ Entity::Entity(void)
 {
 }
 
+Entity::Entity(const string& classname)
+{
+	addKeyvalue("classname", classname);
+}
 
 Entity::~Entity(void)
 {
@@ -23,7 +27,7 @@ void Entity::addKeyvalue( Keyvalue& k )
 		while (true)
 		{
 			string newKey = k.key + '#' + to_string((_Longlong)dup);
-			if (keyvalues[newKey].length() <= 0)
+			if (keyvalues.find(newKey) == keyvalues.end())
 			{
 				//println("wrote dup key " + newKey);
 				keyvalues[newKey] = k.value;

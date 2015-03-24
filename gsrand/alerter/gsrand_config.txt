@@ -43,7 +43,7 @@ tex_embed_mode = 1
 // That said, there's always the possibility that the randomizer uses a bad
 // model replacement. In that you will need randomize again or edit the _gmr file.
 
-model_safety = 0
+model_safety = 1
 
 // If print_rejects is set to "1", then any content that is rejected will be
 // shown in the console with a reason why it was rejected. This does not include
@@ -52,6 +52,17 @@ model_safety = 0
 
 print_rejects = 0
 
+// The following settings allow you to use cheats without having to enable cheats
+// on the server (which has a player restriction). Set to "0" to disable the cheat.
+
+enable_noclip     = 1   // let's you fly around and go through walls
+			// Press USE and JUMP keys together to activate
+
+enable_impulse101 = 1   // gives you all weapons and ammo
+			// Press USE and RELOAD keys together to activate
+
+enable_godmode    = 1   // makes you invincible
+			// Press USE and CROUCH keys together to activate
 
 // [maps] is a list of maps that gsrand will randomize.
 // If you don't add any map names here, then the randomizer will use EVERY map.
@@ -64,4 +75,4 @@ print_rejects = 0
 //     *esc  = Escape Series  (escape_series_1a to escape_series_3e)
 
 [maps]
-*hlsp  
+*hlsp

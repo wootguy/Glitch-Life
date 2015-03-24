@@ -275,14 +275,13 @@ void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname)
 	if (newTex != NULL)
 	{
 		Wad newWad = Wad();
-		string filename = "";
-		if (texMode == TEX_WADS && prefixMode == PREFIX_NONE)
-			filename += MAP_PREFIX;
-		filename += mapname + ".wad";
+		string filename = mapname + ".wad";
 
 		if (texMode == TEX_MASTERWAD)
 			println("Writing " + filename + "...");
 		newWad.write(filename, newTex, wadTextures.size());
+		res_list.insert(filename);
+		super_res_list.insert(filename);
 
 		for (uint i = 0; i < wadTextures.size(); i++)
 		{
@@ -327,7 +326,7 @@ BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad> wads, BSP * map)
 	return NULL;
 }
 
-int makeMapWad(BSP * map, vector<Wad>& wads)
+int makeMapWad(BSP * map, string map_name, vector<Wad>& wads)
 {
 	map->texdata = NULL;
 	byte * data = map->lumps[LUMP_TEXTURES];
@@ -416,7 +415,7 @@ int makeMapWad(BSP * map, vector<Wad>& wads)
 			println("UH OH");
 	}
 	if (texMode == TEX_WADS && wadTextures.size() > 0)
-		writeWad(wadTextures,wads,map->name);
+		writeWad(wadTextures,wads,map_name);
 
 	return find;
 }

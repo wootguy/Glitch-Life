@@ -10,6 +10,7 @@ public:
 	hashmap keyvalues;
 
 	Entity(void);
+	Entity(const std::string& classname);
 	~Entity(void);
 
 	void addKeyvalue(Keyvalue& k);

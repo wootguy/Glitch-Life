@@ -697,8 +697,9 @@ string trimSpaces(string s)
 vector<string> splitString( string str, char * delimitters )
 {
 	vector<string> split;
-	string copy = new char[str.length()+1];
-	copy = str;
+	if (str.size() == 0)
+		return split;
+	string copy = str;
 	char * tok = strtok((char *)copy.c_str(), delimitters);
 
 	while (tok != NULL)
