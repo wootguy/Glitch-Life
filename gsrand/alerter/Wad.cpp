@@ -67,6 +67,14 @@ void Wad::loadCache()
 	}
 }
 
+bool Wad::hasTexture(string name)
+{
+	for (int d = 0; d < header.nDir; d++)
+		if (matchStr(name, dirEntries[d].szName))
+			return true;
+	return false;
+}
+
 WADTEX * Wad::readTexture( int dirIndex )
 {
 	if (dirIndex < 0 || dirIndex >= numTex)
@@ -92,7 +100,7 @@ WADTEX * Wad::readTexture( const string& texname )
 	int idx = -1;
 	for (int d = 0; d < header.nDir; d++)
 	{
-		if (texname.find(dirEntries[d].szName) == 0)
+		if (matchStr(texname, dirEntries[d].szName))
 		{
 			idx = d;
 			break;
@@ -100,7 +108,10 @@ WADTEX * Wad::readTexture( const string& texname )
 	}
 
 	if (idx < 0)
+	{
+		fin.close();
 		return NULL;
+	}
 	if (dirEntries[idx].bCompression)
 	{
 		err("OMG texture is compressed. I'm too scared to load it :<");

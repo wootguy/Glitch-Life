@@ -62,6 +62,7 @@ public:
 
 	void loadCache();
 	void readInfo();
+	bool hasTexture(std::string name);
 
 	bool write(std::string filename, WADTEX ** textures, int numTex);
 

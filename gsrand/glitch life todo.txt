@@ -1,34 +1,31 @@
 glitch-life todo:
 
 update help pages and MOTD
-grapple hook if entity mode enabled but not texture mode
-pack everything into a zip when finished (almost done)
-512 models error on loz1_forest :<
-Ent error on loz1_forest
-only activate enabled cheats
-pack default GMR/GSR files in zip if not randomizing them
-configurable corruption
-config for skill files
+TEST: explosive damage TOO MUCH!
+TEST: BSP model swapping origins
+give item_suit with impulse 101
+random sound environments
 
 Nice-to-haves:
 
 detailtextures?
-bsp model swapping
-make sure "specimen" in test chamber doesn't get jammed
 bypass all players must be inside  c1a4b c2a5b (c3a1a?) c3a1b
 c1a2e (how did this changelevel ever work?)
-multiplayer packer (include non-default sounds/models/etc.)
 dont make spinning things and doors take forever
 better osprey replacements? Apache player model chance?
-TEST: trigger_camera cursor and blow up everything LOL
 entity randomization configuration (modify chances/value ranges)
 monster models aren't all actually monsters
+replace { textures with random { textures (or just rename?)
+weapon_strip for impulse 101?
+combinable texture corruption
 
 Flipping:
-TEST: tripmine
-c0a0b null faces
-c3a2a and c3a2b big clipping issues
 door directions messed up a bit (c4a1a, others)
 
 scaling:
-per-axis scaling
+per-axis scaling (buggy, causes crash on c1a3 after shooting tripmine)
+
+Future:
+content creation (models, sprites, skyboxes, sounds?)
+create randomized models (break bones, anims, textures, etc.)
+custom map music? (e.g. moonlight sonata for greyscale tex mode)

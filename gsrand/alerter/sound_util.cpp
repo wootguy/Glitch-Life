@@ -599,9 +599,10 @@ void do_ent_sounds(Entity** ents, string mapname)
 			}
 		}
 
-		if (matchStr(cname, "env_sound"))
+		bool should_effects = sndEffects == 2 || (sndEffects == 1 && (sndMode == SND_ALL || sndMode == SND_WORLD));
+		if (matchStr(cname, "env_sound") && should_effects)
 		{
-			ents[i]->keyvalues["roomtype"] = str((rand() % 27) + 1);
+			ents[i]->keyvalues["roomtype"] = str((rand() % 28) + 1);
 		}
 
 		if (matchStr(cname,"func_breakable"))

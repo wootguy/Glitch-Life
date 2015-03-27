@@ -154,6 +154,11 @@ bool do_plane_flip(BSPPLANE& p, int idx, bool is_clip)
 // return true if axis alignment changes
 bool do_plane_stretch(BSPPLANE& plane, float scaleX, float scaleY, float scaleZ)
 {
+	if (scaleX == scaleY && scaleX == scaleZ)
+	{
+		plane.fDist *= scaleX;
+		return false;
+	}
 	int old_axis = plane.nType;
 	float x = plane.vNormal.x * fabs(plane.fDist) * scaleX;
 	float y = plane.vNormal.y * fabs(plane.fDist) * scaleY;
@@ -198,11 +203,7 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 	int clips = map->header.lump[LUMP_CLIPNODES].nLength / sizeof(BSPCLIPNODE);
 	int texs = map->header.lump[LUMP_TEXINFO].nLength / sizeof(BSPTEXTUREINFO);
 
-	float vertScaleX = 0.5f;
-	float vertScaleY = 0.5f;
-	float vertScaleZ = 0.5f;
-	int vertDistort = 4;
-	println("");
+	//println("");
 	if (vertMode & VERT_FLIP)
 	{
 		for (int i = 0; i < MAX_MAP_ENTITIES; i++)
@@ -210,8 +211,6 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 			if (ents[i] == NULL)
 				break;
 			string cname = ents[i]->keyvalues["classname"];
-			if (matchStr(cname, "squadmaker") || matchStr(cname, "monstermaker") || matchStr(cname, "env_xenmaker"))
-				cname = ents[i]->keyvalues["monstertype"];
 
 			if (ents[i]->keyvalues.find("origin") != ents[i]->keyvalues.end())
 			{
@@ -222,6 +221,19 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 					coords[2] = str( atoi(coords[2].c_str()) * -1 );
 					ents[i]->keyvalues["origin"] = coords[0] + " " + coords[1] + " " + coords[2];
 				}
+			}
+
+			if (matchStr(cname, "squadmaker") || matchStr(cname, "monstermaker") || matchStr(cname, "env_xenmaker"))
+			{
+				vector<string> coords = splitString(ents[i]->keyvalues["origin"], " ");
+				if (coords.size() == 3)
+				{
+					coords[2] = str( atoi(coords[2].c_str()) - 80 );
+					ents[i]->keyvalues["origin"] = coords[0] + " " + coords[1] + " " + coords[2];
+				}
+				else
+					ents[i]->keyvalues["origin"] = "0 0 -80";
+				cname = ents[i]->keyvalues["monstertype"];
 			}
 
 			if (matchStr(cname, "func_door") || matchStr(cname, "func_water"))
@@ -277,8 +289,8 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 				else
 					ents[i]->keyvalues["origin"] = "0 0 -80";
 			}
-			if (matchStr(cname, "monster_tentacle") || matchStr(cname, "monster_tripmine") ||
-				matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon") || matchStr(cname, "monster_generic") || 
+			if (matchStr(cname, "monster_tentacle") || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon") || 
+			    matchStr(cname, "monster_generic") || 
 				matchStr(cname, "monster_furniture") || cname.find("item_") == 0 || cname.find("weapon_") == 0 ||
 				cname.find("ammo_") == 0 || matchStr(cname, "evn_sprite") || matchStr(cname, "env_shooter") ||
 				cname.find("xen_") == 0 || matchStr(cname, "monster_sitting_scientist") ||
@@ -287,12 +299,13 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 				vector<string> angles = splitString(ents[i]->keyvalues["angles"], " ");
 				if (angles.size() == 3)
 				{
-					angles[2] = str( atoi(angles[0].c_str()) + 180 );
+					angles[2] = str( atoi(angles[2].c_str()) + 180 );
 					ents[i]->keyvalues["angles"] = angles[0] + " " + angles[1] + " " + angles[2];
 				}
 				else
 					ents[i]->keyvalues["angles"] = "0 0 180";
 			}
+
 			if (matchStr(cname, "monster_nihilanth"))
 			{
 				vector<string> coords = splitString(ents[i]->keyvalues["origin"], " ");
@@ -306,7 +319,7 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 				vector<string> angles = splitString(ents[i]->keyvalues["angles"], " ");
 				if (angles.size() == 3)
 				{
-					angles[2] = str( atoi(angles[0].c_str()) + 25 );
+					angles[2] = str( atoi(angles[2].c_str()) + 25 );
 					ents[i]->keyvalues["angles"] = angles[0] + " " + angles[1] + " " + angles[2];
 				}
 				else
@@ -444,6 +457,9 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 				}
 			}
 
+			if (ents[i]->keyvalues.find("speed") != ents[i]->keyvalues.end())
+				ents[i]->keyvalues["speed"] = str( atoi(ents[i]->keyvalues["speed"].c_str()) * vertScaleX );
+
 			if (matchStr(cname, "func_plat") || matchStr(cname, "func_platrot"))
 			{
 				if (ents[i]->keyvalues.find("height") != ents[i]->keyvalues.end())
@@ -520,17 +536,66 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 
 	if (vertMode & VERT_DISTORT)
 	{
+		float scaleTex = 1.0f/2.0f;
 		for (int i = 0; i < verts; i++)
 		{
 			vec3& v = ((vec3*)vert_lump)[i];
 		
-			v.x += (rand() % (vertDistort*2 + 1)) - vertDistort;
-			v.y += (rand() % (vertDistort*2 + 1)) - vertDistort;
-			v.z += (rand() % (vertDistort*2 + 1)) - vertDistort;
+			int idistort = vertDistort*100;
+			v.x += ((rand() % (idistort*2 + 1)) - idistort)*0.01f;
+			v.y += ((rand() % (idistort*2 + 1)) - idistort)*0.01f;
+			v.z += ((rand() % (idistort*2 + 1)) - idistort)*0.01f;
 		}
 	}
 }
 
+void convert_texture_color(COLOR3& c)
+{
+	switch(ctexMode)
+	{
+		case CTEX_WHITE:
+			c.r = c.g = c.b = 255;
+			break;
+		case CTEX_GREY:
+		{
+			byte grey = ((float)c.r*0.35f + (float)c.g*0.40f + (float)c.b*0.25f);
+			c.r = c.g = c.b = grey;
+			break;
+		}
+		case CTEX_CONTRAST:
+		{
+			if (c.r > 127 + 64)		 c.r = 255;
+			else if (c.r > 127 - 64) c.r = 127;
+			else					 c.r = 0;
+			if (c.g > 127 + 64)		 c.g = 255;
+			else if (c.g > 127 - 64) c.g = 127;
+			else					 c.g = 0;
+			if (c.b > 127 + 64)		 c.b = 255;
+			else if (c.b > 127 - 64) c.b = 127;
+			else					 c.b = 0;
+			break;
+		}
+		case CTEX_BW:
+		{
+			byte grey = ((float)c.r*0.35f + (float)c.g*0.40f + (float)c.b*0.25f);
+			c.r = c.g = c.b = 0;
+			c.r = c.g = c.b = (grey > 127 ? 255 : 0);
+			break;
+		}
+		case CTEX_INVERT:
+		{
+			c.r = 255 - c.r;
+			c.g = 255 - c.g;
+			c.b = 255 - c.b;
+			break;
+		}
+		case CTEX_RANDOM:
+			c.r = rand() % 256;
+			c.g = rand() % 256;
+			c.b = rand() % 256;
+			break;
+	}
+}
 
 void corrupt_map_lightmap(BSP * map)
 {
@@ -559,17 +624,352 @@ void corrupt_map_lightmap(BSP * map)
 			c.g = rand() % 256;
 			c.b = rand() % 256;
 		}
+		/*
 		else if (lightMode == LIGHT_INVERTED)
 		{
 			c.r = 255 - c.r;
 			c.g = 255 - c.g;
 			c.b = 255 - c.b;
 		}
+		*/
 		else if (lightMode == LIGHT_DARK)
 		{
 			c.r = 0;
 			c.g = 0;
 			c.b = 0;
+		}
+
+		if (!(lightMode == LIGHT_DARK))
+		{
+			if (ctexMode == CTEX_GREY || ctexMode == CTEX_INVERT)
+				convert_texture_color(c);
+			else if (ctexMode == CTEX_BW)
+			{
+				byte grey = ((float)c.r*0.35f + (float)c.g*0.40f + (float)c.b*0.25f);
+				c.r = c.g = c.b = (grey > 127 ? 255 : 0);
+			}
+		}
+	}
+}
+
+WADTEX * generate_white_texture(int& white_dat_sz)
+{
+	WADTEX * white = new WADTEX;
+	int w = 16, h = 16;
+	white->nWidth = white->nHeight = w;
+	memcpy(white->szName, "white", 5);
+	white->szName[5] = '\0';
+
+	int sz = w*h;	   // miptex 0
+	int sz2 = sz / 4;  // miptex 1
+	int sz3 = sz2 / 4; // miptex 2
+	int sz4 = sz3 / 4; // miptex 3
+	int szMip = sz + sz2 + sz3 + sz4;
+	int pallete_start = szMip + 2;
+	int szAll = szMip + 2 + 256*3 + 2;
+	white->data = new byte[szAll];
+	for (int i = 0; i < szMip; i++)
+		white->data[i] = 0;
+	for (int i = pallete_start; i < pallete_start + 256*3; i++) // fill palette
+		white->data[i] = 255;
+
+	white->nOffsets[0] = sizeof(BSPMIPTEX);
+	white->nOffsets[1] = sizeof(BSPMIPTEX) + sz;
+	white->nOffsets[2] = sizeof(BSPMIPTEX) + sz + sz2;
+	white->nOffsets[3] = sizeof(BSPMIPTEX) + sz + sz2 + sz3;
+
+	white_dat_sz = szAll;
+
+	return white;
+}
+
+void corrupt_map_textures(BSP * map, Entity ** ents)
+{
+	byte * tex_lump = map->lumps[LUMP_TEXINFO];
+	int texs = map->header.lump[LUMP_TEXINFO].nLength / sizeof(BSPTEXTUREINFO);
+
+	if (ctexMode == CTEX_MISALIGN)
+	{
+		for (int i = 0; i < texs; i++)
+		{
+			BSPTEXTUREINFO& t = ((BSPTEXTUREINFO*)tex_lump)[i];
+			t.fSShift += rand() % 1024;
+			t.fTShift += rand() % 1024;
+		} 
+	}
+	if (ctexMode == CTEX_FLAT_COLOR)
+	{
+		for (int i = 0; i < texs; i++)
+		{
+			BSPTEXTUREINFO& t = ((BSPTEXTUREINFO*)tex_lump)[i];
+			const float uv_scale = 0.00001f; // scale up the UVs to prevent max luxels error
+			t.vS.x *= uv_scale;
+			t.vS.y *= uv_scale;
+			t.vS.z *= uv_scale;
+			t.vT.x *= uv_scale;
+			t.vT.y *= uv_scale;
+			t.vT.z *= uv_scale;
+		}
+	}
+	if (ctexMode >= CTEX_WHITE)
+	{
+		vector<Wad*> map_wads;
+		for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+		{
+			if (ents[i] == NULL)
+				break;
+			string cname = toLowerCase(ents[i]->keyvalues["classname"]);
+
+			if (matchStr(cname, "worldspawn"))
+			{
+				if (ents[i]->hasKey("wad"))
+				{
+					vector<string> wads = splitString(ents[i]->keyvalues["wad"], ";");
+					for (uint k = 0; k < wads.size(); ++k)
+					{
+						int dirfind = wads[k].find_last_of("\\/");
+						if (dirfind) wads[k] = getSubStr(wads[k], dirfind+1);
+						if (fileExists(wads[k]))
+						{
+							Wad * w = new Wad(wads[k]);
+							w->readInfo();
+							map_wads.push_back(w);
+						}
+						else if (fileExists("../valve/" + wads[k]))
+						{
+							Wad * w = new Wad("../valve/" + wads[k]);
+							w->readInfo();
+							map_wads.push_back(w);
+						}
+					}
+				}
+				ents[i]->keyvalues["skyname"] = "black";
+				break;
+			}
+		}
+
+		byte * textures = map->lumps[LUMP_TEXTURES];
+		int num_textures = ((int*)textures)[0];
+		int lump_len = map->header.lump[LUMP_TEXTURES].nLength;
+
+		int * new_ids = new int[num_textures]; // for changing ids referenced by texinfos
+		int injected_textures = 1; // white and sky
+		int id = injected_textures; // new textures (skip white and sky textures)
+		int new_lump_sz = 0;
+
+		for (int i = 0; i < num_textures; i++)
+		{
+			int offset = ((int*)textures)[i + 1];
+			BSPMIPTEX * t = (BSPMIPTEX*)&textures[offset];
+
+			string name = t->szName;
+			//println("OLD TEX " + str(i) + ": " + name);
+			if (t->szName[0] != '{' && !matchStr(name, "sky") && !matchStr(name, "xeno_14b") && 
+			    name.find("+") == string::npos && false) // TODO: Why do some textures cause a crash?
+			{
+				new_ids[i] = 0; // not a transparent texture (just replace with full white)
+				continue;
+			}
+
+			int sz = t->nHeight*t->nWidth;	   // miptex 0
+			int sz2 = sz / 4;  // miptex 1
+			int sz3 = sz2 / 4; // miptex 2
+			int sz4 = sz3 / 4; // miptex 3
+			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+
+			new_ids[i] = id++;
+			new_lump_sz += sizeof(BSPMIPTEX) + szAll;
+
+			if (t->nOffsets[0] == 0 || t->nOffsets[0] + offset + szAll > lump_len)
+			{
+				t->nOffsets[0] = 0; // texture stored in external wad
+				bool has_tex = false;
+				for (uint k = 0; k < map_wads.size(); k++)
+				{
+					Wad * w = map_wads[k];
+					if (w->readTexture(t->szName))
+					{
+						has_tex = true;
+						break;
+					}
+				}
+				if (!has_tex)
+				{
+					println("Missing tex: " + name);
+					id--;
+					new_ids[i] = 0;
+					new_lump_sz -= sizeof(BSPMIPTEX) + szAll;
+				}
+				continue;
+			}
+
+			int pal_offset = offset + sizeof(BSPMIPTEX) + sz + sz2 + sz3 + sz4 + 2;
+			for (int i = pal_offset; i < pal_offset + 256*3; i+=3) // don't replace transparent color (TODO: do it anyway in case mapper misuses tex)
+				convert_texture_color(*(COLOR3*)&textures[i]);
+		}
+
+		new_lump_sz += (1 + id)*sizeof(int); // num tex and tex offsets
+
+		int white_dat_sz;
+		WADTEX * white = generate_white_texture(white_dat_sz);
+		new_lump_sz += (sizeof(BSPMIPTEX) + white_dat_sz)*injected_textures;
+
+		byte * new_lump = new byte[new_lump_sz];
+		int * inew_lump = (int*)new_lump;
+		inew_lump[0] = id;
+
+		int writeOffset = (1 + id)*sizeof(int);
+
+		inew_lump[1] = writeOffset;
+		memcpy(new_lump + writeOffset, white, sizeof(BSPMIPTEX));
+		memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), white->data, white_dat_sz);
+		writeOffset += sizeof(BSPMIPTEX) + white_dat_sz;
+
+		delete [] white->data;
+		delete white;
+
+		id = injected_textures;
+		for (int i = 0; i < num_textures; i++)
+		{
+			if (new_ids[i] < injected_textures)
+				continue; // already wrote this texture
+			
+			inew_lump[id++ +1] = writeOffset;
+
+			int offset = ((int*)textures)[i + 1]; // offset into old data
+			BSPMIPTEX * t = (BSPMIPTEX*)&textures[offset];
+
+			int sz = t->nHeight*t->nWidth;	   // miptex 0
+			int sz2 = sz / 4;  // miptex 1
+			int sz3 = sz2 / 4; // miptex 2
+			int sz4 = sz3 / 4; // miptex 3
+			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+
+			if (writeOffset + szAll + sizeof(BSPMIPTEX) > new_lump_sz)
+			{
+				println("TEXTURE LUMP OVERFLOW");
+				break;
+			}
+
+			if (t->nOffsets[0] == 0) // texture stored in external wad
+			{
+				//println(t->szName + string(" is from a wad"));
+				WADTEX * wad_tex = NULL;
+				for (uint k = 0; k < map_wads.size(); k++)
+				{
+					Wad * w = map_wads[k];
+					wad_tex = w->readTexture(t->szName);
+					if (wad_tex != NULL)
+						break;
+				}
+
+				int pal_offset = sz + sz2 + sz3 + sz4 + 2;
+				for (int i = pal_offset; i < pal_offset + 256*3; i+=3) // don't replace transparent color (TODO: do it anyway in case mapper misuses tex)
+					convert_texture_color(*(COLOR3*)&wad_tex->data[i]);
+				memcpy(new_lump + writeOffset, wad_tex, sizeof(BSPMIPTEX));
+				memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), wad_tex->data, szAll);
+				writeOffset += sizeof(BSPMIPTEX) + szAll;
+				delete [] wad_tex->data;
+				delete wad_tex;
+			}
+			else // texture in old data
+			{
+				memcpy(new_lump + writeOffset, &textures[offset], sizeof(BSPMIPTEX));
+				memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX),&textures[offset + sizeof(BSPMIPTEX)], szAll);
+				writeOffset += sizeof(BSPMIPTEX) + szAll;
+			}
+		}
+		/*
+		println("NUM TEX: " + str(inew_lump[0]) + " " + str(id));
+		println("OFFSETS: ");
+		for (int i = 0; i < inew_lump[0]; i++)
+		{
+			int offset = inew_lump[i+1];
+			BSPMIPTEX * t = (BSPMIPTEX*)&new_lump[offset];
+			int sz = t->nHeight*t->nWidth;	   // miptex 0
+			int sz2 = sz / 4;  // miptex 1
+			int sz3 = sz2 / 4; // miptex 2
+			int sz4 = sz3 / 4; // miptex 3
+			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+			println(str(i) + ": " + str(offset) + " '" + t->szName + "'");
+		}
+		*/
+		/*
+		println("MAPPINGS:");
+		for (int i = 0; i < num_textures; i++)
+			println(str(i) + " -> " + str(new_ids[i]));
+		*/
+		//println("Wrote: " + str(writeOffset) + " of " + str(new_lump_sz));
+
+		delete [] map->lumps[LUMP_TEXTURES];
+		map->lumps[LUMP_TEXTURES] = new_lump;
+		map->header.lump[LUMP_TEXTURES].nLength = new_lump_sz;
+		
+		for (int i = 0; i < texs; i++)
+		{
+			BSPTEXTUREINFO& t = ((BSPTEXTUREINFO*)tex_lump)[i];
+			t.iMiptex = new_ids[t.iMiptex];
+		}
+
+		delete [] new_ids;
+		for (uint i = 0; i < map_wads.size(); i++)
+			delete map_wads[i];
+	}
+}
+
+void randomize_bsp_models(BSP * map, Entity ** ents)
+{
+	byte * models_lump = map->lumps[LUMP_MODELS];
+	int models = map->header.lump[LUMP_MODELS].nLength / sizeof(BSPMODEL);
+
+	set<string> visible_models;
+	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+	{
+		if (ents[i] == NULL)
+			break;
+		string cname = toLowerCase(ents[i]->keyvalues["classname"]);
+
+		bool is_visible_brush = false;
+		for (int k = 0; k < NUM_BRUSH_ENTS; k++)
+		{
+			if (matchStr(cname, brush_ents[k]))
+			{
+				is_visible_brush = true;
+				break;
+			}
+		}
+		if (is_visible_brush && ents[i]->hasKey("model") && ents[i]->hasKey("origin"))
+		{
+			string model = ents[i]->keyvalues["model"];
+			if (model[0] != '*')
+				continue;
+			visible_models.insert(model);
+		}
+	}
+	vector<string> model_list;
+	for (set<string>::iterator it = visible_models.begin(); it != visible_models.end(); it++)
+		model_list.push_back(*it);
+
+	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+	{
+		if (ents[i] == NULL)
+			break;
+		string cname = toLowerCase(ents[i]->keyvalues["classname"]);
+
+		bool is_visible_brush = false;
+		for (int k = 0; k < NUM_BRUSH_ENTS; k++)
+		{
+			if (matchStr(cname, brush_ents[k]))
+			{
+				is_visible_brush = true;
+				break;
+			}
+		}
+		if (is_visible_brush && ents[i]->hasKey("model") && ents[i]->hasKey("origin"))
+		{
+			if (ents[i]->keyvalues["model"][0] != '*')
+				continue;
+			ents[i]->keyvalues["model"] = model_list[rand() % model_list.size()];
 		}
 	}
 }

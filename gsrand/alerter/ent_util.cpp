@@ -60,6 +60,14 @@ void ripent(BSP * map, Entity** entData, bool restore)
 			saveLumpBackup(map, LUMP_ENTITIES, ".entbackup");			
 	}
 
+	string cheat_ent_str = cheat_ents;
+	if (!cheatGodmode)
+		cheat_ent_str[cheat_ent_str.find("gsrand_godmode_check")] = 'z';
+	if (!cheatNoclip)
+		cheat_ent_str[cheat_ent_str.find("gsrand_noclip_check")] = 'z';
+	if (!cheatImpulse)
+		cheat_ent_str[cheat_ent_str.find("gsrand_impulse101_check")] = 'z';
+
 	int oldLen = map->header.lump[LUMP_ENTITIES].nLength;
 	// calculate size of entity data
 	if (!restore)
@@ -76,7 +84,7 @@ void ripent(BSP * map, Entity** entData, bool restore)
 				eSize += 6 + it->first.length() + it->second.length();			
 		}
 		if (cheatGodmode || cheatImpulse || cheatNoclip)
-			eSize += strlen(cheat_ents);
+			eSize += cheat_ent_str.length();
 		map->header.lump[LUMP_ENTITIES].nLength = eSize;
 	}
 
@@ -139,7 +147,7 @@ void ripent(BSP * map, Entity** entData, bool restore)
 				chunk += "}\n";
 			}
 			if (cheatGodmode || cheatImpulse || cheatNoclip)
-				chunk += cheat_ents;
+				chunk += cheat_ent_str;
 			chunk += '\0';
 			fout.write(chunk.c_str(), chunk.length());
 		}
@@ -210,21 +218,6 @@ bool needsRipent(BSP * map, Entity** ents)
 	return false;
 }
 
-Entity * game_text_cheat(string targetname, string message)
-{
-	Entity * ent = new Entity("game_text");
-	ent->addKeyvalue("targetname", targetname);
-	ent->addKeyvalue("spawnflags", "1"); // no console echo (1 = all players)
-	ent->addKeyvalue("channel", "1");
-	ent->addKeyvalue("x", "-1");
-	ent->addKeyvalue("y", "0.45"); 
-	ent->addKeyvalue("color", "255 255 255");
-	ent->addKeyvalue("holdtime", "0.99"); // Don't use Y, Don't use Z
-	ent->addKeyvalue("message", message); // replace
-
-	return ent;
-}
-
 int add_gsrand_ents(Entity ** ents)
 {
 	int idx = -1;
@@ -255,6 +248,19 @@ int add_gsrand_ents(Entity ** ents)
 		ent->addKeyvalue("m_iszCVarToChange", "mp_disable_autoclimb");
 		ent->addKeyvalue("message", "0");
 		ent->addKeyvalue("targetname", "gsrand_cvars");
+	}
+
+	bool should_effects = sndEffects == 2 || (sndEffects == 1 && (sndMode == SND_ALL || sndMode == SND_WORLD));
+	if (should_effects)
+	{
+		int randEnv = 1 + ( rand() % (28 + 6) );
+		while (randEnv > 28)
+			randEnv -= 3; // weirdo ones more likely to happen
+
+		ents[idx++] = ent = new Entity("env_sound");
+		ent->addKeyvalue("origin", "0 0 0");
+		ent->addKeyvalue("radius", "8192");
+		ent->addKeyvalue("roomtype", str( rand() % 29 ));
 	}
 
 	ents[idx++] = ent = new Entity("trigger_auto");
@@ -327,287 +333,6 @@ int add_gsrand_ents(Entity ** ents)
 		}
 		if (uses_name)
 			println("Warning: Some map functions that affect players were broken. Disable all cheats in gsrand_config.txt to fix.");
-		/*
-		ents[idx++] = ent = new Entity("trigger_auto");
-		ent->addKeyvalue("delay", "1");
-		ent->addKeyvalue("triggerstate", "1");
-		ent->addKeyvalue("target", "gsrand_cheat_iter0");
-
-		int iter_idx = 0;
-		string iter_name = "gsrand_cheat_iter";
-
-		// set up entity iterators
-		int num_active_cheats = cheatGodmode + cheatNoclip + cheatImpulse;
-		bool iter_enabled[] = {cheatGodmode, cheatNoclip, cheatImpulse};
-		const int cheatButton1[] = {IN_USE, IN_USE, IN_USE};
-		const int cheatButton2[] = {IN_DUCK, IN_JUMP, IN_RELOAD};
-		const int * cheatButtons[] = {cheatButton1, cheatButton2};
-		const string iter_targets[] = {"godmode", "noclip", "impulse101"};
-
-		ents[idx++] = ent = new Entity("trigger_changevalue");
-		ent->addKeyvalue("targetname", "gsrand_godmode_check0");
-		ent->addKeyvalue("target", "gsrand_player");
-		ent->addKeyvalue("m_iszValueName", "origin");
-		ent->addKeyvalue("m_iszNewValue", "2048 2048 2048" );
-		ent->addKeyvalue("m_iszValueType", "0"); // replace
-
-		for (int i = 0; i < 3; i++)
-		{
-			if (!iter_enabled[i])
-				continue;
-
-			// iterate through all players
-			ents[idx++] = ent = new Entity("trigger_entity_iterator");
-			ent->addKeyvalue("targetname", iter_name + str(iter_idx));
-			ent->addKeyvalue("run_mode", iter_idx ? "0" : "2"); // "run once" if not the first iter
-			ent->addKeyvalue("trigger_after_run", iter_name + str(++iter_idx));
-			ent->addKeyvalue("target", "gsrand_" + iter_targets[i] + "_precheck");
-			ent->addKeyvalue("name_filter", "gsrand_player");
-			ent->addKeyvalue("status_filter", "1");
-			ent->addKeyvalue("trigger_state", "1");
-			ent->addKeyvalue("delay_between_triggers", "0"); // default?
-			ent->addKeyvalue("delay_between_runs", "0.05");
-
-			// check cooldown state
-			ents[idx++] = ent = new Entity("trigger_condition");
-			ent->addKeyvalue("targetname", "gsrand_" + iter_targets[i] + "_precheck");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iCheckType", "2"); // less than
-			ent->addKeyvalue("m_iszValueName", "team");
-			ent->addKeyvalue("m_iszCheckValue", "0");
-			ent->addKeyvalue("spawnflags", "96"); // Cyclic, keep '!activator'
-			ent->addKeyvalue("netname", "gsrand_" + iter_targets[i] + "_check0"); // true target
-			ent->addKeyvalue("message", "gsrand_cheat_cooldown"); // false target
-				
-			// check button states
-				
-			for (int k = 0; k < 2; k++)
-			{
-				ents[idx++] = ent = new Entity("trigger_condition");
-				ent->addKeyvalue("targetname", "gsrand_" + iter_targets[i] + "_check" + str(k));
-				ent->addKeyvalue("target", "!activator");
-				ent->addKeyvalue("m_iCheckType", "6"); // binary &
-				ent->addKeyvalue("m_iszValueName", "button"); 
-				ent->addKeyvalue("m_iszCheckValue", str(cheatButtons[k][i])); 
-				ent->addKeyvalue("spawnflags", "96"); // Cyclic, keep '!activator'
-				ent->addKeyvalue("netname", "gsrand_" + iter_targets[i] + "_check" + str(k+1)); // true target
-			}
-			ent->keyvalues["netname"] = "gsrand_" + iter_targets[i]; // change "true" target to activate cheat
-
-			// set cheat cooldown
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_" + iter_targets[i]);
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "team"); 
-			ent->addKeyvalue("m_iszNewValue", str(10*num_active_cheats) ); // each cheat check decrements team
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-		}
-
-		// cooldown
-		ents[idx++] = ent = new Entity("trigger_changevalue");
-		ent->addKeyvalue("targetname", "gsrand_cheat_cooldown");
-		ent->addKeyvalue("target", "!activator");
-		ent->addKeyvalue("m_iszValueName", "team"); 
-		ent->addKeyvalue("m_iszNewValue", "1");
-		ent->addKeyvalue("m_iszValueType", "3"); // subtract
-			
-		// disable glow shell effect
-		ents[idx++] = ent = new Entity("trigger_changevalue");
-		ent->addKeyvalue("targetname", "gsrand_render_off");
-		ent->addKeyvalue("target", "!activator");
-		ent->addKeyvalue("m_iszValueName", "renderfx"); 
-		ent->addKeyvalue("m_iszNewValue", "0");
-		ent->addKeyvalue("m_iszValueType", "0"); // replace
-
-		if (cheatGodmode && false)
-		{
-			// takedamage == 0 ? godmode_off : godmode_on
-			ents[idx++] = ent = new Entity("trigger_condition");
-			ent->addKeyvalue("targetname", "gsrand_godmode");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iCheckType", "0"); // equals
-			ent->addKeyvalue("m_iszValueName", "takedamage"); 
-			ent->addKeyvalue("m_iszCheckValue", "0"); 
-			ent->addKeyvalue("spawnflags", "96"); // Cyclic, keep '!activator'
-			ent->addKeyvalue("netname", "gsrand_godmode_off"); // true target
-			ent->addKeyvalue("message", "gsrand_godmode_on"); // false target
-
-			// toggle godmode ON
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_godmode_on");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "takedamage"); 
-			ent->addKeyvalue("m_iszNewValue", "0");
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_godmode_on");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "rendercolor"); 
-			ent->addKeyvalue("m_iszNewValue", "255");
-			ent->addKeyvalue("spawnflags", "6"); // Don't use Y, Don't use Z
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = game_text_cheat("gsrand_godmode_on", "Godmode ON");
-
-			// toggle godmode OFF
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_godmode_off");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "takedamage"); 
-			ent->addKeyvalue("m_iszNewValue", "1");
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_godmode_off");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "rendercolor"); 
-			ent->addKeyvalue("m_iszNewValue", "0");
-			ent->addKeyvalue("spawnflags", "6"); // Don't use Y, Don't use Z
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = game_text_cheat("gsrand_godmode_off", "Godmode OFF");
-
-			// only turn off glow shell if noclip isn't active (because it uses glow, too)
-			ents[idx++] = ent = new Entity("trigger_condition");
-			ent->addKeyvalue("targetname", "gsrand_godmode_off");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iCheckType", "0"); // equals
-			ent->addKeyvalue("m_iszValueName", "movetype");
-			ent->addKeyvalue("m_iszCheckValue", "3"); 
-			ent->addKeyvalue("spawnflags", "96"); // Cyclic, keep '!activator'
-			ent->addKeyvalue("netname", "gsrand_render_off"); // true target
-		}
-		if (cheatNoclip && false)
-		{
-			// movetype == 3 ? noclip_on : noclip_off
-			ents[idx++] = ent = new Entity("trigger_condition");
-			ent->addKeyvalue("targetname", "gsrand_noclip");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iCheckType", "0"); // equals
-			ent->addKeyvalue("m_iszValueName", "movetype");
-			ent->addKeyvalue("m_iszCheckValue", "3"); 
-			ent->addKeyvalue("spawnflags", "96"); // Cyclic, keep '!activator'
-			ent->addKeyvalue("netname", "gsrand_noclip_on"); // true target
-			ent->addKeyvalue("message", "gsrand_noclip_off"); // false target
-
-			// toggle noclip ON
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_noclip_on");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "movetype"); 
-			ent->addKeyvalue("m_iszNewValue", "8");
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_noclip_on");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "rendercolor"); 
-			ent->addKeyvalue("m_iszNewValue", "255");
-			ent->addKeyvalue("spawnflags", "5"); // Don't use X, Don't use Z
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = game_text_cheat("gsrand_noclip_on", "Noclip ON");
-
-			// toggle noclip OFF
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_noclip_off");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "movetype"); 
-			ent->addKeyvalue("m_iszNewValue", "3");
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = new Entity("trigger_changevalue");
-			ent->addKeyvalue("targetname", "gsrand_noclip_off");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iszValueName", "rendercolor"); 
-			ent->addKeyvalue("m_iszNewValue", "0");
-			ent->addKeyvalue("spawnflags", "5"); // Don't use X, Don't use Z
-			ent->addKeyvalue("m_iszValueType", "0"); // replace
-			ents[idx++] = ent = game_text_cheat("gsrand_noclip_off", "Noclip OFF");
-
-			// only turn off glow shell if godmode isn't active (because it uses glow, too)
-			ents[idx++] = ent = new Entity("trigger_condition");
-			ent->addKeyvalue("targetname", "gsrand_godmode_off");
-			ent->addKeyvalue("target", "!activator");
-			ent->addKeyvalue("m_iCheckType", "0"); // equals
-			ent->addKeyvalue("m_iszValueName", "takedamage");
-			ent->addKeyvalue("m_iszCheckValue", "1"); 
-			ent->addKeyvalue("spawnflags", "96"); // Cyclic, keep '!activator'
-			ent->addKeyvalue("netname", "gsrand_render_off"); // true target
-		}
-		if (cheatImpulse && false)
-		{
-			ents[idx++] = ent = new Entity("trigger_copyvalue");
-			ent->addKeyvalue("targetname", "gsrand_impulse101");
-			ent->addKeyvalue("target", "gsrand_impulse101_spawn");
-			ent->addKeyvalue("message", "gsrand_impulse101_spawn");
-			ent->addKeyvalue("netname", "!activator");
-			ent->addKeyvalue("m_iszValueType", "0"); // replace 
-			ent->addKeyvalue("m_iszSrcValueName", "origin");
-			ent->addKeyvalue("m_iszDstValueName", "origin");
-			ent->addKeyvalue("spawnflags", "128"); // Multiple destinations
-				
-			const int num_ammo_types = 11;
-			const char * ammo_types[num_ammo_types] = {
-				"357", "556", "762", "9mmbox", "ARgrenades", "buckshot",
-				"crossbow", "gaussclip", "rpgclip", "sporeclip"
-			};
-			const int ammo_counts[num_ammo_types] = { 6, 3, 2, 1, 3, 6, 5, 3, 2, 15 };
-
-			for (int i = 0; i < num_ammo_types; i++)
-			{
-				for (int k = 0; k < ammo_counts[i]; k++)
-				{
-					ents[idx++] = ent = new Entity("trigger_createentity");
-					ent->addKeyvalue("targetname", "gsrand_impulse101_spawn");
-					ent->addKeyvalue("m_iszCrtEntChildClass", "ammo_" + string(ammo_types[i]));
-					ent->addKeyvalue("m_iszCrtEntChildName", "gsrand_impulse101_items");
-					ent->addKeyvalue("-movetype", "5"); 
-				}
-			}
-
-			const int num_weapon_types = 23;
-			const char * weapon_types[num_weapon_types] = {
-				"crowbar", "9mmhandgun", "357", "9mmAR", "crossbow", "shotgun", "rpg", "gauss", "egon", 
-				"hornetgun", "handgrenade", "tripmine", "satchel", "snark", "uziakimbo", "medkit", "pipewrench",
-				"grapple", "sniper", "m249", "m16", "sporelauncher", "eagle"
-			};
-			const int weapon_counts[num_weapon_types] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 5, 5, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-			const int weapon_values[num_weapon_types] = { 
-				2, 4, 8, 16, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 131072,
-				262144, 1048576, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728
-			};
-
-			for (int i = 0; i < num_weapon_types; i++)
-			{
-				string copy_name = "gsrand_give_" + string(weapon_types[i]);
-				string spawn_name = "gsrand_give_" + string(weapon_types[i]) + "_s";
-				// only give weapon if player does not have it
-				ents[idx++] = ent = new Entity("trigger_condition");
-				ent->addKeyvalue("targetname", "gsrand_impulse101");
-				ent->addKeyvalue("target", "!activator");
-				ent->addKeyvalue("m_iCheckType", "6"); // logical &
-				ent->addKeyvalue("m_iszValueName", "weapons");
-				ent->addKeyvalue("m_iszCheckValue", str(weapon_values[i])); 
-				ent->addKeyvalue("spawnflags", "96"); // Cyclic, keep '!activator'
-				ent->addKeyvalue("message", copy_name); // true target
-
-				// teleport spawner to player who activated cheat
-				ents[idx++] = ent = new Entity("trigger_copyvalue");
-				ent->addKeyvalue("targetname", copy_name);
-				ent->addKeyvalue("target", spawn_name);
-				ent->addKeyvalue("message", spawn_name);
-				ent->addKeyvalue("netname", "!activator");
-				ent->addKeyvalue("m_iszValueType", "0"); // replace 
-				ent->addKeyvalue("m_iszSrcValueName", "origin");
-				ent->addKeyvalue("m_iszDstValueName", "origin");
-				ent->addKeyvalue("spawnflags", "128"); // Multiple destinations
-
-				for (int k = 0; k < weapon_counts[i]; k++)
-				{
-					ents[idx++] = ent = new Entity("trigger_createentity");
-					ent->addKeyvalue("targetname", spawn_name);
-					ent->addKeyvalue("m_iszCrtEntChildClass", "weapon_" + string(weapon_types[i]));
-					ent->addKeyvalue("-spawnflags", "1024"); 
-					ent->addKeyvalue("-movetype", "5"); 
-				}
-			}
-		}
-		*/
 	}
 	return idx;
 }
@@ -781,6 +506,9 @@ void do_entity_randomization(Entity** ents, string mapname)
 {	
 	vector<string> game_text_words;
 	vector<string> vote_text_words;
+	set<string> smaterials;
+	vector<int> imaterials;
+	int global_rand_mat = 0;
 	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 	{
 		if (ents[i] == NULL) 
@@ -797,7 +525,27 @@ void do_entity_randomization(Entity** ents, string mapname)
 			vector<string> words = splitString(ents[i]->keyvalues["message"], " ");
 			vote_text_words.insert(vote_text_words.end(), words.begin(), words.end());
 		}
+		if (matchStr(cname,"func_door") || matchStr(cname,"func_door_rotating") || matchStr(cname,"momentary_door"))
+		{
+			if (ents[i]->keyvalues.find("breakable") != ents[i]->keyvalues.end() && 
+				matchStr(ents[i]->keyvalues["breakable"], "1") && 
+				ents[i]->keyvalues.find("material") != ents[i]->keyvalues.end() &&
+				(ents[i]->keyvalues.find("gibmodel") == ents[i]->keyvalues.end() ||
+				ents[i]->keyvalues["gibmodel"].length() == 0))
+				{
+					smaterials.insert(ents[i]->keyvalues["material"]);
+				}
+		}
+		if (matchStr(cname,"func_breakable") && 
+			(ents[i]->keyvalues.find("gibmodel") == ents[i]->keyvalues.end() ||
+			ents[i]->keyvalues["gibmodel"].length() == 0))
+			smaterials.insert(ents[i]->keyvalues["material"]);
 	}
+	for (set<string>::iterator it = smaterials.begin(); it != smaterials.end(); ++it)
+		imaterials.push_back(atoi(it->c_str()));
+
+	if (imaterials.size() == 0)
+		imaterials.push_back(3);
 
 	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 	{
@@ -906,7 +654,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			int gibs = atoi(ents[i]->keyvalues["m_iGibs"].c_str());
 			float delay = atof(ents[i]->keyvalues["delay"].c_str());
-			float time = min(0.1f, gibs*delay);
+			float time = max(0.8f, gibs*delay);
 			float new_delay = 0.01f;
 			int new_gibs = time / new_delay;
 			ents[i]->keyvalues["m_iGibs"] = str(new_gibs);
@@ -971,24 +719,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 			ents[i]->keyvalues["mouse_param_1_0"] = "monster_scientist";
 			ents[i]->keyvalues["mouse_action_2_0"] = "10"; // Explode!!! (middle mouse)
 		}
-
-		if (matchStr(cname,"func_breakable"))
-		{
-			if (entMode == ENT_SUPER)
-			{
-				int randWeap = rand() % 3;
-				if (randWeap == 0)		randWeap = 1;
-				else if (randWeap == 1)	randWeap = 19;
-				else					randWeap = 20;
-				ents[i]->keyvalues["instantbreak"] = "1";
-				ents[i]->keyvalues["weapon"] = to_string((_Longlong)randWeap);
-				// disable "only trigger" and "immune to clients" breakables (can stop map progression)
-				ents[i]->keyvalues["spawnflags"] = str((atoi(ents[i]->keyvalues["spawnflags"].c_str()) & ~65) | 32);
-				if (!(rand() % 3)) ents[i]->keyvalues["explodemagnitude"] = "100";
-			}
-			continue;
-		}
-
+		
 		if (matchStr(cname,"path_corner") || matchStr(cname,"path_track"))
 		{
 			if (entMode == ENT_SUPER)
@@ -1009,6 +740,17 @@ void do_entity_randomization(Entity** ents, string mapname)
 								break;
 							}
 						} 
+						if (matchStr(ents[k]->keyvalues["classname"], "func_trackchange") ||
+							matchStr(ents[k]->keyvalues["classname"], "func_trackautochange"))
+						{
+							if (ents[k]->keyvalues["toptrack"].find(ents[i]->keyvalues["targetname"]) != string::npos ||
+							    ents[k]->keyvalues["bottomtrack"].find(ents[i]->keyvalues["targetname"]) != string::npos)
+								{
+									first_path = true;
+									break;
+								}
+						}
+
 					}
 					if (!first_path)
 					{
@@ -1052,23 +794,6 @@ void do_entity_randomization(Entity** ents, string mapname)
 					ents[i]->keyvalues["avelocity"] = str(randRot1) + " " + str(randRot2) + " " + str(randRot3);
 			}
 		}
-
-		if (matchStr(cname,"func_wall"))
-		{
-			if (entMode == ENT_SUPER)
-			{
-				int randMat = rand() % 8;
-				if (randMat == 7)
-					randMat = 8;
-				ents[i]->keyvalues["classname"] = "func_breakable";
-				ents[i]->keyvalues["material"] = to_string((_Longlong)randMat);
-				ents[i]->keyvalues["health"] = "100";
-				ents[i]->keyvalues["displayname"] = "derp i'm a berk";
-
-				int flags = 40; // repariable, show HUD info
-				ents[i]->keyvalues["spawnflags"] = to_string((_Longlong)flags);
-			}
-		} 
 
 		if (matchStr(cname,"player_loadsaved"))
 		{
@@ -1179,6 +904,40 @@ void do_entity_randomization(Entity** ents, string mapname)
 				}
 			}
 		}
+		
+		if (matchStr(cname,"func_breakable"))
+		{
+			if (entMode == ENT_SUPER)
+			{
+				int randWeap = rand() % 3;
+				if (randWeap == 0)		randWeap = 1;
+				else if (randWeap == 1)	randWeap = 19;
+				else					randWeap = 20;
+				ents[i]->keyvalues["instantbreak"] = "1";
+				ents[i]->keyvalues["weapon"] = to_string((_Longlong)randWeap);
+				// disable "only trigger" and "immune to clients" breakables (can stop map progression)
+				ents[i]->keyvalues["spawnflags"] = str((atoi(ents[i]->keyvalues["spawnflags"].c_str()) & ~65) | 32);
+				if (!(rand() % 3)) ents[i]->keyvalues["explodemagnitude"] = "100";
+			}
+			continue;
+		}
+		
+		if (matchStr(cname,"func_wall"))
+		{
+			if (entMode == ENT_SUPER)
+			{
+				int randMat = imaterials[rand() % imaterials.size()];
+				if (randMat == 7)
+					randMat = 0;
+				ents[i]->keyvalues["classname"] = "func_breakable";
+				ents[i]->keyvalues["material"] = str(randMat);
+				ents[i]->keyvalues["health"] = "100";
+				ents[i]->keyvalues["displayname"] = "derp i'm a berk";
+
+				int flags = 40; // repariable, show HUD info
+				ents[i]->keyvalues["spawnflags"] = to_string((_Longlong)flags);
+			}
+		} 
 
 		if (matchStr(cname,"func_door") || matchStr(cname,"func_door_rotating") || matchStr(cname,"momentary_door"))
 		{
@@ -1187,9 +946,9 @@ void do_entity_randomization(Entity** ents, string mapname)
 			if (entMode == ENT_SUPER)
 			{
 				int randSpeed = (int)pow(2.0,(rand()%8+4));
-				int randMat = rand() % 8;
+				int randMat = imaterials[rand() % imaterials.size()];
 				if (randMat == 7)
-					randMat = 8;
+					randMat = 0;
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
 				ents[i]->keyvalues["breakable"] = "1";
 				ents[i]->keyvalues["material"] = to_string((_Longlong)randMat);
@@ -1215,7 +974,6 @@ void do_entity_randomization(Entity** ents, string mapname)
 			}
 			continue;
 		}
-
 		if (matchStr(cname,"func_button"))
 		{
 			if (entMode == ENT_SUPER)

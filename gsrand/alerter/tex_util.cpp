@@ -94,15 +94,16 @@ void create_tex_embed_wad(vector<Wad>& wads)
 		if (!tex_lump)
 			continue;
 		int numTex = ((int*)tex_lump)[0];
-
 		bool had_embed = false;
 		for (int i = 0; i < numTex; i++)
 		{
-			if (numTex < 0 || numTex > MAX_MAP_TEXTURES)
+			if (numTex > MAX_MAP_TEXTURES)
 				break;
 
 			int offset = ((int*)tex_lump)[i+1];
 			BSPMIPTEX * mip = (BSPMIPTEX*)(&tex_lump[offset]);
+			if (offset + sizeof(BSPMIPTEX) > length)
+				continue;
 			string tex_name = toLowerCase(string(mip->szName));
 
 			int sz = mip->nHeight*mip->nWidth;	   // miptex 0
@@ -245,6 +246,7 @@ WADTEX ** loadRandomTextures(vector<string> wadTextures, vector<Wad> wads)
 		if (texMode == TEX_MASTERWAD)
 			println("Loading " + str(wadTextures.size()) + " random textures...");
 
+		int grapple_id = 0;
 		WADTEX ** newTex = new WADTEX*[wadTextures.size()];
 		for (uint i = 0; i < wadTextures.size(); i++)
 		{
@@ -252,8 +254,9 @@ WADTEX ** loadRandomTextures(vector<string> wadTextures, vector<Wad> wads)
 			if (newTex[i] == NULL)
 				break;
 			string tex_name = wadTextures[i];
-			if (grapple_mode == GRAPPLE_HOOK && tex_name.find("sky") != 0 && tex_name.find("aaatrigger") != 0)
-				tex_name = "xeno_grapple"; // all textures by this name can be grappled
+			bool should_hook = grapple_mode == GRAPPLE_HOOK_ALWAYS || entMode == ENT_SUPER && grapple_mode == GRAPPLE_HOOK;
+			if (should_hook && tex_name.find("sky") != 0 && tex_name.find("aaatrigger") != 0)
+				tex_name = "xeno_grapple" + str(grapple_id++); // all textures by this name can be grappled
 			for (uint k = 0; k < MAXTEXTURENAME; k++)
 			{
 				if (k < tex_name.length())
@@ -418,4 +421,149 @@ int makeMapWad(BSP * map, string map_name, vector<Wad>& wads)
 		writeWad(wadTextures,wads,map_name);
 
 	return find;
+}
+
+// embed textures that the map references from WAD files
+void embedAllTextures(BSP * map, Entity ** ents)
+{
+	vector<Wad*> map_wads;
+	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+	{
+		if (ents[i] == NULL)
+			break;
+		string cname = toLowerCase(ents[i]->keyvalues["classname"]);
+
+		if (matchStr(cname, "worldspawn"))
+		{
+			if (ents[i]->hasKey("wad"))
+			{
+				vector<string> wads = splitString(ents[i]->keyvalues["wad"], ";");
+				for (uint k = 0; k < wads.size(); ++k)
+				{
+					int dirfind = wads[k].find_last_of("\\/");
+					if (dirfind) wads[k] = getSubStr(wads[k], dirfind+1);
+					if (fileExists(wads[k]))
+					{
+						Wad * w = new Wad(wads[k]);
+						w->readInfo();
+						map_wads.push_back(w);
+					}
+					else if (fileExists("../valve/" + wads[k]))
+					{
+						Wad * w = new Wad("../valve/" + wads[k]);
+						w->readInfo();
+						map_wads.push_back(w);
+					}
+				}
+			}
+			ents[i]->keyvalues["skyname"] = "black";
+			break;
+		}
+	}
+
+	byte * textures = map->lumps[LUMP_TEXTURES];
+	int num_textures = ((int*)textures)[0];
+	int lump_len = map->header.lump[LUMP_TEXTURES].nLength;
+
+	int new_lump_sz = 0;
+
+	for (int i = 0; i < num_textures; i++)
+	{
+		int offset = ((int*)textures)[i + 1];
+		BSPMIPTEX * t = (BSPMIPTEX*)&textures[offset];
+
+		int sz = t->nHeight*t->nWidth;	   // miptex 0
+		int sz2 = sz / 4;  // miptex 1
+		int sz3 = sz2 / 4; // miptex 2
+		int sz4 = sz3 / 4; // miptex 3
+		int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+
+		new_lump_sz += sizeof(BSPMIPTEX) + szAll;
+	}
+
+	new_lump_sz += (1 + num_textures)*sizeof(int); // num tex and tex offsets
+
+	byte * new_lump = new byte[new_lump_sz];
+	int * inew_lump = (int*)new_lump;
+	inew_lump[0] = num_textures;
+
+	int writeOffset = (1 + num_textures)*sizeof(int);
+
+	int grapple_id = 0;
+
+	for (int i = 0; i < num_textures; i++)
+	{
+		inew_lump[i+1] = writeOffset;
+
+		int offset = ((int*)textures)[i + 1]; // offset into old data
+		BSPMIPTEX * t = (BSPMIPTEX*)&textures[offset];
+
+		int sz = t->nHeight*t->nWidth;	   // miptex 0
+		int sz2 = sz / 4;  // miptex 1
+		int sz3 = sz2 / 4; // miptex 2
+		int sz4 = sz3 / 4; // miptex 3
+		int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+
+		if (writeOffset + szAll + sizeof(BSPMIPTEX) > new_lump_sz)
+		{
+			println("TEXTURE LUMP OVERFLOW");
+			break;
+		}
+		
+		//println("TEX: " + string(t->szName));
+		string name = t->szName;
+		bool should_hook = grapple_mode == GRAPPLE_HOOK_ALWAYS || entMode == ENT_SUPER && grapple_mode == GRAPPLE_HOOK;
+		if (should_hook && !matchStr(t->szName, "sky") && !matchStr(t->szName, "aaatrigger") && t->szName[0] != '!' &&
+			t->szName[0] != '{')
+		{
+			string gname = "xeno_grapple" + str(grapple_id++);
+			memcpy(t->szName, gname.c_str(), gname.length());
+			t->szName[gname.length()] = '\0';
+		}
+				
+		
+		if (t->nOffsets[0] == 0 || t->nOffsets[0] + offset + szAll > lump_len) // texture stored in external wad
+		{
+			WADTEX * wad_tex = NULL;
+			for (uint k = 0; k < map_wads.size(); k++)
+			{
+				Wad * w = map_wads[k];
+				wad_tex = w->readTexture(name);
+				if (wad_tex != NULL)
+					break;
+			}
+
+			if (wad_tex == NULL)
+			{
+				println("Couldn't find WAD texture: " + string(t->szName));
+				memcpy(t->szName, name.c_str(), name.length());
+				t->szName[name.length()] = '\0';
+				memcpy(new_lump + writeOffset, t, sizeof(BSPMIPTEX));
+				writeOffset += sizeof(BSPMIPTEX) + szAll;
+			}
+			else
+			{
+				memcpy(wad_tex->szName, t->szName, MAXTEXTURENAME); // in case we changed it to xeno_grapple
+				memcpy(new_lump + writeOffset, wad_tex, sizeof(BSPMIPTEX));
+				memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), wad_tex->data, szAll);
+				writeOffset += sizeof(BSPMIPTEX) + szAll;
+				delete [] wad_tex->data;
+				delete wad_tex;
+			}
+				
+		}
+		else // texture in old data
+		{
+			memcpy(new_lump + writeOffset, t, sizeof(BSPMIPTEX));
+			memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), &textures[offset + sizeof(BSPMIPTEX)], szAll);
+			writeOffset += sizeof(BSPMIPTEX) + szAll;
+		}
+	}
+
+	delete [] map->lumps[LUMP_TEXTURES];
+	map->lumps[LUMP_TEXTURES] = new_lump;
+	map->header.lump[LUMP_TEXTURES].nLength = new_lump_sz;
+
+	for (uint i = 0; i < map_wads.size(); i++)
+		delete map_wads[i];
 }

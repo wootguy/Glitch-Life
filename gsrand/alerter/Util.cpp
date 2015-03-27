@@ -643,8 +643,16 @@ string relative_path_to_absolute(string start_dir, string path)
 		int up_dir = start_dir.find_last_of("\\/");
 		if (up_dir == string::npos)
 		{
-			print("Could not convert '" + path + "' to absolute path using root dir: " + start_dir); 
-			return start_dir + "/" + path;
+			if (start_dir.length())
+			{
+				up_dir = 0;
+				start_dir = "";
+			}
+			else
+			{
+				print("Could not convert '" + path + "' to absolute path using root dir: " + start_dir); 
+				return start_dir + "/" + path;
+			}
 		}
 		if (up > 0) // some crazy person went back down a directory before going up
 		{
@@ -652,12 +660,15 @@ string relative_path_to_absolute(string start_dir, string path)
 			path = getSubStr(path, up);
 			up = 0;
 		}
-		start_dir = getSubStr(start_dir, 0, up_dir);
+		if (up_dir > 0)
+			start_dir = getSubStr(start_dir, 0, up_dir);
 		path = getSubStr(path, 3);
 		up = path.find("../");
 	}
-	
-	return start_dir + "/" + path;	
+	if (start_dir.length())
+		return start_dir + "/" + path;	
+	else
+		return path;
 }
 
 void insert_unique(const vector<string>& insert, vector<string>& insert_into)

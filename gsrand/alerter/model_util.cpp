@@ -258,6 +258,8 @@ void find_all_models(string modelPath)
 							println("Missing T model: " + cpath + results[k]);
 						continue;
 					}
+					else
+						add_to_black_list(cpath + results[k].substr(0, end_name), "*tmodel");
 					ifstream fint (t_path, ios::binary);
 					studiohdr_t mdlHeadt;
 					fint.read((char*)&mdlHeadt, sizeof(studiohdr_t));
@@ -354,9 +356,6 @@ void find_all_models(string modelPath)
 				if (houndeye_matches  >= 3) add_to_black_list(cpath + results[k].substr(0, end_name), "*houndeye");
 				if (friendly_matches  >= 3) add_to_black_list(cpath + results[k].substr(0, end_name), "*friendly");
 				if (stukabat_matches  >= 3) add_to_black_list(cpath + results[k].substr(0, end_name), "*stukabat");
-
-				if (fileExists("models/" + cpath + results[k].substr(0, end_name) + "t.mdl"))
-					add_to_black_list(cpath + results[k].substr(0, end_name), "*tmodel");
 
 				fin.close();
 
@@ -1340,6 +1339,7 @@ bool is_safe_model_replacement(string classname, string model, string replacemen
 		if (monster_blacklists.find("weapons") != monster_blacklists.end())
 		{
 			vector<string>& wep_blacklist = monster_blacklists["weapons"];
+			
 			for (uint i = 0; i < wep_blacklist.size(); ++i)
 				if (matchStr(wep_blacklist[i], replacement))
 					return false;

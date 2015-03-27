@@ -1,5 +1,6 @@
 #include <vector>
 #include "Wad.h"
+#include "Entity.h"
 
 struct BSP;
 struct BSPTEXDATA;
@@ -17,6 +18,8 @@ void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname);
 BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad> wads, BSP * map);
 
 int makeMapWad(BSP * map, string map_name, vector<Wad>& wads);
+
+void embedAllTextures(BSP * map, Entity ** ents);
 
 #define NUM_DEFAULT_WADS 48
 static const char * default_wads[NUM_DEFAULT_WADS] = 

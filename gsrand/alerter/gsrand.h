@@ -56,18 +56,29 @@ enum corrupt_modes
 	CORRUPT_MODES,
 };
 
-enum vert_modes {
+enum vert_modes { // can be combined
 	VERT_FLIP = 1,
 	VERT_SCALE = 2,
 	VERT_DISTORT = 4,
 };
 
 enum lightmap_modes {
-	LIGHT_NONE,
-	LIGHT_SHIFTED,
+	LIGHT_SHIFTED = 1,
 	LIGHT_DISCO,
-	LIGHT_INVERTED,
 	LIGHT_DARK,
+	LIGHT_MODES,
+};
+
+enum ctex_modes {
+	CTEX_FLAT_COLOR = 1, // scale up so big only a single pixel colors a face
+	CTEX_MISALIGN,   // a decent way to torture mappers
+	CTEX_WHITE,      // disable all textures (lightmap mode)
+	CTEX_GREY,		 // convert all textures to greyscale
+	CTEX_BW,         // like that one black and white map
+	CTEX_CONTRAST,   // 3-tone colors
+	CTEX_INVERT,	 // invert colors
+	CTEX_RANDOM,     // randomized palette
+	CTEX_MODES,
 };
 
 enum prefix_modes
@@ -254,8 +265,16 @@ extern string MAP_PREFIX;
 enum grapple_modes
 {
 	GRAPPLE_DISABLE,
-	GRAPPLE_NORMAL,
+	GRAPPLE_NORMAL, // no wall hooking
 	GRAPPLE_HOOK, // all walls can be grappled
+	GRAPPLE_HOOK_ALWAYS, // no matter what settings are use
+};
+
+enum skill_modes
+{
+	SKILL_DEFAULT,
+	SKILL_SOME_SUPER,
+	SKILL_ALL_SUPER,
 };
 
 enum tex_embed_modes
@@ -280,8 +299,14 @@ extern bool printRejects;
 extern bool cheatNoclip;
 extern bool cheatImpulse;
 extern bool cheatGodmode;
+extern int bspModelSwap;
+extern int sndEffects;
 extern int lightMode;
 extern int vertMode;
+extern int ctexMode;
+extern float vertDistort;
+extern float vertScaleX, vertScaleY, vertScaleZ;
+extern int wepSkillMode, monSkillMode;
 
 enum model_types
 {
@@ -550,141 +575,30 @@ static const char * hlsp_maps[NUM_HLSP_MAPS] =
 	"c5a1",
 };
 
-
-#define NUM_SKILL_SETTINGS 144
-static const char * skill_settings[NUM_SKILL_SETTINGS] =
+#define NUM_PLR_EXPLOSIVE_SKILL_SETTINGS 7
+static const char * plr_explosive_skill_settings[NUM_PLR_EXPLOSIVE_SKILL_SETTINGS] =
 {
-	"sk_agrunt_health",
-	"sk_agrunt_dmg_punch",
-	"sk_apache_health",
-	"sk_barney_health",
-	"sk_bullsquid_health",
-	"sk_bullsquid_dmg_bite",
-	"sk_bullsquid_dmg_whip",
-	"sk_bullsquid_dmg_spit",
-	"sk_bigmomma_health_factor",
-	"sk_bigmomma_dmg_slash",
-	"sk_bigmomma_dmg_blast",
-	"sk_bigmomma_radius_blast",
-	"sk_gargantua_health",
-	"sk_gargantua_dmg_slash",
-	"sk_gargantua_dmg_fire",
-	"sk_gargantua_dmg_stomp",
-	"sk_hassassin_health",
-	"sk_headcrab_health",
-	"sk_headcrab_dmg_bite",
-	"sk_hgrunt_health",
-	"sk_hgrunt_kick",
-	"sk_hgrunt_pellets",
-	"sk_hgrunt_gspeed",
-	"sk_houndeye_health",
-	"sk_houndeye_dmg_blast",
-	"sk_islave_health",
-	"sk_islave_dmg_claw",
-	"sk_islave_dmg_clawrake",
-	"sk_islave_dmg_zap",
-	"sk_ichthyosaur_health",
-	"sk_ichthyosaur_shake",
-	"sk_leech_health",
-	"sk_leech_dmg_bite",
-	"sk_controller_health",
-	"sk_controller_dmgzap",
-	"sk_controller_speedball",
-	"sk_controller_dmgball",
-	"sk_nihilanth_health",
-	"sk_nihilanth_zap",
-	"sk_scientist_health",
-	"sk_snark_health",
-	"sk_snark_dmg_bite",
-	"sk_snark_dmg_pop",
-	"sk_zombie_health",
-	"sk_zombie_dmg_one_slash",
-	"sk_zombie_dmg_both_slash",
-	"sk_turret_health",
-	"sk_miniturret_health",
-	"sk_sentry_health",
+	"sk_plr_9mmAR_grenade",
+	"sk_plr_rpg",
+	"sk_plr_hand_grenade",
+	"sk_plr_satchel",
+	"sk_plr_tripmine",
+	"sk_plr_spore",
+	"sk_shockroach_dmg_xpl_splash",
+};
+
+#define NUM_PLR_SKILL_SETTINGS 20
+static const char * plr_skill_settings[NUM_PLR_SKILL_SETTINGS] =
+{
 	"sk_plr_crowbar",
 	"sk_plr_9mm_bullet",
 	"sk_plr_357_bullet",
 	"sk_plr_9mmAR_bullet",
-	"sk_plr_9mmAR_grenade",
 	"sk_plr_buckshot",
 	"sk_plr_xbow_bolt_monster",
-	"sk_plr_rpg",
 	"sk_plr_gauss",
 	"sk_plr_egon_narrow",
 	"sk_plr_egon_wide",
-	"sk_plr_hand_grenade",
-	"sk_plr_satchel",
-	"sk_plr_tripmine",
-	"sk_12mm_bullet",
-	"sk_9mmAR_bullet",
-	"sk_9mm_bullet",
-	"sk_hornet_dmg",
-	"sk_suitcharger",
-	"sk_battery",
-	"sk_healthcharger",
-	"sk_healthkit",
-	"sk_scientist_heal",
-	"sk_monster_head",
-	"sk_monster_chest",
-	"sk_monster_stomach",
-	"sk_monster_arm",
-	"sk_monster_leg",
-	"sk_player_head",
-	"sk_player_chest",
-	"sk_player_stomach",
-	"sk_player_arm",
-	"sk_player_leg",
-	"sk_grunt_buckshot",
-	"sk_babygargantua_health",
-	"sk_babygargantua_dmg_slash",
-	"sk_babygargantua_dmg_fire",
-	"sk_babygargantua_dmg_stomp",
-	"sk_hwgrunt_health",
-	"sk_hwgrunt_minipellets",
-	"sk_rgrunt_explode",
-	"sk_massassin_sniper",
-	"sk_otis_health",
-	"sk_otis_bullet",
-	"sk_zombie_barney_health",
-	"sk_zombie_barney_dmg_one_slash",
-	"sk_zombie_barney_dmg_both_slash",
-	"sk_barnacle_health",
-	"sk_barnacle_bite",
-	"sk_zombie_soldier_health",
-	"sk_zombie_soldier_dmg_one_slash",
-	"sk_zombie_soldier_dmg_both_slash",
-	"sk_gonome_health",
-	"sk_gonome_dmg_one_slash",
-	"sk_gonome_dmg_guts",
-	"sk_gonome_dmg_one_bite",
-	"sk_pitdrone_health",
-	"sk_pitdrone_dmg_bite",
-	"sk_pitdrone_dmg_whip",
-	"sk_pitdrone_dmg_spit",
-	"sk_shocktrooper_health",
-	"sk_shocktrooper_kick",
-	"sk_shocktrooper_maxcharge",
-	"sk_tor_health",
-	"sk_tor_punch",
-	"sk_tor_energybeam",
-	"sk_tor_sonicblast",
-	"sk_voltigore_health",
-	"sk_voltigore_dmg_punch",
-	"sk_voltigore_dmg_beam",
-	"sk_voltigore_dmg_explode",
-	"sk_tentacle",
-	"sk_blkopsosprey",
-	"sk_osprey",
-	"sk_stukabat",
-	"sk_sqknest_health",
-	"sk_kingpin_health",
-	"sk_kingpin_lightning",
-	"sk_kingpin_tele_blast",
-	"sk_kingpin_plasma_blast",
-	"sk_kingpin_melee",
-	"sk_kingpin_telefrag",
 	"sk_plr_HpMedic",
 	"sk_plr_wrench",
 	"sk_plr_grapple",
@@ -693,9 +607,139 @@ static const char * skill_settings[NUM_SKILL_SETTINGS] =
 	"sk_plr_secondarygauss",
 	"sk_hornet_pdmg",
 	"sk_plr_762_bullet",
-	"sk_plr_spore",
 	"sk_plr_shockrifle",
 	"sk_plr_shockrifle_beam",
 	"sk_shockroach_dmg_xpl_touch",
-	"sk_shockroach_dmg_xpl_splash",
+};
+
+#define NUM_MON_DODGE_SKILL_SETTINGS 56
+static const char * mon_dodge_skill_settings[NUM_MON_DODGE_SKILL_SETTINGS] =
+{
+	"sk_agrunt_dmg_punch",
+	"sk_bullsquid_dmg_bite",
+	"sk_bullsquid_dmg_whip",
+	"sk_bullsquid_dmg_spit",
+	"sk_bigmomma_dmg_slash",
+	"sk_bigmomma_dmg_blast",
+	"sk_bigmomma_radius_blast",
+	"sk_gargantua_dmg_slash",
+	"sk_gargantua_dmg_fire",
+	"sk_gargantua_dmg_stomp",
+	"sk_headcrab_dmg_bite",
+	"sk_hgrunt_kick",
+	"sk_houndeye_dmg_blast",
+	"sk_islave_dmg_claw",
+	"sk_islave_dmg_clawrake",
+	"sk_islave_dmg_zap",
+	"sk_ichthyosaur_shake",
+	"sk_leech_dmg_bite",
+	"sk_controller_dmgzap",
+	"sk_controller_speedball",
+	"sk_controller_dmgball",
+	"sk_nihilanth_zap",
+	"sk_snark_dmg_bite",
+	"sk_snark_dmg_pop",
+	"sk_zombie_dmg_one_slash",
+	"sk_zombie_dmg_both_slash",
+	"sk_babygargantua_dmg_slash",
+	"sk_babygargantua_dmg_fire",
+	"sk_babygargantua_dmg_stomp",
+	"sk_rgrunt_explode",
+	"sk_massassin_sniper",
+	"sk_zombie_barney_dmg_one_slash",
+	"sk_zombie_barney_dmg_both_slash",
+	"sk_barnacle_bite",
+	"sk_zombie_soldier_dmg_one_slash",
+	"sk_zombie_soldier_dmg_both_slash",
+	"sk_gonome_dmg_one_slash",
+	"sk_gonome_dmg_guts",
+	"sk_gonome_dmg_one_bite",
+	"sk_pitdrone_dmg_bite",
+	"sk_pitdrone_dmg_whip",
+	"sk_pitdrone_dmg_spit",
+	"sk_shocktrooper_kick",
+	"sk_shocktrooper_maxcharge",
+	"sk_tor_punch",
+	"sk_tor_sonicblast",
+	"sk_voltigore_dmg_punch",
+	"sk_voltigore_dmg_beam",
+	"sk_voltigore_dmg_explode",
+	"sk_tentacle",
+	"sk_stukabat",
+	"sk_kingpin_tele_blast",
+	"sk_kingpin_plasma_blast",
+	"sk_kingpin_melee",
+	"sk_kingpin_telefrag",
+	"sk_hornet_dmg",
+};
+
+#define NUM_MON_SKILL_SETTINGS 66
+static const char * mon_skill_settings[NUM_MON_SKILL_SETTINGS] =
+{
+	"sk_agrunt_dmg_punch",
+	"sk_bullsquid_dmg_bite",
+	"sk_bullsquid_dmg_whip",
+	"sk_bullsquid_dmg_spit",
+	"sk_bigmomma_dmg_slash",
+	"sk_bigmomma_dmg_blast",
+	"sk_bigmomma_radius_blast",
+	"sk_gargantua_dmg_slash",
+	"sk_gargantua_dmg_fire",
+	"sk_gargantua_dmg_stomp",
+	"sk_headcrab_dmg_bite",
+	"sk_hgrunt_kick",
+	"sk_hgrunt_pellets",
+	"sk_hgrunt_gspeed",
+	"sk_houndeye_dmg_blast",
+	"sk_islave_dmg_claw",
+	"sk_islave_dmg_clawrake",
+	"sk_islave_dmg_zap",
+	"sk_ichthyosaur_shake",
+	"sk_leech_dmg_bite",
+	"sk_controller_dmgzap",
+	"sk_controller_speedball",
+	"sk_controller_dmgball",
+	"sk_nihilanth_zap",
+	"sk_snark_dmg_bite",
+	"sk_snark_dmg_pop",
+	"sk_zombie_dmg_one_slash",
+	"sk_zombie_dmg_both_slash",
+	"sk_grunt_buckshot",
+	"sk_babygargantua_dmg_slash",
+	"sk_babygargantua_dmg_fire",
+	"sk_babygargantua_dmg_stomp",
+	"sk_hwgrunt_minipellets",
+	"sk_rgrunt_explode",
+	"sk_massassin_sniper",
+	"sk_otis_bullet",
+	"sk_zombie_barney_dmg_one_slash",
+	"sk_zombie_barney_dmg_both_slash",
+	"sk_barnacle_bite",
+	"sk_zombie_soldier_dmg_one_slash",
+	"sk_zombie_soldier_dmg_both_slash",
+	"sk_gonome_dmg_one_slash",
+	"sk_gonome_dmg_guts",
+	"sk_gonome_dmg_one_bite",
+	"sk_pitdrone_dmg_bite",
+	"sk_pitdrone_dmg_whip",
+	"sk_pitdrone_dmg_spit",
+	"sk_shocktrooper_kick",
+	"sk_shocktrooper_maxcharge",
+	"sk_tor_punch",
+	"sk_tor_energybeam",
+	"sk_tor_sonicblast",
+	"sk_voltigore_dmg_punch",
+	"sk_voltigore_dmg_beam",
+	"sk_voltigore_dmg_explode",
+	"sk_tentacle",
+	"sk_stukabat",
+	"sk_kingpin_lightning",
+	"sk_kingpin_tele_blast",
+	"sk_kingpin_plasma_blast",
+	"sk_kingpin_melee",
+	"sk_kingpin_telefrag",
+	"sk_12mm_bullet",
+	"sk_9mmAR_bullet",
+	"sk_9mm_bullet",
+	"sk_hornet_dmg",
 };
