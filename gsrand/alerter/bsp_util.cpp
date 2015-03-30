@@ -224,15 +224,21 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 			}
 
 			if (matchStr(cname, "squadmaker") || matchStr(cname, "monstermaker") || matchStr(cname, "env_xenmaker"))
+				cname = ents[i]->keyvalues["monstertype"];
+			if (cname.find("monster_") == 0)
 			{
+				int offset = 80;
+				if (default_monster_heights.find(cname) != default_monster_heights.end())
+					offset = default_monster_heights[cname];
+
 				vector<string> coords = splitString(ents[i]->keyvalues["origin"], " ");
 				if (coords.size() == 3)
 				{
-					coords[2] = str( atoi(coords[2].c_str()) - 80 );
+					coords[2] = str( atoi(coords[2].c_str()) - offset );
 					ents[i]->keyvalues["origin"] = coords[0] + " " + coords[1] + " " + coords[2];
 				}
 				else
-					ents[i]->keyvalues["origin"] = "0 0 -80";
+					ents[i]->keyvalues["origin"] = "0 0 -" + str(offset);
 				cname = ents[i]->keyvalues["monstertype"];
 			}
 
@@ -271,11 +277,11 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 				vector<string> coords = splitString(ents[i]->keyvalues["origin"], " ");
 				if (coords.size() == 3)
 				{
-					coords[2] = str( atoi(coords[2].c_str()) - 8 );
+					coords[2] = str( atoi(coords[2].c_str()) - 16 );
 					ents[i]->keyvalues["origin"] = coords[0] + " " + coords[1] + " " + coords[2];
 				}
 				else
-					ents[i]->keyvalues["origin"] = "0 0 -8";
+					ents[i]->keyvalues["origin"] = "0 0 -16";
 			}
 			if (matchStr(cname, "info_teleport_destination") || matchStr(cname, "scripted_sequence") || 
 			    matchStr(cname, "aiscripted_sequence"))
@@ -308,14 +314,6 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 
 			if (matchStr(cname, "monster_nihilanth"))
 			{
-				vector<string> coords = splitString(ents[i]->keyvalues["origin"], " ");
-				if (coords.size() == 3)
-				{
-					coords[2] = str( atoi(coords[2].c_str()) - 3000 );
-					ents[i]->keyvalues["origin"] = coords[0] + " " + coords[1] + " " + coords[2];
-				}
-				else
-					ents[i]->keyvalues["origin"] = "0 0 -3000";
 				vector<string> angles = splitString(ents[i]->keyvalues["angles"], " ");
 				if (angles.size() == 3)
 				{
@@ -554,8 +552,10 @@ void convert_texture_color(COLOR3& c)
 	switch(ctexMode)
 	{
 		case CTEX_WHITE:
+		{
 			c.r = c.g = c.b = 255;
 			break;
+		}
 		case CTEX_GREY:
 		{
 			byte grey = ((float)c.r*0.35f + (float)c.g*0.40f + (float)c.b*0.25f);
@@ -578,8 +578,7 @@ void convert_texture_color(COLOR3& c)
 		case CTEX_BW:
 		{
 			byte grey = ((float)c.r*0.35f + (float)c.g*0.40f + (float)c.b*0.25f);
-			c.r = c.g = c.b = 0;
-			c.r = c.g = c.b = (grey > 127 ? 255 : 0);
+			c.r = c.g = c.b = (grey > 96 ? 255 : 0);
 			break;
 		}
 		case CTEX_INVERT:
@@ -590,9 +589,22 @@ void convert_texture_color(COLOR3& c)
 			break;
 		}
 		case CTEX_RANDOM:
+		{
 			c.r = rand() % 256;
 			c.g = rand() % 256;
 			c.b = rand() % 256;
+			if (c.r > 127 + 64)		 c.r = 255;
+			else if (c.r > 127 - 64) c.r = 127;
+			else					 c.r = 0;
+			if (c.g > 127 + 64)		 c.g = 255;
+			else if (c.g > 127 - 64) c.g = 127;
+			else					 c.g = 0;
+			if (c.b > 127 + 64)		 c.b = 255;
+			else if (c.b > 127 - 64) c.b = 127;
+			else					 c.b = 0;
+			break;
+		}
+		default:
 			break;
 	}
 }
@@ -646,7 +658,7 @@ void corrupt_map_lightmap(BSP * map)
 			else if (ctexMode == CTEX_BW)
 			{
 				byte grey = ((float)c.r*0.35f + (float)c.g*0.40f + (float)c.b*0.25f);
-				c.r = c.g = c.b = (grey > 127 ? 255 : 0);
+				c.r = c.g = c.b = (grey > 96 ? 255 : 1);
 			}
 		}
 	}
@@ -753,7 +765,7 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 		int lump_len = map->header.lump[LUMP_TEXTURES].nLength;
 
 		int * new_ids = new int[num_textures]; // for changing ids referenced by texinfos
-		int injected_textures = 1; // white and sky
+		int injected_textures = 0; // white and sky
 		int id = injected_textures; // new textures (skip white and sky textures)
 		int new_lump_sz = 0;
 
@@ -810,9 +822,9 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 
 		new_lump_sz += (1 + id)*sizeof(int); // num tex and tex offsets
 
-		int white_dat_sz;
-		WADTEX * white = generate_white_texture(white_dat_sz);
-		new_lump_sz += (sizeof(BSPMIPTEX) + white_dat_sz)*injected_textures;
+		//int white_dat_sz;
+		//WADTEX * white = generate_white_texture(white_dat_sz);
+		//new_lump_sz += (sizeof(BSPMIPTEX) + white_dat_sz)*injected_textures;
 
 		byte * new_lump = new byte[new_lump_sz];
 		int * inew_lump = (int*)new_lump;
@@ -821,12 +833,12 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 		int writeOffset = (1 + id)*sizeof(int);
 
 		inew_lump[1] = writeOffset;
-		memcpy(new_lump + writeOffset, white, sizeof(BSPMIPTEX));
-		memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), white->data, white_dat_sz);
-		writeOffset += sizeof(BSPMIPTEX) + white_dat_sz;
+		//memcpy(new_lump + writeOffset, white, sizeof(BSPMIPTEX));
+		//memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), white->data, white_dat_sz);
+		//writeOffset += sizeof(BSPMIPTEX) + white_dat_sz;
 
-		delete [] white->data;
-		delete white;
+		//delete [] white->data;
+		//delete white;
 
 		id = injected_textures;
 		for (int i = 0; i < num_textures; i++)

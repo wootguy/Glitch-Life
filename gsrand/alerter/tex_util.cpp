@@ -82,65 +82,75 @@ void create_tex_embed_wad(vector<Wad>& wads)
 
 	vector<WADTEX*> textures;
 
-	vector<string> bsp_files = getDirFiles(getWorkDir() + "maps/","bsp");
+	vector<string> bsp_paths;
+	bsp_paths.push_back("maps/");
+	bsp_paths.push_back("../valve/maps/");
+	bsp_paths.push_back("../svencoop_downloads/maps/");
 
-	int embed_maps = 0;
-	for (uint f = 0; f < bsp_files.size(); f++)
+	for (uint k = 0; k < bsp_paths.size(); k++)
 	{
-		string mapName = getSubStr(bsp_files[f], 0, bsp_files[f].length()-4);
+		vector<string> bsp_files = getDirFiles(bsp_paths[k],"bsp");
 
-		int length;
-		byte * tex_lump = loadTextureChunk(mapName, length);
-		if (!tex_lump)
-			continue;
-		int numTex = ((int*)tex_lump)[0];
-		bool had_embed = false;
-		for (int i = 0; i < numTex; i++)
+		int embed_maps = 0;
+		for (uint f = 0; f < bsp_files.size(); f++)
 		{
-			if (numTex > MAX_MAP_TEXTURES)
-				break;
-
-			int offset = ((int*)tex_lump)[i+1];
-			BSPMIPTEX * mip = (BSPMIPTEX*)(&tex_lump[offset]);
-			if (offset + sizeof(BSPMIPTEX) > length)
-				continue;
-			string tex_name = toLowerCase(string(mip->szName));
-
-			int sz = mip->nHeight*mip->nWidth;	   // miptex 0
-			int sz2 = sz / 4;  // miptex 1
-			int sz3 = sz2 / 4; // miptex 2
-			int sz4 = sz3 / 4; // miptex 3
-			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
-
-			if (mip->nOffsets[0] == 0 || mip->nOffsets[0] + offset + szAll > length)
-				continue; // texture stored in external wad
-			if (!tex_name.length())
-				continue;
-			if (names.find(tex_name) != names.end() || unique.find(tex_name) != unique.end())
+			int length;
+			byte * tex_lump = loadTextureChunk(bsp_paths[k] + bsp_files[f], length);
+			if (!tex_lump)
 			{
-				num_repeat++;
+				println("Failed to get tex lump for: " + bsp_files[f]);
 				continue;
 			}
-			had_embed = true;
-			unique.insert(tex_name);
-			WADTEX * tex = new WADTEX;
-			tex->nHeight = mip->nHeight;
-			tex->nWidth = mip->nWidth;
-			for (uint d = 0; d < MAXTEXTURENAME; ++d)
-				tex->szName[d] = mip->szName[d];
-			
-			tex->data = new byte[szAll];
-			byte * data = &tex_lump[offset + mip->nOffsets[0]];
-			for (uint d = 0; d < szAll; ++d)
-				tex->data[d] = data[d];
-			textures.push_back(tex);
-		}
+			int numTex = ((int*)tex_lump)[0];
+			bool had_embed = false;
+			for (int i = 0; i < numTex; i++)
+			{
+				if (numTex > MAX_MAP_TEXTURES)
+					break;
 
-		if (had_embed)
-			embed_maps++;
+				int offset = ((int*)tex_lump)[i+1];
+				BSPMIPTEX * mip = (BSPMIPTEX*)(&tex_lump[offset]);
+				if (offset + sizeof(BSPMIPTEX) > length)
+					continue;
+				string tex_name = toLowerCase(string(mip->szName));
 
-		delete [] tex_lump;
+				int sz = mip->nHeight*mip->nWidth;	   // miptex 0
+				int sz2 = sz / 4;  // miptex 1
+				int sz3 = sz2 / 4; // miptex 2
+				int sz4 = sz3 / 4; // miptex 3
+				int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+
+				if (mip->nOffsets[0] == 0 || mip->nOffsets[0] + offset + szAll > length)
+					continue; // texture stored in external wad
+				if (!tex_name.length())
+					continue;
+				if (names.find(tex_name) != names.end() || unique.find(tex_name) != unique.end())
+				{
+					num_repeat++;
+					continue;
+				}
+				had_embed = true;
+				unique.insert(tex_name);
+				WADTEX * tex = new WADTEX;
+				tex->nHeight = mip->nHeight;
+				tex->nWidth = mip->nWidth;
+				for (uint d = 0; d < MAXTEXTURENAME; ++d)
+					tex->szName[d] = mip->szName[d];
+
+				tex->data = new byte[szAll];
+				byte * data = &tex_lump[offset + mip->nOffsets[0]];
+				for (uint d = 0; d < szAll; ++d)
+					tex->data[d] = data[d];
+				textures.push_back(tex);
+			}
+
+			if (had_embed)
+				embed_maps++;
+
+			delete [] tex_lump;
+		} 
 	}
+
 	println("Found " + str(textures.size()) + " embedded textures");
 
 	if (textures.size() > 0)
@@ -164,35 +174,46 @@ void create_tex_embed_wad(vector<Wad>& wads)
 vector<Wad> getWads()
 {
 	vector<Wad> wads;
-	vector<string> files = getDirFiles(wadPath, "wad");
-	for (uint i = 0; i < files.size(); i++)
-	{
-		if (files[i].length() >= 6)
-		{
-			string prefix = getSubStr(files[i],0,6);
-			if (matchStrCase(prefix,"gsrand"))
-				continue; 
-		}
-		string wad = wadPath + files[i];
-		bool is_default = false;
-		for (int i = 0; i < NUM_DEFAULT_WADS; i++)
-		{
-			string name = string(default_wads[i]) + ".wad";
-			if (matchStr(wad, name))
-				is_default = true;
-		}
-		if (is_default && contentMode == CONTENT_CUSTOM || 
-			!is_default && contentMode == CONTENT_DEFAULT)
-			continue;
 
-		wads.push_back(Wad(wad));
-	}
-	for (uint i = 0; i < wads.size(); i++)
+	set<string> user_unique_wads;
+	vector<string> wad_paths;
+	wad_paths.push_back("");
+	wad_paths.push_back("../valve/");
+	wad_paths.push_back("../svencoop_downloads/");
+
+	for (uint k = 0; k < wad_paths.size(); k++)
 	{
-		//println("Caching wad " + wads[i].filename);
-		wads[i].readInfo();
-		//wads[i].loadCache();
+		vector<string> files = getDirFiles(wad_paths[k], "wad");
+		for (uint i = 0; i < files.size(); i++)
+		{
+			if (files[i].length() >= 6)
+			{
+				string prefix = getSubStr(files[i],0,6);
+				if (matchStrCase(prefix,"gsrand"))
+					continue; 
+			}
+			string wad = files[i];
+			bool is_default = false;
+			for (int i = 0; i < NUM_DEFAULT_WADS; i++)
+			{
+				string name = string(default_wads[i]) + ".wad";
+				if (matchStr(wad, name))
+					is_default = true;
+			}
+			if (is_default && contentMode == CONTENT_CUSTOM || 
+				!is_default && contentMode == CONTENT_DEFAULT)
+				continue;
+
+			if (user_unique_wads.find(wad) == user_unique_wads.end())
+			{
+				user_unique_wads.insert(wad);
+				wads.push_back(Wad(wad_paths[k] + wad));
+			}
+		} 
 	}
+
+	for (uint i = 0; i < wads.size(); i++)
+		wads[i].readInfo();
 	return wads;
 }
 
@@ -331,7 +352,6 @@ BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad> wads, BSP * map)
 
 int makeMapWad(BSP * map, string map_name, vector<Wad>& wads)
 {
-	map->texdata = NULL;
 	byte * data = map->lumps[LUMP_TEXTURES];
 	int idx = 0;
 	int len = map->header.lump[LUMP_TEXTURES].nLength;
@@ -413,9 +433,36 @@ int makeMapWad(BSP * map, string map_name, vector<Wad>& wads)
 
 	if (texMode == TEX_MAP)
 	{
-		map->texdata = genTexLump(wadTextures,wads,map);
-		if (map->texdata == NULL)
-			println("UH OH");
+		delete [] map->lumps[LUMP_TEXTURES];
+		BSPTEXDATA * tex_lump = genTexLump(wadTextures,wads,map);
+
+		int numTex = tex_lump->numTex;
+		int new_len = (numTex+1)*sizeof(int);
+		for (int i = 0; i < numTex; i++)
+			new_len += tex_lump->len[i] + sizeof(BSPMIPTEX);
+
+		map->lumps[LUMP_TEXTURES] = new byte[new_len];
+		int * ilump = (int*)map->lumps[LUMP_TEXTURES];
+		byte * lump = map->lumps[LUMP_TEXTURES];
+		ilump[0] = numTex;
+		int writeOffset = (numTex+1)*sizeof(int);
+		for (int i = 0; i < numTex; i++)
+		{
+			ilump[i+1] = tex_lump->offset[i];
+			memcpy(lump + writeOffset, tex_lump->tex[i], sizeof(BSPMIPTEX));
+			writeOffset += sizeof(BSPMIPTEX);
+			memcpy(lump + writeOffset, tex_lump->tex[i]->data, tex_lump->len[i]);
+			writeOffset += tex_lump->len[i];
+			delete [] tex_lump->tex[i]->data;
+			delete tex_lump->tex[i];
+		}
+
+		delete [] tex_lump->tex;
+		delete [] tex_lump->len;
+		delete [] tex_lump->offset;
+		delete tex_lump;
+
+		map->header.lump[LUMP_TEXTURES].nLength = new_len;
 	}
 	if (texMode == TEX_WADS && wadTextures.size() > 0)
 		writeWad(wadTextures,wads,map_name);
@@ -456,7 +503,8 @@ void embedAllTextures(BSP * map, Entity ** ents)
 					}
 				}
 			}
-			ents[i]->keyvalues["skyname"] = "black";
+			if (ctexMode == CTEX_BW || ctexMode == CTEX_GREY || lightMode == LIGHT_DARK)
+				ents[i]->keyvalues["skyname"] = "black";
 			break;
 		}
 	}
@@ -535,7 +583,7 @@ void embedAllTextures(BSP * map, Entity ** ents)
 
 			if (wad_tex == NULL)
 			{
-				println("Couldn't find WAD texture: " + string(t->szName));
+				println("Couldn't find WAD texture: " + string(name));
 				memcpy(t->szName, name.c_str(), name.length());
 				t->szName[name.length()] = '\0';
 				memcpy(new_lump + writeOffset, t, sizeof(BSPMIPTEX));

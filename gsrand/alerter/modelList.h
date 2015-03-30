@@ -49,7 +49,14 @@ static void init_default_monster_heights()
 	default_monster_heights["monster_bullchicken"] = 64;
 	default_monster_heights["monster_alien_grunt"] = 64;
 	default_monster_heights["monster_ichthyosaur"] = 64;
+	default_monster_heights["monster_tentacle"] = 64;
 	default_monster_heights["monster_stukabat"] = 24;
+
+	default_monster_heights["monster_nihilanth"] = 384;
+	default_monster_heights["monster_gargantua"] = 128; // ?
+	default_monster_heights["monster_babygarg"] = 128; // ?
+	default_monster_heights["monster_alien_voltigore"] = 90;
+	default_monster_heights["monster_bigmomma"] = 190;
 }
 
 static void parse_model_lists()

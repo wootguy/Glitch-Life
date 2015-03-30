@@ -107,9 +107,6 @@ extern int corruptMode;
 extern int prefixMode;
 extern int contentMode;
 
-//string wadPath = "wad/";
-extern string wadPath;
-
 #define MAX_MAP_TEXTURES     512
 #define MAX_MAP_ENTITIES     8192		// increased from 1024
 #define MAX_MAP_MODELS       512 // Really more like 511
@@ -158,7 +155,7 @@ struct BSP
 	std::string name;
 	BSPHEADER header;
 	byte ** lumps;
-	BSPTEXDATA * texdata;
+	//BSPTEXDATA * texdata;
 };
 
 enum sprite_formats
@@ -299,6 +296,7 @@ extern bool printRejects;
 extern bool cheatNoclip;
 extern bool cheatImpulse;
 extern bool cheatGodmode;
+extern bool singleplayer;
 extern int bspModelSwap;
 extern int sndEffects;
 extern int lightMode;
@@ -307,6 +305,7 @@ extern int ctexMode;
 extern float vertDistort;
 extern float vertScaleX, vertScaleY, vertScaleZ;
 extern int wepSkillMode, monSkillMode;
+extern int resMode;
 
 enum model_types
 {

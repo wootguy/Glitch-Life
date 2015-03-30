@@ -14,29 +14,39 @@ void getAllSounds()
 {
 	initMasterList();
 	
-	string soundPath = "sound/";
-	vector<string> dirs = getAllSubdirs(soundPath);
+	set<string> user_unique_sounds;
+	vector<string> sound_paths;
+	sound_paths.push_back("sound/");
+	sound_paths.push_back("../valve/sound/");
+	sound_paths.push_back("../svencoop_downloads/sound/");
 
-	user_sounds.clear();
-	user_sound_dirs.clear();
-	for (uint i = 0; i < dirs.size(); i++)
+	for (uint k = 0; k < sound_paths.size(); k++)
 	{
-		string prefix = "";
-		string vdir = "";
-		if (dirs[i].length() > 6)
+		vector<string> dirs = getAllSubdirs(sound_paths[k]);
+		user_sounds.clear();
+		user_sound_dirs.clear();
+		for (uint i = 0; i < dirs.size(); i++)
 		{
-			prefix = getSubStr(dirs[i], 6); // skip sound/
-			vdir = getSubStr(prefix,0,prefix.length()-1);
-		}
-	
-		for (int e = 0; e < num_exts; e++)
-		{
-			vector<string> results = getDirFiles(dirs[i], exts[e]);
-			for (uint k = 0; k < results.size(); k++)
-				if (results[k].find("null") != 0)
-					user_sounds.push_back(prefix + results[k]);
-		}
+			string prefix = "";
+			string vdir = "";
+			if (dirs[i].length() > sound_paths[k].length())
+			{
+				prefix = getSubStr(dirs[i], sound_paths[k].length()); // skip sound/
+				vdir = getSubStr(prefix,0,prefix.length()-1);
+			}
+
+			for (int e = 0; e < num_exts; e++)
+			{
+				vector<string> results = getDirFiles(dirs[i], exts[e]);
+				for (uint k = 0; k < results.size(); k++)
+					if (results[k].find("null") != 0)
+						user_unique_sounds.insert(prefix + results[k]);
+			}
+		} 
 	}
+
+	for (set<string>::iterator it = user_unique_sounds.begin(); it != user_unique_sounds.end(); it++)
+		user_sounds.push_back(*it);
 
 	vector<string> default_sounds;
 	for (uint d = 0; d < NUM_MASTER_DIRS; ++d)
@@ -577,8 +587,18 @@ void do_ent_sounds(Entity** ents, string mapname)
 		{
 			string snd = ents[i]->keyvalues["message"];
 			ents[i]->keyvalues["message"] = get_random_sound();
-			// TODO: chance to use random sentence
-			// if (snd.find(".") == string::npos)
+			if (rand() % 2)
+			{
+				bool looping_sound = (atoi(ents[i]->keyvalues["spawnflags"].c_str()) & 32) == 0; 
+				bool looping_preset;
+				do {
+					int p = rand() % 28;
+					ents[i]->keyvalues["preset"] = str(p);
+					looping_preset = (p >= 7 && p <= 12) || p == 19 || p == 20;
+					if (p == 0)
+						break; // works for both types of sounds (no preset)
+				} while(looping_sound != looping_preset);
+			}
 			res_list.insert("sound/" + ents[i]->keyvalues["message"]);
 			continue;
 		}

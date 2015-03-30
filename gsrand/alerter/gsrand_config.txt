@@ -1,5 +1,22 @@
 [settings]
 
+// if singleplayer is "1", RES files won't be generated and vertex "blending"
+// will be usable as a corruption setting. RES files take a long time to generate
+// due to lots of filesystem checks, and vertex blending is very unstable
+// on dedicated servers.
+
+singleplayer = 1
+
+// RES files are lists of content that players need to download before they
+// can start playing a map. Typically, you only list the content required for
+// a map to function. If res_mode is set to "1", you can make each map RES
+// file list the content used by EVERY map you generated. This means players
+// would have a lot to download at first, but then they wouldn't have to
+// download anything else as you progress (apart from BSPs). If set to "2"
+// then the BSPs will be included too. I hope you have fast-dl set up!
+
+res_mode = 1
+
 // If gmr_only is set to "1" then model replacement will only occur via GMR files.
 // If set to "0" then model replacement will also be done per-entity.
 // It's generally safer to have this set to 1, and any model-related crashes
@@ -49,8 +66,9 @@ model_safety = 1
 // randomized if model randomization is enabled. If set to "2", then these
 // models will be randomized no matter what options are used. Only solid
 // entities that are visible and have an origin will be randomized.
+// NOTE: Enabling this will likely stop you from finishing maps.
 
-random_solid_ent_models = 1
+random_solid_ent_models = 0
 
 // If random_sound_effects is set to "1", then a random sound environment will
 // be applied to each map if sound randomization is set to "Everything" or "World only".
@@ -98,7 +116,7 @@ enable_godmode    = 1   // makes you invincible
 // These are the available vertex corruptions (combinable):
 //    flip  = flip the map upside-down
 //    scale = make the map bigger or smaller (NOTE: bigger has limits)
-//    blend = Throw the map into a blender for a bit
+//    blend = Throw the map into a blender for a bit (unsafe for dedicated servers)
 //
 // These are the available lightmap corruptions:
 //    shift = Run the colors through an algorithm that doesn't make sense.

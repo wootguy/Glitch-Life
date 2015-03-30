@@ -720,3 +720,35 @@ vector<string> splitString( string str, char * delimitters )
 	}
 	return split;
 }
+
+string getFilename(string filename)
+{
+	vector<string> components;
+	string old_filename = filename;
+	std::replace( filename.begin(), filename.end(), '/', '\\'); // windows slashes required
+
+	// SHGetFileInfoA only fixes the last part of the path. So we have to make sure each folder is correct, too
+	while (filename.length())
+	{
+		SHFILEINFO info;
+		// nuke the path separator so that we get real name of current path component
+		info.szDisplayName[0] = 0;
+		SHGetFileInfoA( filename.c_str(), 0, &info, sizeof(info), SHGFI_DISPLAYNAME );
+		components.push_back(info.szDisplayName); 
+		int dir = filename.find_last_of("\\");
+		if (dir != string::npos)
+			filename = getSubStr(filename, 0, dir);
+		else
+			break;
+	}
+
+	string result;
+	for (int i = (int)components.size() - 1; i >= 0; --i)
+	{
+		result += components[i];
+		if (i > 0)
+			result += "/";
+	}
+
+    return result;
+}

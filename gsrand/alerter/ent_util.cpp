@@ -151,24 +151,6 @@ void ripent(BSP * map, Entity** entData, bool restore)
 			chunk += '\0';
 			fout.write(chunk.c_str(), chunk.length());
 		}
-		else if (!restore && idx == LUMP_TEXTURES && texMode == TEX_MAP && map->texdata != NULL)
-		{
-			int numTex = map->texdata->numTex;
-			fout.write((char*)&numTex, sizeof(int));
-			fout.write((char*)map->texdata->offset, sizeof(int)*numTex);
-				
-			for (int i = 0; i < numTex; i++)
-			{
-				fout.write((char*)map->texdata->tex[i], sizeof(BSPMIPTEX));
-				fout.write((char*)map->texdata->tex[i]->data, map->texdata->len[i]);
-				delete [] map->texdata->tex[i]->data;
-				delete map->texdata->tex[i];
-			}
-			delete [] map->texdata->tex;
-			delete [] map->texdata->len;
-			delete [] map->texdata->offset;
-			delete map->texdata;
-		}
 		else
 		{
 			fout.write((char*)map->lumps[idx], map->header.lump[idx].nLength);
@@ -257,10 +239,18 @@ int add_gsrand_ents(Entity ** ents)
 		while (randEnv > 28)
 			randEnv -= 3; // weirdo ones more likely to happen
 
-		ents[idx++] = ent = new Entity("env_sound");
-		ent->addKeyvalue("origin", "0 0 0");
-		ent->addKeyvalue("radius", "8192");
-		ent->addKeyvalue("roomtype", str( rand() % 29 ));
+		for (int i = 0; i < MAX_MAP_ENTITIES; i++)
+		{
+			if (ents[i] == NULL)
+				break;
+			if (ents[i]->keyvalues["classname"].find("info_player") == 0)
+			{
+				ents[idx++] = ent = new Entity("env_sound");
+				ent->addKeyvalue("origin", ents[i]->keyvalues["origin"]);
+				ent->addKeyvalue("radius", "128");
+				ent->addKeyvalue("roomtype", str( randEnv ));
+			}
+		}
 	}
 
 	ents[idx++] = ent = new Entity("trigger_auto");
@@ -285,10 +275,14 @@ int add_gsrand_ents(Entity ** ents)
 			ents[idx++] = ent = new Entity("trigger_setcvar");
 			ent->addKeyvalue("m_iszCVarToChange", "sv_gravity");
 			
-			int r = rand() % 3;
-			if (r == 0) ent->addKeyvalue("message", "4000");
-			if (r == 1) ent->addKeyvalue("message", "400");
-			if (r == 2) ent->addKeyvalue("message", "100");
+			if (rand() % 10)
+			{
+				if (rand() % 2) ent->addKeyvalue("message", "400");
+				else ent->addKeyvalue("message", "100");
+			}
+			else 
+				ent->addKeyvalue("message", "4000");
+			
 
 			ent->addKeyvalue("targetname", "gsrand_cvars");
 		}
@@ -655,7 +649,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 			int gibs = atoi(ents[i]->keyvalues["m_iGibs"].c_str());
 			float delay = atof(ents[i]->keyvalues["delay"].c_str());
 			float time = max(0.8f, gibs*delay);
-			float new_delay = 0.01f;
+			float new_delay = 0.02f;
 			int new_gibs = time / new_delay;
 			ents[i]->keyvalues["m_iGibs"] = str(new_gibs);
 			ents[i]->keyvalues["delay"] = str(new_delay);
@@ -807,6 +801,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 			{
 				int friction = 1;
 				ents[i]->keyvalues["friction"] = to_string((_Longlong)friction);
+				ents[i]->keyvalues["spawnflags"] = str(atoi(ents[i]->keyvalues["spawnflags"].c_str()) | 1024); // liftable
 			}
 		}
 

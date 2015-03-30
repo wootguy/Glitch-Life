@@ -1,10 +1,13 @@
 glitch-life todo:
 
-update help pages and MOTD
-TEST: explosive damage TOO MUCH!
 TEST: BSP model swapping origins
-give item_suit with impulse 101
-random sound environments
+c1a0b white tex not all white
+r_drawviewmodel 0
+bsp model swap should be corruption setting
+TEST: T model wasn't it res file for c1a0b
+TEST: ammo not disappearing
+TEST: gibshooters causing overflow
+TEST: weapons not working for other player
 
 Nice-to-haves:
 

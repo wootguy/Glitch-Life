@@ -376,10 +376,18 @@ void get_all_models()
 	vector<string> temp_v_models = user_v_models;
 	vector<string> temp_p_models = user_p_models;
 	vector<string> temp_w_models = user_w_models;
-	vector<string> temp_apache_models = user_apache_models; 
-	find_all_models("models/");
+	vector<string> temp_apache_models = user_apache_models;
 
-	// combine half-life and sven-coop models
+	find_all_models("../svencoop_downloads/models/");
+	insert_unique(user_monster_models, temp_monster_models);
+	insert_unique(user_prop_models, temp_prop_models);
+	insert_unique(user_player_models, temp_player_models);
+	insert_unique(user_v_models, temp_v_models);
+	insert_unique(user_p_models, temp_p_models);
+	insert_unique(user_w_models, temp_w_models);
+	insert_unique(user_apache_models, temp_apache_models);
+
+	find_all_models("models/");
 	insert_unique(temp_monster_models, user_monster_models);
 	insert_unique(temp_prop_models, user_prop_models);
 	insert_unique(temp_player_models, user_player_models);
@@ -554,9 +562,12 @@ void get_all_sprites()
 	find_all_sprites("../valve/sprites/");
 	vector<string> temp_sprites = user_sprites;
 	vector<string> temp_animated_sprites = user_animated_sprites;
+
+	find_all_sprites("../svencoop_downloads/sprites/");
+	insert_unique(user_sprites, temp_sprites);
+	insert_unique(user_animated_sprites, temp_animated_sprites);
+
 	find_all_sprites("sprites/");
-	
-	// combine half-life and sven-coop sprites
 	insert_unique(temp_sprites, user_sprites);
 	insert_unique(temp_animated_sprites, user_animated_sprites);
 
@@ -826,9 +837,7 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 
 	if (gmr.length() > 0)
 	{
-		string gmrpath = getSubStr(path, 0, path.find_last_of("\\/")); // get rid of "\maps\"
-		gmrpath = getSubStr(gmrpath, 0, gmrpath.find_last_of("\\/"));
-		gmrpath = relative_path_to_absolute(gmrpath + "/models/" + map->name, gmr);
+		string gmrpath = relative_path_to_absolute("models/" + map->name, gmr);
 		if (gmrpath[0] == '"')
 			gmrpath = getSubStr(gmrpath, 1);
 		if (gmrpath[gmrpath.size()-1] == '"')
