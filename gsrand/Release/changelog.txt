@@ -1,0 +1,28 @@
++-----------+
+| version 2 |
++-----------+
+
+New Features (most of this stuff is configurable in gsrand_config.txt):
++ Model randomization finished (unstable)
++ Sprite randomization
++ Skybox randomization
++ Lots of new entity randomizations (a bit unstable)
++ BSP randomizations/corruptions (geometry + lighting + textures)
++ Sound effect randomization (reverb, pitch, etc.)
++ BSP model randomization (off by default)
++ Skill file generation (weapon/monster damage modifiers)
++ MOTD file generation (Helpful tips for new players)
++ RES file generation (for server hosters)
++ Non-default content is usable
++ Cheats via entities (no restrictions!)
++ Grapple weapon can attach to most walls
++ Configuration file added for advanced settings and map selection
++ Custom and timestamp map prefixes
++ "svencoop_downloads" is used for content selection
++ Textures embedded in maps are usable (lol porn)
++ Randomizations can be zipped if 7za.exe is present
++ HLSP "Kill all monsters" restriction can be bypassed
+
+Fixes:
+- Map prefixes work properly now
+- Visual C++ Runtime no longer required

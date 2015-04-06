@@ -1,13 +1,10 @@
 glitch-life todo:
 
-TEST: BSP model swapping origins
-c1a0b white tex not all white
-r_drawviewmodel 0
-bsp model swap should be corruption setting
-TEST: T model wasn't it res file for c1a0b
-TEST: ammo not disappearing
+GL_UPLOAD 16 error c1a0
+TEST: stadium3 monsters not renamed
 TEST: gibshooters causing overflow
-TEST: weapons not working for other player
+speedup res generation somehow?
+pretty up generation progress prints
 
 Nice-to-haves:
 

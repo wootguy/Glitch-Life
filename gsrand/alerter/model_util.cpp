@@ -249,6 +249,7 @@ void find_all_models(string modelPath)
 				}
 
 				int numTextures = mdlHead.numtextures;
+				bool uses_t_model = numTextures == 0;
 				if (numTextures == 0)
 				{
 					string t_path = modelPath + cpath + results[k].substr(0, end_name) + "t.mdl";
@@ -282,9 +283,10 @@ void find_all_models(string modelPath)
 						user_v_models.push_back(cpath + results[k].substr(0, end_name));
 						continue;
 					}
-					else if (matchStr(prefix, "p_"))
+					else if (matchStr(prefix, "p_")) // T models cause crash for P models
 					{
-						user_p_models.push_back(cpath + results[k].substr(0, end_name));
+						if (!uses_t_model)
+							user_p_models.push_back(cpath + results[k].substr(0, end_name));
 						continue;
 					}
 					else if (matchStr(prefix, "w_"))
@@ -778,10 +780,10 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 					if (m.length() > 0)
 						ent_models[toLowerCase("models/" + m + ".mdl")] = cname;	
 					else
-						println("NO DEFAULT MODEL (ENEMY/ALLY) FOUND FOR: " + cname);
+						println("No default model (enemy/ally) found for: " + cname);
 				}
 				else
-					println("NO DEFAULT MODEL FOUND FOR: " + cname);
+					println("No default model found for: " + cname);
 			}
 			else if (matchStr(cname, "env_beverage"))
 				ent_models["models/can.mdl"] = cname;
@@ -1433,20 +1435,24 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 		if (gmr_only)
 		{
 			replace_level = 1;
-			print(str(total_models + potential_additions) + " models (GMR). ");
+			//print(str(total_models) + " models (GMR). ");
+			//print(str(total_models) + " models (GMR). ");
+
 		}
-		else
-			print(str(total_models + potential_additions) + " models. ");
+		//else
+		//	print(str(total_models) + " models. ");
 	}
 	else if (total_models + (int)default_weapon_models.size() < max_model_limit)
 	{
 		replace_level = 1;
-		print(str(total_models + potential_additions) + " models (GMR ONLY). ");
+		//print(str(total_models) + " models (GMR ONLY). ");
+		//print("GMR only");
 	}
 	else
 	{
 		replace_level = 0;
-		print(str(total_models) + " models (LIMITED GMR ONLY). ");
+		//print(str(total_models) + " models (LIMITED GMR ONLY). ");
+		//print("limited GMR only");
 	}
 
 	// these are always replaced by GMR
@@ -1546,7 +1552,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 							cname2 = ents[i]->keyvalues["classname"] = "squadmaker"; // monstermakers can't do model replacement
 						}
 
-						if (cname.find("squadmaker") != string::npos)
+						if (cname2.find("squadmaker") != string::npos)
 						{
 							ents[i]->keyvalues.erase("new_model"); // in case it doesn't get replaced
 							cname2 = toLowerCase(ents[i]->keyvalues["monstertype"]);

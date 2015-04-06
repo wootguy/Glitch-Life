@@ -15,7 +15,7 @@ vector<string> printlog;
 
 void print(const string& str)
 {
-    //OutputDebugString((str + '\n').c_str());
+    OutputDebugString((str).c_str());
     cout << str.c_str();
 	printlog.push_back(str);
 }
@@ -732,10 +732,20 @@ string getFilename(string filename)
 	{
 		SHFILEINFO info;
 		// nuke the path separator so that we get real name of current path component
-		info.szDisplayName[0] = 0;
-		SHGetFileInfoA( filename.c_str(), 0, &info, sizeof(info), SHGFI_DISPLAYNAME );
-		components.push_back(info.szDisplayName); 
+
 		int dir = filename.find_last_of("\\");
+		string testing = filename;
+		if (dir != string::npos)
+			testing = getSubStr(filename, dir);
+
+		if (!matchStr(testing, ".."))
+		{
+			info.szDisplayName[0] = 0;
+			SHGetFileInfoA( filename.c_str(), 0, &info, sizeof(info), SHGFI_DISPLAYNAME );
+			components.push_back(info.szDisplayName);  
+		}
+		else
+			components.push_back("..");
 		if (dir != string::npos)
 			filename = getSubStr(filename, 0, dir);
 		else
@@ -751,4 +761,12 @@ string getFilename(string filename)
 	}
 
     return result;
+}
+
+bool dirExists(const string& path)
+{
+	DWORD dwAttrib = GetFileAttributesA(path.c_str());
+
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES && 
+			(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }

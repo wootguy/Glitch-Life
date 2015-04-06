@@ -66,6 +66,7 @@ public:
 
 	bool write(std::string filename, WADTEX ** textures, int numTex);
 
+
 	WADTEX * readTexture(int dirIndex);
 	WADTEX * readTexture(const std::string& texname);
 };

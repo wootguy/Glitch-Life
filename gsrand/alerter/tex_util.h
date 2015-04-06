@@ -15,7 +15,7 @@ void get_all_skies();
 
 void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname);
 
-BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad> wads, BSP * map);
+BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad>& wads, BSP * map);
 
 int makeMapWad(BSP * map, string map_name, vector<Wad>& wads);
 

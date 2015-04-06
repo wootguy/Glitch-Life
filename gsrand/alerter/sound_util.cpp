@@ -85,7 +85,7 @@ void getAllSounds()
 		int dirfind = user_sounds[i].find_last_of("/\\");
 		if (dirfind != string::npos)
 		{
-			sound = getSubStr(user_sounds[i], dirfind+1, user_sounds[i].length()-4); // strip dirs and .wav/.ogg/etc.
+			sound = getSubStr(user_sounds[i], dirfind+1); // strip dirs but not .wav/.ogg/etc.
 			sound_dir = getSubStr(user_sounds[i], 0, dirfind);
 		}
 		else
@@ -447,7 +447,7 @@ string constructSentence()
 		return "";
 	string sentence;
 
-	if (contentMode == CONTENT_CUSTOM || rand() % 4 == 0)
+	if ((sentenceMode == 1 || singleplayer) && (contentMode == CONTENT_CUSTOM || rand() % 4 == 0))
 	{
 		int randVoice = rand() % user_sound_dirs.size();
 		sentence = string(user_sound_dirs[randVoice] ) + "/";
@@ -458,7 +458,10 @@ string constructSentence()
 			for (int i = 0, words = (rand() % 5) + 1; i < words; i++)
 			{
 				int r = rand() % user_voices[user_sound_dirs[randVoice]].size();
-				sentence += user_voices[user_sound_dirs[randVoice]][r] + ' ';
+				string sword = user_voices[user_sound_dirs[randVoice]][r];
+				sentence += getSubStr(sword, 0, sword.length() - 4) + ' ';
+				//println("ADDING TO RES: sound/" + user_sound_dirs[randVoice] + "/" + user_voices[user_sound_dirs[randVoice]][r]);
+				res_sentence_list.insert("sound/" + user_sound_dirs[randVoice] + "/" + user_voices[user_sound_dirs[randVoice]][r]);
 			}
 			return sentence;
 		}
@@ -481,6 +484,7 @@ string constructSentence()
 void writeSentences(string mapName)
 {
 	string file2 = getWorkDir() + "maps/" + mapName + "_sentences.gsrand";
+	res_list.insert("maps/" + mapName + "_sentences.gsrand");
 	ofstream fout;
 	fout.open (file2, ios::out | ios::trunc);
 	for (int i = 0; i < NUM_SENTENCES; i++)

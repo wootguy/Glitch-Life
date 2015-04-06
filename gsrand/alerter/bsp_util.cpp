@@ -267,7 +267,8 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 					ents[i]->keyvalues["angle"] = str(a);
 				}
 			}
-			if (matchStr(cname, "func_plat") || matchStr(cname, "func_platrot"))
+			if (matchStr(cname, "func_plat") || matchStr(cname, "func_platrot") ||
+				matchStr(cname, "func_trackchange") || matchStr(cname, "func_trackautochange"))
 			{
 				if (ents[i]->keyvalues.find("height") != ents[i]->keyvalues.end())
 					ents[i]->keyvalues["height"] = str( atoi(ents[i]->keyvalues["height"].c_str()) * -1 );
@@ -297,8 +298,7 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 			}
 			if (matchStr(cname, "monster_tentacle") || matchStr(cname, "cycler") || matchStr(cname, "cycler_weapon") || 
 			    matchStr(cname, "monster_generic") || 
-				matchStr(cname, "monster_furniture") || cname.find("item_") == 0 || cname.find("weapon_") == 0 ||
-				cname.find("ammo_") == 0 || matchStr(cname, "evn_sprite") || matchStr(cname, "env_shooter") ||
+				matchStr(cname, "monster_furniture") || matchStr(cname, "evn_sprite") || matchStr(cname, "env_shooter") ||
 				cname.find("xen_") == 0 || matchStr(cname, "monster_sitting_scientist") ||
 				matchStr(cname, "monster_nihilanth") || matchStr(cname, "monster_alien_controller"))
 			{
@@ -725,53 +725,24 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 	}
 	if (ctexMode >= CTEX_WHITE)
 	{
-		vector<Wad*> map_wads;
-		for (int i = 0; i < MAX_MAP_ENTITIES; i++)
-		{
-			if (ents[i] == NULL)
-				break;
-			string cname = toLowerCase(ents[i]->keyvalues["classname"]);
-
-			if (matchStr(cname, "worldspawn"))
-			{
-				if (ents[i]->hasKey("wad"))
-				{
-					vector<string> wads = splitString(ents[i]->keyvalues["wad"], ";");
-					for (uint k = 0; k < wads.size(); ++k)
-					{
-						int dirfind = wads[k].find_last_of("\\/");
-						if (dirfind) wads[k] = getSubStr(wads[k], dirfind+1);
-						if (fileExists(wads[k]))
-						{
-							Wad * w = new Wad(wads[k]);
-							w->readInfo();
-							map_wads.push_back(w);
-						}
-						else if (fileExists("../valve/" + wads[k]))
-						{
-							Wad * w = new Wad("../valve/" + wads[k]);
-							w->readInfo();
-							map_wads.push_back(w);
-						}
-					}
-				}
-				ents[i]->keyvalues["skyname"] = "black";
-				break;
-			}
-		}
-
 		byte * textures = map->lumps[LUMP_TEXTURES];
 		int num_textures = ((int*)textures)[0];
 		int lump_len = map->header.lump[LUMP_TEXTURES].nLength;
 
-		int * new_ids = new int[num_textures]; // for changing ids referenced by texinfos
-		int injected_textures = 0; // white and sky
-		int id = injected_textures; // new textures (skip white and sky textures)
-		int new_lump_sz = 0;
+		if (num_textures > MAX_MAP_TEXTURES)
+		{
+			println("Texture corruption failed.");
+			return;
+		}
 
 		for (int i = 0; i < num_textures; i++)
 		{
 			int offset = ((int*)textures)[i + 1];
+			if (offset + sizeof(BSPMIPTEX) > lump_len)
+			{
+				println("Invalid tex offset: " + str(offset));
+				continue;
+			}
 			BSPMIPTEX * t = (BSPMIPTEX*)&textures[offset];
 
 			string name = t->szName;
@@ -779,7 +750,6 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 			if (t->szName[0] != '{' && !matchStr(name, "sky") && !matchStr(name, "xeno_14b") && 
 			    name.find("+") == string::npos && false) // TODO: Why do some textures cause a crash?
 			{
-				new_ids[i] = 0; // not a transparent texture (just replace with full white)
 				continue;
 			}
 
@@ -789,29 +759,9 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 			int sz4 = sz3 / 4; // miptex 3
 			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
 
-			new_ids[i] = id++;
-			new_lump_sz += sizeof(BSPMIPTEX) + szAll;
-
 			if (t->nOffsets[0] == 0 || t->nOffsets[0] + offset + szAll > lump_len)
 			{
-				t->nOffsets[0] = 0; // texture stored in external wad
-				bool has_tex = false;
-				for (uint k = 0; k < map_wads.size(); k++)
-				{
-					Wad * w = map_wads[k];
-					if (w->readTexture(t->szName))
-					{
-						has_tex = true;
-						break;
-					}
-				}
-				if (!has_tex)
-				{
-					println("Missing tex: " + name);
-					id--;
-					new_ids[i] = 0;
-					new_lump_sz -= sizeof(BSPMIPTEX) + szAll;
-				}
+				println(str(i) + " tex read overflow: " + name + " " + str(t->nOffsets[0]) + " / " + str(lump_len));
 				continue;
 			}
 
@@ -819,113 +769,6 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 			for (int i = pal_offset; i < pal_offset + 256*3; i+=3) // don't replace transparent color (TODO: do it anyway in case mapper misuses tex)
 				convert_texture_color(*(COLOR3*)&textures[i]);
 		}
-
-		new_lump_sz += (1 + id)*sizeof(int); // num tex and tex offsets
-
-		//int white_dat_sz;
-		//WADTEX * white = generate_white_texture(white_dat_sz);
-		//new_lump_sz += (sizeof(BSPMIPTEX) + white_dat_sz)*injected_textures;
-
-		byte * new_lump = new byte[new_lump_sz];
-		int * inew_lump = (int*)new_lump;
-		inew_lump[0] = id;
-
-		int writeOffset = (1 + id)*sizeof(int);
-
-		inew_lump[1] = writeOffset;
-		//memcpy(new_lump + writeOffset, white, sizeof(BSPMIPTEX));
-		//memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), white->data, white_dat_sz);
-		//writeOffset += sizeof(BSPMIPTEX) + white_dat_sz;
-
-		//delete [] white->data;
-		//delete white;
-
-		id = injected_textures;
-		for (int i = 0; i < num_textures; i++)
-		{
-			if (new_ids[i] < injected_textures)
-				continue; // already wrote this texture
-			
-			inew_lump[id++ +1] = writeOffset;
-
-			int offset = ((int*)textures)[i + 1]; // offset into old data
-			BSPMIPTEX * t = (BSPMIPTEX*)&textures[offset];
-
-			int sz = t->nHeight*t->nWidth;	   // miptex 0
-			int sz2 = sz / 4;  // miptex 1
-			int sz3 = sz2 / 4; // miptex 2
-			int sz4 = sz3 / 4; // miptex 3
-			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
-
-			if (writeOffset + szAll + sizeof(BSPMIPTEX) > new_lump_sz)
-			{
-				println("TEXTURE LUMP OVERFLOW");
-				break;
-			}
-
-			if (t->nOffsets[0] == 0) // texture stored in external wad
-			{
-				//println(t->szName + string(" is from a wad"));
-				WADTEX * wad_tex = NULL;
-				for (uint k = 0; k < map_wads.size(); k++)
-				{
-					Wad * w = map_wads[k];
-					wad_tex = w->readTexture(t->szName);
-					if (wad_tex != NULL)
-						break;
-				}
-
-				int pal_offset = sz + sz2 + sz3 + sz4 + 2;
-				for (int i = pal_offset; i < pal_offset + 256*3; i+=3) // don't replace transparent color (TODO: do it anyway in case mapper misuses tex)
-					convert_texture_color(*(COLOR3*)&wad_tex->data[i]);
-				memcpy(new_lump + writeOffset, wad_tex, sizeof(BSPMIPTEX));
-				memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX), wad_tex->data, szAll);
-				writeOffset += sizeof(BSPMIPTEX) + szAll;
-				delete [] wad_tex->data;
-				delete wad_tex;
-			}
-			else // texture in old data
-			{
-				memcpy(new_lump + writeOffset, &textures[offset], sizeof(BSPMIPTEX));
-				memcpy(new_lump + writeOffset + sizeof(BSPMIPTEX),&textures[offset + sizeof(BSPMIPTEX)], szAll);
-				writeOffset += sizeof(BSPMIPTEX) + szAll;
-			}
-		}
-		/*
-		println("NUM TEX: " + str(inew_lump[0]) + " " + str(id));
-		println("OFFSETS: ");
-		for (int i = 0; i < inew_lump[0]; i++)
-		{
-			int offset = inew_lump[i+1];
-			BSPMIPTEX * t = (BSPMIPTEX*)&new_lump[offset];
-			int sz = t->nHeight*t->nWidth;	   // miptex 0
-			int sz2 = sz / 4;  // miptex 1
-			int sz3 = sz2 / 4; // miptex 2
-			int sz4 = sz3 / 4; // miptex 3
-			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
-			println(str(i) + ": " + str(offset) + " '" + t->szName + "'");
-		}
-		*/
-		/*
-		println("MAPPINGS:");
-		for (int i = 0; i < num_textures; i++)
-			println(str(i) + " -> " + str(new_ids[i]));
-		*/
-		//println("Wrote: " + str(writeOffset) + " of " + str(new_lump_sz));
-
-		delete [] map->lumps[LUMP_TEXTURES];
-		map->lumps[LUMP_TEXTURES] = new_lump;
-		map->header.lump[LUMP_TEXTURES].nLength = new_lump_sz;
-		
-		for (int i = 0; i < texs; i++)
-		{
-			BSPTEXTUREINFO& t = ((BSPTEXTUREINFO*)tex_lump)[i];
-			t.iMiptex = new_ids[t.iMiptex];
-		}
-
-		delete [] new_ids;
-		for (uint i = 0; i < map_wads.size(); i++)
-			delete map_wads[i];
 	}
 }
 

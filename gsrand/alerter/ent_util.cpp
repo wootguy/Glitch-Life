@@ -210,6 +210,11 @@ int add_gsrand_ents(Entity ** ents)
 			idx = i;
 			break;
 		}
+
+		string cname = ents[i]->keyvalues["classname"];
+		if (bypassHlsp && ents[i]->keyvalues.find("master") != ents[i]->keyvalues.end())
+			if (matchStr(cname, "trigger_once") && matchStr(ents[i]->keyvalues["master"], "alldead_ms"))
+				ents[i]->keyvalues.erase("master"); // bypass "kill all monsters" bullshit
 	}
 	if (idx < 0)
 		return 0;
@@ -221,7 +226,7 @@ int add_gsrand_ents(Entity ** ents)
 		ent->addKeyvalue("m_iszValueName", "effects");
 		ent->addKeyvalue("m_iszNewValue", "4");
 		ent->addKeyvalue("m_iszValueType", "0");
-		ent->addKeyvalue("targetname", "game_playerjoin");
+		ent->addKeyvalue("targetname", "game_playerspawn");
 	}
 
 	if (vertMode & VERT_FLIP)
@@ -275,7 +280,7 @@ int add_gsrand_ents(Entity ** ents)
 			ents[idx++] = ent = new Entity("trigger_setcvar");
 			ent->addKeyvalue("m_iszCVarToChange", "sv_gravity");
 			
-			if (rand() % 10)
+			if (rand() % 20)
 			{
 				if (rand() % 2) ent->addKeyvalue("message", "400");
 				else ent->addKeyvalue("message", "100");
@@ -326,7 +331,7 @@ int add_gsrand_ents(Entity ** ents)
 			}
 		}
 		if (uses_name)
-			println("Warning: Some map functions that affect players were broken. Disable all cheats in gsrand_config.txt to fix.");
+			println("Warning: cheats enabled in gsrand_config.txt broke some map functionality.");
 	}
 	return idx;
 }
@@ -548,10 +553,6 @@ void do_entity_randomization(Entity** ents, string mapname)
 		string cname = ents[i]->keyvalues["classname"];
 
 		// map-specific changes
-		if (entMode != ENT_NONE && ents[i]->keyvalues.find("master") != ents[i]->keyvalues.end())
-			if (matchStr(cname, "trigger_once") && matchStr(ents[i]->keyvalues["master"], "alldead_ms"))
-				ents[i]->keyvalues.erase("master"); // bypass "kill all monsters" bullshit
-
 		if (ents[i]->keyvalues.find("targetname") != ents[i]->keyvalues.end())
 		{
 			if (matchStr(cname,"trigger_hurt") && matchStr(ents[i]->keyvalues["targetname"],"electro_hurt")) 
@@ -637,19 +638,12 @@ void do_entity_randomization(Entity** ents, string mapname)
 			else if (r == 2) ents[i]->keyvalues["TextureScroll"] = "100";
 		}
 
-		if (matchStr(cname, "env_shake"))
-		{
-			ents[i]->keyvalues["amplitude"] = str( (rand() % 15) + 1 );
-			ents[i]->keyvalues["duration"] = str( (rand() % 9) + 1 );
-			ents[i]->keyvalues["frequency"] = str( rand() % 255 );
-		}
-
 		if (matchStr(cname, "env_shooter") || matchStr(cname, "gibshooter"))
 		{
 			int gibs = atoi(ents[i]->keyvalues["m_iGibs"].c_str());
 			float delay = atof(ents[i]->keyvalues["delay"].c_str());
 			float time = max(0.8f, gibs*delay);
-			float new_delay = 0.02f;
+			float new_delay = 0.05f;
 			int new_gibs = time / new_delay;
 			ents[i]->keyvalues["m_iGibs"] = str(new_gibs);
 			ents[i]->keyvalues["delay"] = str(new_delay);
@@ -916,7 +910,12 @@ void do_entity_randomization(Entity** ents, string mapname)
 			}
 			continue;
 		}
-		
+
+		if (cname.find("func_tank") == 0 && ents[i]->hasKey("firerate") && entMode == ENT_SUPER)
+		{
+			ents[i]->keyvalues["firerate"] = "20";
+		}
+
 		if (matchStr(cname,"func_wall"))
 		{
 			if (entMode == ENT_SUPER)
@@ -933,7 +932,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 				ents[i]->keyvalues["spawnflags"] = to_string((_Longlong)flags);
 			}
 		} 
-
+		
 		if (matchStr(cname,"func_door") || matchStr(cname,"func_door_rotating") || matchStr(cname,"momentary_door"))
 		{
 			if (matchStr(mapname, "c4a1a")) // there's so many doors it causes a crash somehow
@@ -969,6 +968,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 			}
 			continue;
 		}
+
 		if (matchStr(cname,"func_button"))
 		{
 			if (entMode == ENT_SUPER)

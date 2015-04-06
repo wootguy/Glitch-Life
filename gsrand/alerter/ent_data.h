@@ -1514,7 +1514,7 @@ const char * cheat_ents =
 "{\n"
 "\"origin\" \"-40 40 -192\"\n"
 "\"netname\" \"gsrand_weapon_check2\"\n"
-"\"message\" \"gsrand_give_crowbar_pre\"\n"
+"\"message\" \"gsrand_give_crowbar\"\n"
 "\"m_iszCheckValue\" \"2\"\n"
 "\"m_iszValueName\" \"weapons\"\n"
 "\"m_fCheckInterval\" \"0.1\"\n"

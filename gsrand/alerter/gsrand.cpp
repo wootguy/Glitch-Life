@@ -27,14 +27,15 @@ string gsrand_skl_identifier;
 
 bool gmr_only = false;
 bool printRejects = false;
+bool bypassHlsp = true;
 int grapple_mode = GRAPPLE_HOOK;
 int tex_embed_mode = EMBED_NORMAL;
 string MAP_PREFIX = "gsrand_";
 string random_seed;
 int modelSafety = MODEL_SAFETY_TEX_LIMIT;
-bool cheatNoclip = true;
-bool cheatImpulse = true;
-bool cheatGodmode = true;
+bool cheatNoclip = false;
+bool cheatImpulse = false;
+bool cheatGodmode = false;
 bool singleplayer = false;
 int bspModelSwap = 0;
 int sndEffects = 0;
@@ -47,7 +48,7 @@ float vertScaleZ = 0.5f;
 float vertDistort = 4;
 int wepSkillMode = 1;
 int monSkillMode = 1;
-int resMode = 0;
+int sentenceMode = 0;
 
 int numOverflow = 0;
 bool sparks;
@@ -122,6 +123,7 @@ height_hashmap default_monster_heights;
 
 vector<string> default_content;
 set<string> res_list;
+set<string> res_sentence_list;
 set<string> super_res_list;
 
 list_hashmap monster_whitelists;
@@ -434,21 +436,16 @@ void parse_settings_file()
 				if (setting_name.find("gmr_only")       == 0) gmr_only = atoi(setting_value.c_str()) != 0;
 				if (setting_name.find("print_rejects")  == 0) printRejects = atoi(setting_value.c_str()) != 0;
 				if (setting_name.find("singleplayer")  == 0) singleplayer = atoi(setting_value.c_str()) != 0;
+				if (setting_name.find("bypass_hlsp_bullshit_damnit_who_thought_that_was_a_good_idea")  == 0) 
+					bypassHlsp = atoi(setting_value.c_str()) != 0;
 				if (setting_name.find("grapple_mode")   == 0) grapple_mode = atoi(setting_value.c_str());
 				if (setting_name.find("tex_embed_mode") == 0) tex_embed_mode = atoi(setting_value.c_str());
 				if (setting_name.find("model_safety")   == 0) modelSafety = atoi(setting_value.c_str());
-				if (setting_name.find("res_mode")       == 0) resMode = atoi(setting_value.c_str());
+				if (setting_name.find("sentence_mode")   == 0) sentenceMode = atoi(setting_value.c_str());
 				if (setting_name.find("random_sound_effects") == 0) sndEffects = atoi(setting_value.c_str());
 				if (setting_name.find("random_solid_ent_models") == 0) bspModelSwap = atoi(setting_value.c_str());
 				if (setting_name.find("weapon_skill_mode") == 0) wepSkillMode = atoi(setting_value.c_str());
 				if (setting_name.find("monster_skill_mode") == 0) monSkillMode = atoi(setting_value.c_str());
-				if (setting_name.find("vertex_corruption") == 0)
-				{
-					vertMode = 0;
-					if (setting_value.find("flip")  != string::npos) vertMode |= VERT_FLIP;
-					if (setting_value.find("scale") != string::npos) vertMode |= VERT_SCALE;
-					if (setting_value.find("blend") != string::npos) vertMode |= VERT_DISTORT;
-				}
 				if (setting_name.find("lightmap_corruption") == 0)
 				{
 					lightMode = 0;
@@ -472,7 +469,7 @@ void parse_settings_file()
 					else if (corruptMode == CORRUPT_CONFIG)
 						println("Invalid value for texture_corruption: '" + setting_value + "'");
 				}
-				if (setting_name.find("vertex_corruption_scale") == 0)
+				else if (setting_name.find("vertex_corruption_scale") == 0)
 				{
 					vector<string> values = splitString(setting_value, " ");
 					if (values.size() >= 3)
@@ -486,7 +483,15 @@ void parse_settings_file()
 					else if (corruptMode == CORRUPT_CONFIG)
 						println("Invalid value for vertex_corruption_scale: '" + setting_value + "'");
 				}
-				if (setting_name.find("texture_corruption_blend") == 0) vertDistort = atoi(setting_value.c_str());
+				else if (setting_name.find("vertex_corruption_blend") == 0) 
+					vertDistort = atoi(setting_value.c_str());
+				else if (setting_name.find("vertex_corruption") == 0)
+				{
+					vertMode = 0;
+					if (setting_value.find("flip")  != string::npos) vertMode |= VERT_FLIP;
+					if (setting_value.find("scale") != string::npos) vertMode |= VERT_SCALE;
+					if (setting_value.find("blend") != string::npos) vertMode |= VERT_DISTORT;
+				}
 				if (setting_name.find("random_seed") == 0)
 				{
 					random_seed = setting_value;
@@ -855,20 +860,16 @@ bool createMOTD(string path, string mapname)
 		fout << "            bind J cl_stopsound\n";
 		fout << "      You can now press the 'J' key to stop all active sounds (trust me, you will need this)\n"; 
 	}
+	if (mdlMode == MDL_CRAZY)
+		fout << "    - If weapon models block your vision, you can type \"r_drawviewmodel 0\" in console to hide them.\n";
 	if (cheatGodmode)
 		fout << "    - Press the USE and DUCK keys together to activate godmode.\n";
 	if (cheatNoclip)
 		fout << "    - Press the USE and JUMP keys together to activate noclip.\n";
 	if (cheatImpulse)
 		fout << "    - Press the USE and RELOAD keys together for all weapons and ammo.\n";
-	if (texMode != TEX_NONE)
+	if (grapple_mode == GRAPPLE_HOOK_ALWAYS || entMode == ENT_SUPER && grapple_mode == GRAPPLE_HOOK)
 		fout << "    - You can use the barnacle weapon to latch on to walls and swing around like spiderman.\n";
-	if (mdlMode != MDL_NONE)
-		fout << "    - You can use the barnacle weapon to explode monsters that block your path.\n";
-	if (entMode == ENT_SUPER)
-		fout << "    - All doors are breakable. Certain walls and other objects are also breakable.\n";
-	if (mdlMode != MDL_NONE)
-		fout << "    - The 'Texture Overflow: MAX_GLTEXTURES' error is client-side. Just rejoin when this happens.\n";
 	fout << "\n";
 
 	fout << "Date generated: " << generation_date.str() << "\n\n";
@@ -940,6 +941,9 @@ bool createMOTD(string path, string mapname)
 	fout << "    gmr_only: " << (int)gmr_only << "\n";
 	fout << "    tex_embed_mode: " << tex_embed_mode << "\n";
 	fout << "    model_safety: " << modelSafety << "\n";
+	fout << "    singleplayer: " << (int)singleplayer << "\n";
+	if (singleplayer == 0)
+		fout << "    sentence_mode: " << (int)sentenceMode << "\n";
 	fout << "    random_solid_ent_models: " << bspModelSwap << "\n";
 	fout << "    random_sound_effects: " << sndEffects << "\n";
 
@@ -1220,7 +1224,7 @@ vector<string> create_res_list(Entity ** ents, string mapname)
 	for (set<string>::iterator it = res_list.begin(); it != res_list.end(); ++it)
 	{
 		string name = *it;
-		while (name.length() > 1 && (name[0] =='/' || name[0] =='\\'))
+		while (name.length() > 1 && (name[0] =='/' || name[0] =='\\' || name[0] == ' ' || name[0] == '\t'))
 			name = getSubStr(*it, 1);
 		if (name.length() <= 1)
 			continue;
@@ -1238,7 +1242,6 @@ vector<string> create_res_list(Entity ** ents, string mapname)
 		if (is_default)
 			continue;
 
-		filtered.push_back(name);
 		if (!fileExists(name) && !fileExists("../valve/" + name) && !fileExists("../svencoop_downloads/" + name))
 		{
 			if (name.find(".wad") != string::npos && name.find("gsrand") == 0)
@@ -1246,10 +1249,12 @@ vector<string> create_res_list(Entity ** ents, string mapname)
 			println("WARNING: Missing resource - '" + name + "'"); 
 			continue;
 		}
+		filtered.push_back(name);
 		if (name.find(".mdl") != string::npos)
 		{
 			string m_name = getSubStr(name, 0, name.length()-4);
-			string t_model = name + "T.mdl";
+			
+			string t_model = m_name + "T.mdl";
 			if (fileExists(t_model) || fileExists("../valve/" + t_model) || fileExists("../svencoop_downloads/" + t_model))
 				filtered.push_back(t_model);
 
@@ -1314,7 +1319,14 @@ void create_res_file(vector<string>& res_files, Entity ** ents, string path, str
 				case_corrected_files.insert(filename_cache[res_files[i]]);
 			else
 			{
-				string corrected = getFilename(res_files[i]);
+				string corrected;
+				if (fileExists(res_files[i]))	
+					corrected = getFilename(res_files[i]);
+				else if (fileExists("../svencoop_downloads/" + res_files[i]))
+				{
+					corrected = getFilename("../svencoop_downloads/" + res_files[i]);
+					corrected = getSubStr(corrected, string("../svencoop_downloads/").length());
+				}
 				filename_cache[res_files[i]] = corrected;
 				case_corrected_files.insert(corrected);
 			}
@@ -1325,24 +1337,47 @@ void create_res_file(vector<string>& res_files, Entity ** ents, string path, str
 		for (set<string>::iterator it = case_corrected_files.begin(); it != case_corrected_files.end(); it++)
 			res_files.push_back(*it);
 
-		if (resMode == 0)
-		{
-			fout.open (path + mapname + ".res", ios::out | ios::trunc);
+		fout.open (path + mapname + ".res", ios::out | ios::trunc);
 
-			gsrand_res_identifier = "// This resource file was generated by w00tguy's randomizer.";
-			fout << "// This resource file was generated by w00tguy's randomizer.\n";
-			fout << "// Listed resources include sounds, models, sprites, wads, and skyboxes not included with SC 4.8.\n";
-			fout << "// It also includes map cfgs, global sound/model replacement files, and this resource file.\n";
-			fout << "// Dependencies for models are included if they exist (e.g. Tor.mdl + TorT.mdl + Tor01.mdl).\n\n";
-			for (uint i = 0; i < res_files.size(); ++i)
-			{
-				if (res_files[i].find(".gsrand") != string::npos || res_files[i].find(".cfg") != string::npos || 
-					res_files[i].find(".txt") != string::npos || res_files[i].find(".res") != string::npos)
-					continue; // clients don't need these
+		gsrand_res_identifier = "// This resource file was generated by w00tguy's randomizer.";
+		fout << "// This resource file was generated by w00tguy's randomizer.\n";
+		fout << "// Listed resources include sounds, models, sprites, wads, and skyboxes not included with SC 4.8.\n";
+		fout << "// Dependencies for models are included if they exist (e.g. Tor.mdl + TorT.mdl + Tor01.mdl).\n\n";
+		int written = 0;
+		int toomany = 0;
+		bool onlysounds = true;
+		for (uint i = 0; i < res_files.size(); ++i)
+		{
+			if (res_files[i].find(".gsrand") != string::npos || res_files[i].find(".cfg") != string::npos || 
+				res_files[i].find(".txt") != string::npos || res_files[i].find(".res") != string::npos)
+				continue; // clients don't need these
+			written++;
+			if (written > 506)
+				toomany++;
+			else
 				fout << res_files[i] << endl;
-			}
-			fout.close(); 
 		}
+		if (!toomany)
+		{
+			for (set<string>::iterator it = res_sentence_list.begin(); it != res_sentence_list.end(); it++)
+			{
+				written++;
+				if (written > 506)
+					toomany++;
+				else
+					fout << *it << endl;
+			}
+		}
+		else
+			onlysounds = false;
+		if (toomany)
+		{
+			if (!onlysounds)
+				println("DANGER: " + str(toomany) + " resources could not fit in map RES file (potential crashes)");
+			else
+				println("WARNING: " + str(toomany) + " sounds could not fit in map RES file");
+		}
+		fout.close();
 	}
 }
 
@@ -1520,18 +1555,13 @@ int randomize_maps()
 	for (uint f = 0; f < maps.size(); f++)
 	{
 		res_list.clear();
+		res_sentence_list.clear();
 		string mapName = getSubStr(maps[f], 0, maps[f].length()-4);
-		if (verbose)
-		{
-			println("\n        " + mapName);
-			println("---------------------------");
-		}
 
 		string fpath = path + maps[f];
 		string prefix = prefixMode == PREFIX_NONE ? "" : MAP_PREFIX;
 
-		if (!verbose)
-			print(prefix + mapName + " --- ");
+		print(prefix + mapName + "\t");
 
 		BSP * map = loadBSP(mapName, true);
 		if (map == NULL)
@@ -1547,20 +1577,20 @@ int randomize_maps()
 			if (corruptMode == CORRUPT_SUPER)
 			{
 				vertMode = lightMode = ctexMode = 0;
-				if (rand() % 2) vertMode |= VERT_FLIP;
-				if (rand() % 2) vertMode |= VERT_SCALE; 
-				if (rand() % 2) vertMode |= VERT_DISTORT;
-				if (rand() % 2) 
+				if (rand() % 4 == 0) vertMode |= VERT_FLIP;
+				if (rand() % 4 == 0) vertMode |= VERT_SCALE; 
+				if (rand() % 3 == 0) vertMode |= VERT_DISTORT;
+				if (rand() % 4 == 0) 
 				{
 					if (rand() % 10)
 					{
 						lightMode = LIGHT_DISCO;
-						if (rand() % 3) lightMode = LIGHT_SHIFTED;
+						if (rand() % 4) lightMode = LIGHT_SHIFTED;
 					}
 					else
 						lightMode = LIGHT_DARK;
 				}
-				ctexMode = rand() % CTEX_MODES;
+				if (rand() % 3 == 0) ctexMode = rand() % CTEX_MODES;
 				vertScaleX = (float)(150 - (rand() % 126)) * 0.01f;
 				vertScaleY = vertScaleZ = vertScaleX;
 				if (rand() % 2) vertDistort = 4;
@@ -1572,8 +1602,9 @@ int randomize_maps()
 		}
 
 		bool will_embed = texMode == TEX_MAP && (corruptMode == CORRUPT_NONE || ctexMode != CTEX_WHITE && ctexMode != CTEX_FLAT_COLOR);
-		bool should_hook = grapple_mode == GRAPPLE_HOOK_ALWAYS || entMode == ENT_SUPER && grapple_mode == GRAPPLE_HOOK;
-		if (should_hook && !will_embed)
+		bool should_hook = grapple_mode == GRAPPLE_HOOK_ALWAYS || ((entMode == ENT_SUPER || corruptMode != CORRUPT_NONE) && grapple_mode == GRAPPLE_HOOK);
+		bool tex_corrupt = corruptMode != CORRUPT_NONE && ctexMode >= CTEX_WHITE;
+		if ((should_hook && !will_embed) || tex_corrupt)
 			embedAllTextures(map, ents); // we need to rename everything to xeno_grapple!
 
 		if (texMode != TEX_NONE && (corruptMode == CORRUPT_NONE || (ctexMode != CTEX_WHITE && ctexMode != CTEX_FLAT_COLOR)))
@@ -1583,8 +1614,8 @@ int randomize_maps()
 				wad_name = "gsrand_" + map->name;
 			int tex = makeMapWad(map, wad_name, wads);
 			randomize_skybox(ents);
-			if (!verbose)
-				print(str(tex) + " textures. ");
+			//print(str(tex) + " tex. ");
+			print("TEX...");
 		}	
 
 		if (corruptMode != CORRUPT_NONE)
@@ -1592,24 +1623,31 @@ int randomize_maps()
 			corrupt_map_verts(map, ents);
 			corrupt_map_lightmap(map);
 			corrupt_map_textures(map, ents); 
+			//print("corrupted. ");
+			print("BSP...");
 		}
-
+		if (bspModelSwap == 2 || (corruptMode != MDL_NONE && bspModelSwap == 1))
+			randomize_bsp_models(map, ents);
+		
 		if (sndMode != SND_NONE)
 			do_ent_sounds(ents, map->name);
 
 		if (entMode != ENT_NONE)
 		{
-			if (!verbose)
-				print(str(numEnts) + " ents. ");
+			//print(str(numEnts) + " ents. ");
 			do_entity_randomization(ents, map->name);
+			print("ENT...");
 		}
+
 		createSKL(path, mapName);
 		add_gsrand_ents(ents);
 
-		if (bspModelSwap == 2 || (mdlMode != MDL_NONE && bspModelSwap == 1))
-			randomize_bsp_models(map, ents);
 		if (mdlMode != MDL_NONE)
+		{
 			do_model_replacement(map, ents, path, mapName);
+			print("MDL...");
+		}
+		
 
 		if (sndMode != SND_NONE || prefixMode != PREFIX_NONE || mdlMode != MDL_NONE)
 			createCFG(path, mapName);
@@ -1629,11 +1667,11 @@ int randomize_maps()
 				writeMonsterSoundLists(map->name);
 				writeSentences(map->name);
 			}
-			
-			if (!verbose)
-				print(str(writables.size()) + " sounds.");
-		}
 
+			//print(str(writables.size()) + " sounds.");
+			print("SND...");
+		}
+		
 		if (prefixMode != PREFIX_NONE)
 			update_changelevels(ents, map->name);
 
@@ -1647,6 +1685,8 @@ int randomize_maps()
 
 		vector<string> res_files = create_res_list(ents, mapName); // appends to res_list
 		create_res_file(res_files, ents, path, mapName);
+		if (!singleplayer)
+			print("RES...");
 
 		for (uint i = 0; i < res_files.size(); ++i)
 		{
@@ -1669,42 +1709,8 @@ int randomize_maps()
 				ents[i]->keyvalues.clear();
 		}
 		
-		println("");
-	}
-
-	if (resMode >= 1 && !singleplayer)
-	{
-		println("Writing RES files...");
-		string res_output;
-		for (set<string>::iterator it = super_res_list.begin(); it != super_res_list.end(); it++)
-		{
-			if (resMode == 1 && toLowerCase(*it).find(".bsp") != string::npos)
-				continue; // skip BSP files
-			if (it->find(".gsrand") != string::npos || it->find(".cfg") != string::npos || 
-				it->find(".txt") != string::npos || it->find(".res") != string::npos)
-				continue; // clients don't need these
-
-			res_output += *it + "\n";
-		}
-		for (uint f = 0; f < maps.size(); f++)
-		{
-			string mapName = getSubStr(maps[f], 0, maps[f].length()-4);
-			if (prefixMode != PREFIX_NONE)
-				mapName = MAP_PREFIX + mapName;
-			ofstream fout;
-			fout.open (path + mapName + ".res", ios::out | ios::trunc);
-
-			gsrand_res_identifier = "// This resource file was generated by w00tguy's randomizer.";
-			fout << "// This resource file was generated by w00tguy's randomizer.\n";
-			fout << "// Listed resources include sounds, models, sprites, wads, and skyboxes not included with SC 4.8.\n";
-			fout << "// It also includes map cfgs, global sound/model replacement files, and this resource file.\n";
-			fout << "// Dependencies for models are included if they exist (e.g. Tor.mdl + TorT.mdl + Tor01.mdl).\n\n";
-			fout << res_output << "\n";
-
-			fout.close(); 
-		}
-	}
-	
+		println("Done");
+	}	
 
 	/////////////
 	// CLEANUP //
@@ -2124,7 +2130,7 @@ int main(int argc, char* argv[])
 		if (prefixMode == PREFIX_GSRAND)      cout << "gsrand_\n";
 		else if (prefixMode == PREFIX_TIME)   cout << MAP_PREFIX << " (current time encoded in base36)\n";
 		else if (prefixMode == PREFIX_CUSTOM) cout << "Custom\n";
-		else if (prefixMode == PREFIX_NONE)   cout << "No prefix (dangerous)\n";
+		else if (prefixMode == PREFIX_NONE)   cout << "No prefix (DANGEROUS)\n";
 
 		cout << "\n";
 
@@ -2183,104 +2189,176 @@ int main(int argc, char* argv[])
 			bool should_pause = true;
 			if (randomize_maps() == 0)
 			{
-				println("\nDone.");
+				println("\nAll done!");
 
-				if (fileExists("7za.exe"))
+				println("\nWhat do you want to do with the randomized maps?");
+				println("\n0) Nothing");
+				println("1) Copy them into a folder");
+				bool have_7zip = fileExists("7za.exe");
+				if (have_7zip)
 				{
-					println("\nDo you want to pack the randomized maps into a 7zip archive?");
-					println("\n0) No");
-					println("1) Yes - Use fast compression          (-mx1)");
-					println("2) Yes - Use normal compression        (-mx5)");
-					println("\nNote: Content from 'svencoop_downloads' may be copied to the current folder");
+					println("2) 7zip them with fast compression   (-mx1)");
+					println("3) 7zip them with normal compression (-mx5)");
+					//println("3) Yes - Don't use any compression     (-mx0)");
+					if (dirExists("..\\svencoop_downloads"))
+						println("\nNote: Content from 'svencoop_downloads' may be copied to the current folder");
+				}
 
-					int zip_action = 0;
-					while(!zip_action)
+				int zip_action = 0;
+				while(!zip_action)
+				{
+					choice = _getch();
+					if (choice == '0') 
 					{
-						choice = _getch();
-						if (choice == '0') 
-						{
-							should_pause = false;
-							break;
-						}
-						if (choice == '1') zip_action = 1;
-						if (choice == '2') zip_action = 2;
-						//if (choice == '4') zip_action = 3;
+						should_pause = false;
+						break;
 					}
+					if (choice == '1') zip_action = 1;
+					if (have_7zip && choice == '2') zip_action = 2;
+					if (have_7zip && choice == '3') zip_action = 3;
+					//if (choice == '3') zip_action = 3;
+				}
 					
-					if (zip_action)
+				if (zip_action != 0)
+				{
+					println("\n\nBrace yourself. There are " + str(super_res_list.size()) + " files to process.\n");
+					system("pause");
+				}
+
+				if (zip_action > 1) // compress to zip
+				{
+					println("\nPreparing file list...");
+					string temp_dir = "gsrand_7zip_temp";
+					ofstream fout;
+					fout.open ("gsrand_7zip_list.txt", ios::out | ios::trunc);
+					for (set<string>::iterator it = super_res_list.begin(); it != super_res_list.end(); ++it)
 					{
-						println("\nPreparing file list...");
-						string temp_dir = "gsrand_7zip_temp";
-						ofstream fout;
-						fout.open ("gsrand_7zip_list.txt", ios::out | ios::trunc);
-						for (set<string>::iterator it = super_res_list.begin(); it != super_res_list.end(); ++it)
-						{
-							if (!fileExists(*it) && !fileExists("../valve/" + *it) && !fileExists("../svencoop_downloads/" + *it))
-								println("Warning: Unable to find " + *it);
-							else
-							{									
-								string path = *it;
-								if (!fileExists(*it))
+						if (!fileExists(*it) && !fileExists("../valve/" + *it) && !fileExists("../svencoop_downloads/" + *it))
+							println("Warning: Unable to find " + *it);
+						else
+						{									
+							string path = *it;
+							if (!fileExists(*it))
+							{
+								string old_path = path;
+								if (fileExists("../valve/" + *it))
+									old_path = "../valve/" + path;
+								if (fileExists("../svencoop_downloads/" + *it))
+									old_path = "../svencoop_downloads/" + path;
+
+								if (!matchStr(old_path, path))
 								{
-									string old_path = path;
-									if (fileExists("../valve/" + *it))
-										old_path = "../valve/" + path;
-									if (fileExists("../svencoop_downloads/" + *it))
-										old_path = "../svencoop_downloads/" + path;
-
-									if (!matchStr(old_path, path))
+									string old_path_win = old_path;
+									string path_win = path;
+									replace( old_path_win.begin(), old_path_win.end(), '/', '\\');
+									replace( path_win.begin(), path_win.end(), '/', '\\');
+									if (path_win.find("\\") != string::npos)
 									{
-										string old_path_win = old_path;
-										string path_win = path;
-										replace( old_path_win.begin(), old_path_win.end(), '/', '\\');
-										replace( path_win.begin(), path_win.end(), '/', '\\');
-										if (path_win.find("\\") != string::npos)
-										{
-											string dir = getSubStr(path_win, 0, path_win.find_last_of("\\"));
-											string cmd = "mkdir \"" + dir + "\" 2> nul"; 
-											system(cmd.c_str());
-										}
-
-										string cmd = "copy /Y \"" + old_path_win + "\" \"" + path_win + "\" > nul";
+										string dir = getSubStr(path_win, 0, path_win.find_last_of("\\"));
+										string cmd = "mkdir \"" + dir + "\" 2> nul"; 
 										system(cmd.c_str());
-										println("Copying " + old_path_win);
 									}
-								}
 
-								std::replace( path.begin(), path.end(), '/', '\\'); // convert to windows slashes				
-								fout << path << "\n";
+									string cmd = "copy /Y \"" + old_path_win + "\" \"" + path_win + "\" > nul";
+									system(cmd.c_str());
+									println("Copying " + old_path_win);
+								}
 							}
+
+							std::replace( path.begin(), path.end(), '/', '\\'); // convert to windows slashes				
+							fout << path << "\n";
 						}
-						fout.close();
-						string output_prefix = string("gsrand_output_") + (zip_action == 1 ? "mx1" : "mx5");
-						string output_name = output_prefix + ".zip";
-						for (int i = 2; i < 100; i++)
-						{
-							if (fileExists(output_name))
-								output_name = output_prefix + "_" + str(i) + ".zip";
-							else
-								break;
-						}
+					}
+					fout.close();
+					string output_prefix = "gsrand_output_";
+					if (zip_action == 2) output_prefix += "mx1";
+					if (zip_action == 3) output_prefix += "mx5";
+					//if (zip_action == 3) output_prefix += "mx0";
+					string output_name = output_prefix + ".zip";
+					for (int i = 2; i < 100; i++)
+					{
 						if (fileExists(output_name))
-							remove(output_name.c_str());
-						string level;
-						if (zip_action == 1) level = "-mx1";
-						if (zip_action == 2) level = "-mx5";
-						string cmd = "7za.exe a " + level + " -mmt -tzip " + output_name + " @gsrand_7zip_list.txt";
-						system(cmd.c_str());
-						remove("gsrand_7zip_list.txt");
-						if (fileExists(output_name))
-						{
-							println("\nThe archive was named '" + output_name + "' and is located here:\n");
-							println(getWorkDir() + output_name);
+							output_name = output_prefix + "_" + str(i) + ".zip";
+						else
+							break;
+					}
+					if (fileExists(output_name))
+						remove(output_name.c_str());
+					string level;
+					if (zip_action == 2) level = "-mx1";
+					if (zip_action == 3) level = "-mx5";
+					//if (zip_action == 3) level = "-mx0";
+					string cmd = "7za.exe a " + level + " -mmt -tzip " + output_name + " @gsrand_7zip_list.txt";
+					system(cmd.c_str());
+					remove("gsrand_7zip_list.txt");
+					if (fileExists(output_name))
+					{
+						println("\nThe archive was named '" + output_name + "' and is located here:");
+						println(getWorkDir() + output_name);
+					}
+				}
+				else if (zip_action == 1) // just copy
+				{
+					string output_prefix = "gsrand_output";
+					string output_name = output_prefix;
+					for (int i = 2; i < 100; i++)
+					{
+						if (dirExists(output_name))
+							output_name = output_prefix + "_" + str(i);
+						else
+							break;
+					}
+
+					string cmd = "mkdir \"" + output_name + "\" 2> nul"; 
+					system(cmd.c_str());
+
+					for (set<string>::iterator it = super_res_list.begin(); it != super_res_list.end(); ++it)
+					{
+						if (!fileExists(*it) && !fileExists("../valve/" + *it) && !fileExists("../svencoop_downloads/" + *it))
+							println("Warning: Unable to find " + *it);
+						else
+						{									
+							string path = *it;
+							std::replace( path.begin(), path.end(), '/', '\\');
+							string old_path = path;
+							if (!fileExists(*it))
+							{
+								if (fileExists("..\\valve\\" + *it))
+									old_path = "..\\valve\\" + path;
+								if (fileExists("..\\svencoop_downloads\\" + *it))
+									old_path = "..\\svencoop_downloads\\" + path;
+							}
+
+							int dir = path.find_last_of("\\");
+							if (dir != string::npos)
+							{
+								string mdir = getSubStr(path, 0, dir);
+								string cmd = "mkdir \"" + output_name + "\\" + mdir + "\" 2> nul"; 
+								system(cmd.c_str());
+							}
+
+							string cmd = "copy /Y \"" + old_path + "\" \"" + output_name + "\\" + path + "\" > nul";
+							system(cmd.c_str());
+							//println(cmd);
+							println("Copying " + old_path);
 						}
+					}
+
+					if (dirExists(output_name))
+					{
+						println("\nThe folder was named '" + output_name + "' and is located here:");
+						println(getWorkDir() + output_name);
 					}
 				}
 
 				cout << endl;
 				writeLog();
 				
-				if (should_pause) system("pause");
+				if (should_pause) 
+				{
+					println("Let's all take a moment to praise the program for its accomplishments.\n");
+					system("pause");
+				}
 			}
 		}
 		else if (choice == '9')

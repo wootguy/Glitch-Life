@@ -189,6 +189,8 @@ vector<string> splitString( string str, char * delimitters);
 
 string trimSpaces(string str); // remove spaces at the beginning and end of the string
 
+bool dirExists(const string& path);
+
 struct DateTime
 {
 	int year, month, day;

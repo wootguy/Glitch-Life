@@ -253,6 +253,7 @@ extern vector<string> user_player_models;
 extern string_hashmap every_random_replacement; // every entity type gets a single model replacement
 
 extern set<string> res_list;
+extern set<string> res_sentence_list; // lower priority
 extern set<string> super_res_list; // every file needed to play the randomized maps
 
 extern int total_model_count;
@@ -297,6 +298,7 @@ extern bool cheatNoclip;
 extern bool cheatImpulse;
 extern bool cheatGodmode;
 extern bool singleplayer;
+extern bool bypassHlsp;
 extern int bspModelSwap;
 extern int sndEffects;
 extern int lightMode;
@@ -305,7 +307,7 @@ extern int ctexMode;
 extern float vertDistort;
 extern float vertScaleX, vertScaleY, vertScaleZ;
 extern int wepSkillMode, monSkillMode;
-extern int resMode;
+extern int sentenceMode;
 
 enum model_types
 {
