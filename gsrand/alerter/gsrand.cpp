@@ -1320,13 +1320,15 @@ void create_res_file(vector<string>& res_files, Entity ** ents, string path, str
 			else
 			{
 				string corrected;
-				if (fileExists(res_files[i]))	
+				if (fileExists(res_files[i]))
 					corrected = getFilename(res_files[i]);
 				else if (fileExists("../svencoop_downloads/" + res_files[i]))
 				{
 					corrected = getFilename("../svencoop_downloads/" + res_files[i]);
 					corrected = getSubStr(corrected, string("../svencoop_downloads/").length());
 				}
+				else if (res_files[i].find(".res") != string::npos)
+					corrected = res_files[i]; // hasn't been created yet and we know the case anyway
 				filename_cache[res_files[i]] = corrected;
 				case_corrected_files.insert(corrected);
 			}
@@ -1577,9 +1579,9 @@ int randomize_maps()
 			if (corruptMode == CORRUPT_SUPER)
 			{
 				vertMode = lightMode = ctexMode = 0;
-				if (rand() % 4 == 0) vertMode |= VERT_FLIP;
+				if (rand() % 3 == 0) vertMode |= VERT_FLIP;
 				if (rand() % 4 == 0) vertMode |= VERT_SCALE; 
-				if (rand() % 3 == 0) vertMode |= VERT_DISTORT;
+				if (rand() % 2 == 0) vertMode |= VERT_DISTORT;
 				if (rand() % 4 == 0) 
 				{
 					if (rand() % 10)
@@ -1590,7 +1592,7 @@ int randomize_maps()
 					else
 						lightMode = LIGHT_DARK;
 				}
-				if (rand() % 3 == 0) ctexMode = rand() % CTEX_MODES;
+				if (rand() % 2 == 0) ctexMode = rand() % CTEX_MODES;
 				vertScaleX = (float)(150 - (rand() % 126)) * 0.01f;
 				vertScaleY = vertScaleZ = vertScaleX;
 				if (rand() % 2) vertDistort = 4;
@@ -2200,8 +2202,6 @@ int main(int argc, char* argv[])
 					println("2) 7zip them with fast compression   (-mx1)");
 					println("3) 7zip them with normal compression (-mx5)");
 					//println("3) Yes - Don't use any compression     (-mx0)");
-					if (dirExists("..\\svencoop_downloads"))
-						println("\nNote: Content from 'svencoop_downloads' may be copied to the current folder");
 				}
 
 				int zip_action = 0;
@@ -2222,6 +2222,8 @@ int main(int argc, char* argv[])
 				if (zip_action != 0)
 				{
 					println("\n\nBrace yourself. There are " + str(super_res_list.size()) + " files to process.\n");
+					if (zip_action > 1 && dirExists("..\\svencoop_downloads"))
+						println("\nNote: Content from 'svencoop_downloads' may be copied to your 'svencoop' folder");
 					system("pause");
 				}
 

@@ -2,9 +2,8 @@ glitch-life todo:
 
 GL_UPLOAD 16 error c1a0
 TEST: stadium3 monsters not renamed
-TEST: gibshooters causing overflow
 speedup res generation somehow?
-pretty up generation progress prints
+
 
 Nice-to-haves:
 

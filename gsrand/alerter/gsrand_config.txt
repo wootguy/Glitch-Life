@@ -7,7 +7,7 @@
 
 singleplayer = 1
 
-// sentence randomization (monster talking sounds) can cause a ton of custom
+// sentence randomization (monster talking sounds) requires a ton of custom
 // sounds to be precached (somewhere around 1000). Sadly, Only about 500 
 // items can fit in map RES files. This means players joining your server
 // will likely be missing a lot of custom sounds when they join.
@@ -17,14 +17,27 @@ singleplayer = 1
 
 sentence_mode = 0
 
+// The following settings allow you to use cheats without having to enable cheats
+// on the server (which has restrictions). Set to "1" to enable the cheat.
+// Enabling cheats may break functionality in some maps.
+
+enable_noclip     = 0   // let's you fly around and go through walls
+			// Press USE and JUMP keys together to activate
+
+enable_impulse101 = 0   // gives you all weapons and ammo
+			// Press USE and RELOAD keys together to activate
+
+enable_godmode    = 0   // makes you invincible
+			// Press USE and CROUCH keys together to activate
+
 // If random_seed is used, the randomizer will produce the same results every time
 // you run it, as long as all the inputs are the same. If any options or content
 // changes then so will the randomizations.
 
-random_seed = random text goes here (spaces are ok)
+// random_seed = random text goes here (spaces are ok)
 
 // If tex_embed_mode is "1" or "2" then a wad will be generated containing
-// embedded textures from your maps. 
+// embedded textures from your maps, and will be used in texture randomization.
 // If set to "2" then the randomizer will use ONLY these embedded textures.
 // If set to "0" then embedded textures won't be used at all.
 // Warning: Some people embed porn textures in their maps :>
@@ -56,20 +69,20 @@ model_safety = 1
 // randomized if map corruptions are enabled. If set to "2", then these models
 // will be randomized no matter what options are used. Only solid entities
 // that are visible and have an origin will be randomized.
-// NOTE: Enabling this will likely stop you from finishing maps.
+// NOTE: Enabling this will likely prevent you from finishing maps without cheating.
 
 random_solid_ent_models = 0
 
 // If random_sound_effects is set to "1", then a random sound environment will
 // be applied to each map if sound randomization is set to "Everything" or "World only".
 // If set to "2", then effects will be applied no matter what options are used.
-// Effects determine how sounds are processed (reverb, echo, things like that).
+// Effects determine how sounds are processed (reverb, echo, pitch, etc.).
 
 random_sound_effects = 1
 
 // If grapple_mode is greater than "0" then a barnacle grapple weapon will be provided 
 // when using model or entity randomization, or corruptions. The grapple is useful for 
-// bypassing buggy  map sections or removing monsters that won't/can't get out of the way.
+// bypassing buggy map sections or gibbing monsters that won't/can't get out of the way.
 // If set to "3" then the grapple will attach to walls no matter what options are used.
 // If set to "2" then the grapple will attach to walls only when using entity randomization.
 // If set to "1" then the grapple will not attach to walls when provided.
@@ -90,34 +103,16 @@ grapple_mode = 2
 weapon_skill_mode = 1
 monster_skill_mode = 0
 
-// The following settings allow you to use cheats without having to enable cheats
-// on the server (which has a player restriction). Set to "0" to disable the cheat.
-// Enabling cheats may break functionality in some maps.
-
-enable_noclip     = 0   // let's you fly around and go through walls
-			// Press USE and JUMP keys together to activate
-
-enable_impulse101 = 0   // gives you all weapons and ammo
-			// Press USE and RELOAD keys together to activate
-
-enable_godmode    = 0   // makes you invincible
-			// Press USE and CROUCH keys together to activate
-
-// if bypass_hlsp_bullshit_damnit_who_thought_that_was_a_good_idea is set to "1", 
-// then you won't have to "kill all monsters to proceed" in the Half-Life campaign.
-
-bypass_hlsp_bullshit_damnit_who_thought_that_was_a_good_idea = 1
-
 // the following settings determine what happens when "Corruption Mode"
 // is set to "Use config settings".
 //
 // These are the available vertex corruptions (combinable):
 //    flip  = flip the map upside-down
-//    scale = make the map bigger or smaller (NOTE: bigger has limits)
+//    scale = make the map bigger or smaller
 //    blend = Throw the map into a blender for a bit (unsafe for dedicated servers)
 //
 // These are the available lightmap corruptions:
-//    shift = Run the colors through an algorithm that doesn't make sense.
+//    shift = Adjust the colors to look more like barf or candy.
 //    disco = Randomize every pixel of light. Models will flash as they move.
 //    dark  = Make the map pitch black. Players will become bright light sources.
 //
@@ -125,11 +120,11 @@ bypass_hlsp_bullshit_damnit_who_thought_that_was_a_good_idea = 1
 //    flat  = Scale up textures so much that only 1 pixel colors an entire surface.
 //    shift = Randomly shift texture coordinates around.
 //    white = Replace every texture with pure white. It looks nice with the right lighting.
-//    grey  = Convert texture and lightmap colors to grey - a bit depressing.
-//    bw    = Convert texture and lightmap colors to black and white - a bit scary.
+//    grey  = Convert texture and lightmap colors to greyscale (a bit depressing).
+//    bw    = Convert texture and lightmap colors to black and white (a bit scary).
 //    contrast = Increase color contrast too much.
 //    invert = invert texture and lightmap colors.
-//    random = randomize texture colors.
+//    random = randomize texture colors (like pixelated candy barf).
 //
 // vertex_corruption_scale = how much to scale the map when using "scale" corruption.
 // vertex_corruption_blend = how much to shift vertices when using "blend" corruption.
@@ -138,7 +133,7 @@ bypass_hlsp_bullshit_damnit_who_thought_that_was_a_good_idea = 1
 // but this will likely result in crashes and broken collision. Also, note that HL
 // has a 4096-unit map boundary, so values greater than 1 may not work properly.
 
-vertex_corruption       = flip & scale & blend
+vertex_corruption       = flip scale blend
 vertex_corruption_scale = 0.5
 vertex_corruption_blend = 4     // values bigger than 4 are unsafe - expect crashes.
 lightmap_corruption     = shift
@@ -152,7 +147,7 @@ texture_corruption      = white
 print_rejects = 0
 
 // [maps] is a list of maps that gsrand will randomize.
-// If you don't add any map names here, then the randomizer will use EVERY map.
+// If this list is empty, then EVERY map will be randomized.
 //
 // There are a few special map names you can use to select all maps in a series:
 //     *hlsp = Half-Life      (c0a0 to c5a1)

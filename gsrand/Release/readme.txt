@@ -2,32 +2,26 @@
 -------------------------- Quick Start Guide --------------------------
 
 1) Place the files in your 'svencoop' folder. That folder is located here:
-   Steam/steamapps/common/Half-Life/svencoop
+   /Steam/steamapps/common/Half-Life/svencoop/
    Do not place the files in 'svencoop/maps' or any other sub-directory
    because then the program will not be able to find any of your files.
    
 2) Open gsrand_config.txt and scroll all the way to the bottom. You will
    see "[maps]". This is where you specify which maps you want randomized.
-   Read the comments above "[maps]" for more info.
   
 3) Start gsrand.exe. You should see a console pop up with a text menu.
-
-3) Use the number keys to change various options. To get the most random
+   Use the number keys to change various options. To get the most random
    output, press each of these keys once: 1, 2, 3, 4, and 5.
    
 4) Press 8 to begin the randomization process. The program will search
    for usable content (this may take a long time) and then ask you if
-   you want to proceed with the randomization.
+   you want to proceed with the randomization. Press 0 when that happens.
 
-5) After the process is finished, you will be asked about what you want
-   to do with the randomized maps. Just say "Nothing" to this unless
-   you want to share your maps.
+5) After the process is finished, you can launch Sven Co-op and start 
+   playing the new maps! By default, each map is prefixed with "gsrand_"
+   so the randomized version of "c1a0" would be named "gsrand_c1a0".
    
-6) Launch Sven Co-op and play through the new maps! By default, each map
-   is prefixed with "gsrand_", so the randomized version of "c1a0" would
-   be named "gsrand_c1a0".
-   
-7) If you want to delete these maps, Select the "Undo all changes" option
+6) If you want to delete the new maps, Select the "Undo all changes" option
    in the program. "Undo all changes" only works if the map prefix is set
    to "gsrand_" or "No prefix".
    
@@ -42,11 +36,16 @@ to distribute your files manually.
 After the maps are generated, you are asked if you want to copy the
 randomized maps to a folder. Select the 'copy' option so that you can easily
 pack up the files to send to your buddies or your fast-dl server. If you have
-7za.exe in the same folder as gsrand.exe then the program will give you
-additional options to 7zip everything instead of just copying to a folder.
+7za.exe in the same folder as gsrand.exe then you will get additional options 
+for compressing everything into a 7zip archive.
 
 You can download 7za.exe here: http://www.7-zip.org/download.html
-Make sure you download the "7-Zip Command Line Version".
+(Make sure you download the "7-Zip Command Line Version")
+
+You might also want to limit non-default content so that players don't have
+to spend a lot of time downloading on every level change. With my 10Mbps
+upload speed, it took about 3-5 minutes for a single player to join my server. 
+Each of my map RES files had about 200 to 300 items in it.
 
 
 -------------------------- Content Selection -------------------------- 
@@ -92,9 +91,9 @@ zombie.mdl + w_crowbar.mdl + p_crowbar.mdl + v_crowbar.mdl
 -------------------------- Troubleshooting -------------------------- 
 
 The game keeps crashing! What can I do?
-   This is how dangerous each randomization option is (on a scale of 1-10):
+   This is how unstable each randomization option is (on a scale of 1-10):
        Texture = 0
-       Entity  = 3 ("Appearances only" mode is safer)
+       Entity  = 3
 	   Corrupt = 1
 	   Model   = 47 (chubby code - write it down)
 	   Sound   = 0
@@ -104,7 +103,43 @@ The game keeps crashing! What can I do?
    randomization, then set model_safety to "2" in gsrand_config.txt. 
    You will still crash, but it should happen less often.
    
+Why don't I have any of the Half-Life/Blue Shift/Opposing Force maps?
+   These maps are installed with Sven Co-op 4.8, but you have to have these
+   games installed before you install Sven Co-op. It's not enough to copy
+   the maps manually after you've installed Sven Co-op. The SC installer 
+   makes adjustments to the maps so that they work properly in multiplayer.
+   
 It's not working :<
    Sorry about that. Ask a question on the forum and I'll try to help:
    *INSERT LINK TO FORUM POST*
-   
+
+
+----------------------------- Changelog -----------------------------
++-----------+
+| version 2 |
++-----------+
+
+New Features:
++ Model randomization finished (unstable)
++ Sprite randomization
++ Skybox randomization
++ Lots of new entity randomizations (a bit unstable)
++ BSP randomizations/corruptions (geometry + lighting + textures)
++ Sound effect randomization (reverb, pitch, etc.)
++ BSP model randomization (off by default)
++ Skill file generation (weapon/monster damage modifiers)
++ MOTD file generation (Helpful tips for new players)
++ RES file generation (for server hosters)
++ Non-default content is usable
++ Cheats via entities (no restrictions!)
++ Grapple weapon can attach to most walls
++ Configuration file added for advanced settings and map selection
++ Custom and timestamp map prefixes
++ "svencoop_downloads" is used for content selection
++ Textures embedded in maps are usable (lol porn)
++ Randomizations can be zipped if 7za.exe is present
++ HLSP "Kill all monsters" restriction is bypassed
+
+Fixes:
+- Map prefixes work properly now
+- Visual C++ Runtime no longer required
