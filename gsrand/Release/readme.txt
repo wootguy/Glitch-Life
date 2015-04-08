@@ -3,8 +3,7 @@
 
 1) Place the files in your 'svencoop' folder. That folder is located here:
    /Steam/steamapps/common/Half-Life/svencoop/
-   Do not place the files in 'svencoop/maps' or any other sub-directory
-   because then the program will not be able to find any of your files.
+   Do not place the files in 'svencoop/maps' or any other subdirectory.
    
 2) Open gsrand_config.txt and scroll all the way to the bottom. You will
    see "[maps]". This is where you specify which maps you want randomized.
@@ -22,8 +21,8 @@
    so the randomized version of "c1a0" would be named "gsrand_c1a0".
    
 6) If you want to delete the new maps, Select the "Undo all changes" option
-   in the program. "Undo all changes" only works if the map prefix is set
-   to "gsrand_" or "No prefix".
+   in the program menu. You don't have to do this before running the randomizer
+   again (unless you're not using a map prefix, which is dangerous).
    
    
 -------------------------- Multiplayer Setup --------------------------   
@@ -31,7 +30,7 @@
 Disable singleplayer in gsrand_config.txt (singleplayer = 0). This will
 turn on RES file generation and enable a safety setting to prevent crashes. 
 You might also want to take a look at the sentence_mode setting if you plan 
-to distribute your files manually.
+to distribute your files manually (not via the RES file).
 
 After the maps are generated, you are asked if you want to copy the
 randomized maps to a folder. Select the 'copy' option so that you can easily
@@ -58,7 +57,7 @@ folder has to follow the same structure as your svencoop folder:
     |-- gsrand.exe
     |-- gsrand_config.txt
     |-- gsrand_models.txt
-	|-- gfx
+    |-- gfx
     |    |-- env
     |    |    |-- sky_up.tga
     |    |    |-- sky_dn.tga
@@ -69,12 +68,12 @@ folder has to follow the same structure as your svencoop folder:
     |-- maps
     |    |-- stadium3.bsp
     |    |-- uni2.bsp
-	|    |-- horsecock7.bsp
+    |    |-- horsecock7.bsp
     |-- models
     |    |-- zombie.mdl
     |    |-- p_crowbar.mdl
-	|    |-- v_crowbar.mdl
-	|    |-- w_crowbar.mdl
+    |    |-- v_crowbar.mdl
+    |    |-- w_crowbar.mdl
     |-- sound
     |    |-- thunder.wav
     |    |-- beepboop.wav
@@ -83,60 +82,59 @@ folder has to follow the same structure as your svencoop folder:
     |    |-- teleport.spr
 
 The program will only use content that it finds in this new folder.
-If you're using model randomization, then make sure you have at least
-one monster model and one set of weapon models. For example,
-zombie.mdl + w_crowbar.mdl + p_crowbar.mdl + v_crowbar.mdl
+You only need to add content for the randomizations you want.
+Note: Skyboxes are used only when Texture randomization is enabled.
 
 
 -------------------------- Troubleshooting -------------------------- 
 
 The game keeps crashing! What can I do?
-   This is how unstable each randomization option is (on a scale of 1-10):
+   This is how unstable each randomization option is (on a scale from 1-10):
        Texture = 0
        Entity  = 3
-	   Corrupt = 1
-	   Model   = 47 (chubby code - write it down)
-	   Sound   = 0
+       Corrupt = 1
+       Model   = 47
+       Sound   = 0
    Basically, by using model randomization, you are guaranteed to crash
    at some point. The other options are pretty safe to use but they still
    might cause a crash on occasion. If you really want to keep using model
    randomization, then set model_safety to "2" in gsrand_config.txt. 
-   You will still crash, but it should happen less often.
+   You will still crash, but it should happen less often. "Appearances only"
+   is also much safer to use than "Super random" as an Entity mode.
    
 Why don't I have any of the Half-Life/Blue Shift/Opposing Force maps?
    These maps are installed with Sven Co-op 4.8, but you have to have these
    games installed before you install Sven Co-op. It's not enough to copy
-   the maps manually after you've installed Sven Co-op. The SC installer 
-   makes adjustments to the maps so that they work properly in multiplayer.
+   the maps over manually after you've installed Sven Co-op. The SC installer 
+   makes adjustments to the maps so that they work properly in SC.
    
 It's not working :<
    Sorry about that. Ask a question on the forum and I'll try to help:
-   *INSERT LINK TO FORUM POST*
+   http://forums.svencoop.com/showthread.php/42021-Glitch-Life-program?p=505531#post505531
 
 
 ----------------------------- Changelog -----------------------------
-+-----------+
-| version 2 |
-+-----------+
+
+ version 2
+-----------
 
 New Features:
 + Model randomization finished (unstable)
 + Sprite randomization
 + Skybox randomization
-+ Lots of new entity randomizations (a bit unstable)
-+ BSP randomizations/corruptions (geometry + lighting + textures)
++ New entity randomizations
++ BSP corruptions (geometry + lighting + textures)
 + Sound effect randomization (reverb, pitch, etc.)
 + BSP model randomization (off by default)
 + Skill file generation (weapon/monster damage modifiers)
 + MOTD file generation (Helpful tips for new players)
 + RES file generation (for server hosters)
 + Non-default content is usable
++ Textures embedded in maps are usable (yay porn)
 + Cheats via entities (no restrictions!)
 + Grapple weapon can attach to most walls
 + Configuration file added for advanced settings and map selection
-+ Custom and timestamp map prefixes
-+ "svencoop_downloads" is used for content selection
-+ Textures embedded in maps are usable (lol porn)
++ Custom and timestamp map prefixes supported
 + Randomizations can be zipped if 7za.exe is present
 + HLSP "Kill all monsters" restriction is bypassed
 
