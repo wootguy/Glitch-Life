@@ -49,6 +49,7 @@ float vertDistort = 4;
 int wepSkillMode = 1;
 int monSkillMode = 1;
 int sentenceMode = 0;
+int earRapeMode = 0;
 
 int numOverflow = 0;
 bool sparks;
@@ -94,6 +95,7 @@ string_hashmap every_random_replacement;
 int total_model_count = 0;
 
 vector<string> masterWadTex;
+height_hashmap masterWadCorruptions;
 vector<string> ambients;
 
 string_hashmap random_monster_models;
@@ -132,6 +134,13 @@ list_hashmap monster_blacklists;
 string_hashmap filename_cache;
 
 DateTime generation_date;
+
+enum parse_modes
+{
+	PARSE_SETTINGS,
+	PARSE_MAPS,
+	PARSE_MODES
+};
 
 void readConfigFile()
 {
@@ -371,13 +380,6 @@ void init_default_content()
 	}
 }
 
-enum parse_modes
-{
-	PARSE_SETTINGS,
-	PARSE_MAPS,
-	PARSE_MODES
-};
-
 void parse_settings_file()
 {
 	user_maps.clear();
@@ -446,6 +448,7 @@ void parse_settings_file()
 				if (setting_name.find("random_solid_ent_models") == 0) bspModelSwap = atoi(setting_value.c_str());
 				if (setting_name.find("weapon_skill_mode") == 0) wepSkillMode = atoi(setting_value.c_str());
 				if (setting_name.find("monster_skill_mode") == 0) monSkillMode = atoi(setting_value.c_str());
+				if (setting_name.find("ear_rape_safety") == 0) earRapeMode = atoi(setting_value.c_str());
 				if (setting_name.find("lightmap_corruption") == 0)
 				{
 					lightMode = 0;
@@ -878,7 +881,6 @@ bool createMOTD(string path, string mapname)
 	fout << "    Texture Mode: ";
 	if (texMode == TEX_MAP)            fout << "Write to map\n";
 	else if (texMode == TEX_MASTERWAD) fout << "Write to a common WAD\n";
-	else if (texMode == TEX_WADS)      fout << "Write WAD for each map\n";
 	else if (texMode == TEX_NONE)      fout << "Do not change\n";
 
 	fout << "    Entity Mode: ";
@@ -907,33 +909,37 @@ bool createMOTD(string path, string mapname)
 	else if (contentMode == CONTENT_DEFAULT) fout << "Default only\n";
 	else if (contentMode == CONTENT_CUSTOM)  fout << "Non-default only\n";
 
-	if (vertMode != 0)
+	if (corruptMode != CORRUPT_NONE)
 	{
-		fout << "    Geometry corruption:";
-		if (vertMode & VERT_FLIP) fout << " Flip ";
-		if (vertMode & VERT_SCALE) fout << " Scale (" << vertScaleX << "x) ";
-		if (vertMode & VERT_DISTORT) fout << " Blend (" << vertDistort << " units) "; 
-		fout << "\n";
+		if (vertMode != 0)
+		{
+			fout << "    Geometry corruption:";
+			if (vertMode & VERT_FLIP) fout << " Flip ";
+			if (vertMode & VERT_SCALE) fout << " Scale (" << vertScaleX << "x) ";
+			if (vertMode & VERT_DISTORT) fout << " Blend (" << vertDistort << " units) "; 
+			fout << "\n";
+		}
+		if (lightMode != 0)
+		{
+			fout << "    Lightmap corruption: ";
+			if (lightMode == LIGHT_SHIFTED) fout << "Shift\n";
+			if (lightMode == LIGHT_DISCO) fout << "Disco\n";
+			if (lightMode == LIGHT_DARK) fout << "Dark\n";
+		}
+		if (ctexMode != 0)
+		{
+			fout << "    Texture corruption: ";
+			if (ctexMode == CTEX_FLAT_COLOR) fout << "Flat\n";
+			if (ctexMode == CTEX_MISALIGN) fout << "Shift\n";
+			if (ctexMode == CTEX_WHITE) fout << "White\n";
+			if (ctexMode == CTEX_GREY) fout << "Greyscale\n";
+			if (ctexMode == CTEX_BW) fout << "Black & white\n";
+			if (ctexMode == CTEX_CONTRAST) fout << "High Contrast\n";
+			if (ctexMode == CTEX_INVERT) fout << "Invert colors\n";
+			if (ctexMode == CTEX_RANDOM) fout << "Random\n";
+		} 
 	}
-	if (lightMode != 0)
-	{
-		fout << "    Lightmap corruption: ";
-		if (lightMode == LIGHT_SHIFTED) fout << "Shift\n";
-		if (lightMode == LIGHT_DISCO) fout << "Disco\n";
-		if (lightMode == LIGHT_DARK) fout << "Dark\n";
-	}
-	if (ctexMode != 0)
-	{
-		fout << "    Texture corruption: ";
-		if (ctexMode == CTEX_FLAT_COLOR) fout << "Flat\n";
-		if (ctexMode == CTEX_MISALIGN) fout << "Shift\n";
-		if (ctexMode == CTEX_WHITE) fout << "White\n";
-		if (ctexMode == CTEX_GREY) fout << "Greyscale\n";
-		if (ctexMode == CTEX_BW) fout << "Black & white\n";
-		if (ctexMode == CTEX_CONTRAST) fout << "High Contrast\n";
-		if (ctexMode == CTEX_INVERT) fout << "Invert colors\n";
-		if (ctexMode == CTEX_RANDOM) fout << "Random\n";
-	}
+
 
 	fout << "    weapon_skill_mode: " << wepSkillMode << "\n";
 	fout << "    monster_skill_mode: " << monSkillMode << "\n";
@@ -1307,10 +1313,13 @@ void create_res_file(vector<string>& res_files, Entity ** ents, string path, str
 	if (prefixMode != PREFIX_NONE)
 		mapname = MAP_PREFIX + mapname;
 
-	res_files.push_back("maps/" + mapname + ".res");
+	if (singleplayer && fileExists("maps/" + mapname + ".res"))
+		res_files.push_back("maps/" + mapname + ".res");
 
 	if (!singleplayer)
 	{
+		res_files.push_back("maps/" + mapname + ".res");
+
 		// make sure we have the correct case for these files
 		set<string> case_corrected_files;
 		for (uint i = 0; i < res_files.size(); i++)
@@ -1385,16 +1394,8 @@ void create_res_file(vector<string>& res_files, Entity ** ents, string path, str
 
 string get_date_base36()
 {
-	int now_code = atoi(DateTime::now().compact_str().c_str());
-
-	string b36;
-
-	while (now_code)
-	{
-		b36 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[now_code % 36] + b36;
-		now_code /= 36;
-	}
-	return b36;
+	string b36 = base36( atoi(DateTime::now().compact_str().c_str()) );
+	return toLowerCase(b36);
 }
 
 vector<Wad> wads;
@@ -1433,29 +1434,33 @@ void find_user_content()
 
 	if (sndMode != SND_NONE)
 	{
+		print("Sounds ------------- ");
 		getAllSounds();
 		getAllVoices();
-		println("Found " + str(user_sounds.size()) + " sounds");
 	}
 
 	if (mdlMode != MDL_NONE)
 	{
+		print("Models ------------- ");
 		get_all_models();
 		total_model_count = user_monster_models.size() + user_prop_models.size() + user_v_models.size() +
 						  user_p_models.size() + user_w_models.size() + user_apache_models.size() + 
 						  user_player_models.size();
-		init_random_monster_models();
-		println("Found " + str(total_model_count) + " models");	
+		init_random_monster_models();	
 
+		print("Sprites ------------ ");
 		get_all_sprites();
-		println("Found " + str(user_sprites.size() + user_animated_sprites.size()) + " sprites");
 	}
 
 	if (texMode != TEX_NONE)
 	{
+		print("Wads --------------- ");
 		wads = getWads();
 		if (tex_embed_mode != EMBED_DISABLE)
+		{
+			print("Embedded textures -- ");
 			create_tex_embed_wad(wads);
+		}
 		if (tex_embed_mode == EMBED_ONLY)
 		{
 			vector<Wad> new_wads;
@@ -1463,11 +1468,9 @@ void find_user_content()
 			wads.clear();
 			wads = new_wads;
 		}
-		else
-			println("Found " + str(wads.size()) + " wads");
-		
+				
+		print("Skyboxes ----------- ");
 		get_all_skies();
-		println("Found " + str(user_skies.size()) + " skyboxes");
 	}	
 
 	// print warnings
@@ -1515,6 +1518,7 @@ void find_user_content()
 		writeLog();
 }
 
+string masterWadName;
 int randomize_maps()
 {
 	parse_settings_file();
@@ -1549,10 +1553,17 @@ int randomize_maps()
 	every_random_replacement.clear();
 	super_res_list.clear();
 	filename_cache.clear();
+	masterWadTex.clear();
+	masterWadCorruptions.clear();
 
 	//////////////////////////////
 	// BEGIN THE RANDOMIZATION! //
 	//////////////////////////////
+
+	int grapple_id = 0, global_id = 0; // for master wad tex naming
+	masterWadName = "gsrand_" + getSubStr(MAP_PREFIX, 0, MAP_PREFIX.length()-1);
+	if (prefixMode == PREFIX_GSRAND)
+		masterWadName = "gsrand";
 
 	for (uint f = 0; f < maps.size(); f++)
 	{
@@ -1603,30 +1614,40 @@ int randomize_maps()
 			}
 		}
 
-		bool will_embed = texMode == TEX_MAP && (corruptMode == CORRUPT_NONE || ctexMode != CTEX_WHITE && ctexMode != CTEX_FLAT_COLOR);
+		bool will_embed = texMode == TEX_MAP;
 		bool should_hook = grapple_mode == GRAPPLE_HOOK_ALWAYS || ((entMode == ENT_SUPER || corruptMode != CORRUPT_NONE) && grapple_mode == GRAPPLE_HOOK);
 		bool tex_corrupt = corruptMode != CORRUPT_NONE && ctexMode >= CTEX_WHITE;
-		if ((should_hook && !will_embed) || tex_corrupt)
+		if (texMode == TEX_NONE && (should_hook || tex_corrupt))
 			embedAllTextures(map, ents); // we need to rename everything to xeno_grapple!
 
-		if (texMode != TEX_NONE && (corruptMode == CORRUPT_NONE || (ctexMode != CTEX_WHITE && ctexMode != CTEX_FLAT_COLOR)))
+		if (texMode != TEX_NONE)
 		{
+			print("TEX...");
 			string wad_name = map->name;
 			if (prefixMode == PREFIX_NONE)
 				wad_name = "gsrand_" + map->name;
-			int tex = makeMapWad(map, wad_name, wads);
+
+			if (texMode == TEX_MAP)
+				makeMapWad(map, wad_name, wads); // this embeds textures into the map
+			else if (texMode == TEX_MASTERWAD)
+			{
+				vector<string> tex_names = unEmbedAllTextures(map, grapple_id, global_id);
+				if (corruptMode != CORRUPT_NONE)
+					for (uint i = 0; i < tex_names.size(); i++)
+						masterWadCorruptions[tex_names[i]] = ctexMode;
+				insert_unique(tex_names, masterWadTex);
+			}
+
 			randomize_skybox(ents);
-			//print(str(tex) + " tex. ");
-			print("TEX...");
 		}	
 
 		if (corruptMode != CORRUPT_NONE)
 		{
+			print("BSP...");
 			corrupt_map_verts(map, ents);
 			corrupt_map_lightmap(map);
 			corrupt_map_textures(map, ents); 
 			//print("corrupted. ");
-			print("BSP...");
 		}
 		if (bspModelSwap == 2 || (corruptMode != MDL_NONE && bspModelSwap == 1))
 			randomize_bsp_models(map, ents);
@@ -1636,26 +1657,28 @@ int randomize_maps()
 
 		if (entMode != ENT_NONE)
 		{
+			print("ENT...");
 			//print(str(numEnts) + " ents. ");
 			do_entity_randomization(ents, map->name);
-			print("ENT...");
 		}
 
-		createSKL(path, mapName);
 		add_gsrand_ents(ents);
+
+		if (prefixMode != PREFIX_NONE)
+			update_changelevels(ents, map->name);
 
 		if (mdlMode != MDL_NONE)
 		{
-			do_model_replacement(map, ents, path, mapName);
 			print("MDL...");
+			do_model_replacement(map, ents, path, mapName);
 		}
 		
-
 		if (sndMode != SND_NONE || prefixMode != PREFIX_NONE || mdlMode != MDL_NONE)
 			createCFG(path, mapName);
 
 		if (sndMode != SND_NONE)
 		{
+			print("SND...");
 			vector<sound> writables;
 			if (sndMode != SND_MONST)
 			{
@@ -1669,20 +1692,16 @@ int randomize_maps()
 				writeMonsterSoundLists(map->name);
 				writeSentences(map->name);
 			}
-
 			//print(str(writables.size()) + " sounds.");
-			print("SND...");
 		}
 		
-		if (prefixMode != PREFIX_NONE)
-			update_changelevels(ents, map->name);
-
 		if (texMode != TEX_NONE || sndMode != SND_NONE || entMode != ENT_NONE || mdlMode != MDL_NONE || prefixMode != PREFIX_NONE)
 		{
 			needsRipent(map, ents);
 			ripent(map, ents, false);
 		}
 
+		createSKL(path, mapName);
 		createMOTD(path, mapName);
 
 		vector<string> res_files = create_res_list(ents, mapName); // appends to res_list
@@ -1735,7 +1754,9 @@ int randomize_maps()
 	delete [] entLists;
 
 	if (texMode == TEX_MASTERWAD)
-		writeWad(masterWadTex, wads, "gsrand");
+	{
+		writeWad(masterWadTex, wads, masterWadName);
+	}
 
 	return 0;
 }
@@ -1891,22 +1912,12 @@ void printHelp()
 	system("cls");
 	cout << "\n                    Texture modes\n"
 		 << "-------------------------------------------------------\n"
-		 << "Write to map:\n"
-		 << "     Textures are randomized and written into the BSP.\n"
-		 << "     This mode is useful for playing with friends since\n" 
-		 << "     only the BSP files need to be shared. This is the\n"
-		 << "     only mode that can replace all map textures.\n\n"
-		 << "Write WAD for each map:\n"
-		 << "     Textures are written into WADs instead of the BSPs.\n"
-		 << "     If used without a Map Prefix, players can join your\n"
-		 << "     server without downloading any files. However, they\n"
-		 << "     will see the normal map textures unless you provide\n"
-		 << "     them your BSPs and WADs. Textures stored in the BSP\n"
-		 << "     cannot be replaced.\n\n"
-		 << "Write to a common WAD:\n"
-		 << "     Like above, except all maps use a single WAD. Maps\n"
-		 << "     will appear less random, but this is the most space\n"
-		 << "     efficient texture replacement mode.\n\n"
+		 << "Write to maps:\n"
+		 << "     Textures are randomized and written into each BSP.\n\n"
+		 << "Write to WAD:\n"
+		 << "     Textures from all randomized maps will be written\n"
+		 << "     into a single WAD.\n\n"
+		 << "\n\n\n\n\n\n\n\n\n\n\n\n"
 		 << "1: Done\n"
 		 << "0: Next Page\n";
 
@@ -2054,7 +2065,7 @@ void printHelp()
 		<< "gsrand_:\n"
 		<< "     New maps will be created with the gsrand_ prefix.\n"
 		<< "     Select \"Undo all changes\" to delete these maps.\n\n"
-		<< "XXXXXX_ (current time encoded in base36):\n"
+		<< "xxxxxx_ (current time as base36 number):\n"
 		<< "     New maps will be created with a unique prefix to\n"
 		<< "     avoid filename conflicts. This prefix is generated\n"
 		<< "     using the current system time (YY/MM/DD HH:mm).\n"
@@ -2092,14 +2103,13 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system("cls"); // WINDOWS ONLY
-		cout << std::setw(80) << right << "version 2\n";
+		cout << std::setw(80) << right << "version 3\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
 		cout << "Options:\n\n";
 		cout << " 1) Texture Mode : ";
-		if (texMode == TEX_MAP)            cout << "Write to map\n";
-		else if (texMode == TEX_MASTERWAD) cout << "Write to a common WAD\n";
-		else if (texMode == TEX_WADS)      cout << "Write WAD for each map\n";
+		if (texMode == TEX_MAP)            cout << "Write to maps\n";
+		else if (texMode == TEX_MASTERWAD) cout << "Write to WAD\n";
 		else if (texMode == TEX_NONE)      cout << "Do not change\n";
 
 		cout << " 2) Entity  Mode : ";
@@ -2130,7 +2140,7 @@ int main(int argc, char* argv[])
 
 		cout << " 7) Map Prefix   : ";
 		if (prefixMode == PREFIX_GSRAND)      cout << "gsrand_\n";
-		else if (prefixMode == PREFIX_TIME)   cout << MAP_PREFIX << " (current time encoded in base36)\n";
+		else if (prefixMode == PREFIX_TIME)   cout << MAP_PREFIX << " (current time as base36 number)\n";
 		else if (prefixMode == PREFIX_CUSTOM) cout << "Custom\n";
 		else if (prefixMode == PREFIX_NONE)   cout << "No prefix (DANGEROUS)\n";
 

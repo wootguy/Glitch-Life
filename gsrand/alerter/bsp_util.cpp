@@ -735,6 +735,9 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 			return;
 		}
 
+		if (texMode == TEX_MASTERWAD)
+			return; // textures will be in the WAD not the map
+
 		for (int i = 0; i < num_textures; i++)
 		{
 			int offset = ((int*)textures)[i + 1];

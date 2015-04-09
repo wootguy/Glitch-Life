@@ -43,7 +43,6 @@ enum tex_modes
 {
 	TEX_NONE,
 	TEX_MAP,
-	TEX_WADS,
 	TEX_MASTERWAD,
 	TEX_MODES,
 };
@@ -194,6 +193,8 @@ struct membuf : std::streambuf
 // will only be replaced with sounds from this group id
 
 extern vector<string> masterWadTex;
+extern height_hashmap masterWadCorruptions; // matches a texture name to a corruption type
+extern string masterWadName;
 
 extern int numOverflow;
 
@@ -308,6 +309,7 @@ extern float vertDistort;
 extern float vertScaleX, vertScaleY, vertScaleZ;
 extern int wepSkillMode, monSkillMode;
 extern int sentenceMode;
+extern int earRapeMode;
 
 enum model_types
 {

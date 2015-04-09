@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Wad.h"
 
 struct BSP;
 
@@ -9,6 +10,8 @@ void corrupt_map_lightmap(BSP * map);
 void corrupt_map_textures(BSP * map, Entity ** ents);
 
 void randomize_bsp_models(BSP * map, Entity ** ents);
+
+void convert_texture_color(COLOR3& c);
 
 #define NUM_BRUSH_ENTS 25
 static const char * brush_ents[NUM_BRUSH_ENTS] =

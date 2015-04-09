@@ -20,6 +20,10 @@ void getAllSounds()
 	sound_paths.push_back("../valve/sound/");
 	sound_paths.push_back("../svencoop_downloads/sound/");
 
+	string last_print = "0";
+	print("0");
+	uint64 last_print_time = getSystemTime();
+
 	for (uint k = 0; k < sound_paths.size(); k++)
 	{
 		vector<string> dirs = getAllSubdirs(sound_paths[k]);
@@ -39,11 +43,24 @@ void getAllSounds()
 			{
 				vector<string> results = getDirFiles(dirs[i], exts[e]);
 				for (uint k = 0; k < results.size(); k++)
+				{
 					if (results[k].find("null") != 0)
 						user_unique_sounds.insert(prefix + results[k]);
+					if (getSystemTime() - last_print_time > 1000*50)
+					{
+						backspace(last_print.size());
+						last_print = str(user_unique_sounds.size());
+						print(last_print);
+						last_print_time = getSystemTime();
+					}
+				}
 			}
 		} 
 	}
+
+	backspace(last_print.size());
+	last_print = str(user_unique_sounds.size());
+	print(last_print);
 
 	for (set<string>::iterator it = user_unique_sounds.begin(); it != user_unique_sounds.end(); it++)
 		user_sounds.push_back(*it);
@@ -57,6 +74,7 @@ void getAllSounds()
 	filtered_sounds.reserve(user_sounds.size());
 	if (contentMode != CONTENT_EVERYTHING)
 	{
+		int old_count = user_sounds.size();
 		for (uint i = 0, sz = user_sounds.size(); i < sz; ++i)
 		{
 			bool match = false;
@@ -75,7 +93,15 @@ void getAllSounds()
 				filtered_sounds.push_back(user_sounds[i]);
 		}
 		user_sounds = filtered_sounds;
+		if (old_count != user_sounds.size())
+		{
+			backspace(str(old_count).size());
+			int nFiltered = old_count - user_sounds.size();
+			print(str(user_sounds.size()) + " (" + str(nFiltered) + " excluded)");
+		}
 	}
+
+	println("");
 
 	set<string> sound_dirs;
 	for (uint i = 0; i < user_sounds.size(); ++i)
@@ -429,6 +455,15 @@ void writeGSR(string filename, vector<sound> writeList)
 	for (uint i = 0; i < writeList.size(); i++)
 	{
 		string randSnd = get_random_sound();
+
+		if (earRapeMode > 0 && (matchStr(writeList[i].filename, "items/9mmclip1.wav") || 
+			matchStr(writeList[i].filename, "items/gunpickup2.wav") ||
+			matchStr(writeList[i].filename, "weapons/spore_ammo.wav"))) 
+		{
+			// impulse 101 ear rape
+			randSnd = "common/launch_dnmenu1.wav";
+		}
+
 		if (matchStr(randSnd, writeList[i].filename))
 		{
 			i--;

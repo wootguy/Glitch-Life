@@ -175,7 +175,7 @@ bool needsRipent(BSP * map, Entity** ents)
 
 	string newWadString = "";
 	if (texMode == TEX_MASTERWAD)
-		newWadString = "gsrand";
+		newWadString = masterWadName;
 	else if (prefixMode == PREFIX_NONE)
 		newWadString = MAP_PREFIX + map->name;
 	else

@@ -25,6 +25,7 @@ scaling:
 per-axis scaling (buggy, causes crash on c1a3 after shooting tripmine)
 
 Future:
+Random monster spawns (Trempler's request)
 content creation (models, sprites, skyboxes, sounds?)
 create randomized models (break bones, anims, textures, etc.)
 custom map music? (e.g. moonlight sonata for greyscale tex mode)

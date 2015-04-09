@@ -5,6 +5,7 @@
 using namespace std;
 
 typedef unsigned int uint;
+typedef unsigned long long uint64;
 
 extern vector<string> printlog;
 
@@ -37,6 +38,8 @@ void err(const string& str);
 	str - string to print
 */
 void warn(const string& str);
+
+void backspace(int amount);
 
 void writeLog();
 
@@ -105,6 +108,8 @@ bool matchStrCase(const string& str, const string& str2);
 
 // True if the character passed is a letter (a-z, A-Z)
 bool isLetter(char c);
+
+bool isCapitalLetter(char c);
 
 // True if the character passed is a number (0-9)
 bool isNumeric(char c);
@@ -190,6 +195,10 @@ vector<string> splitString( string str, char * delimitters);
 string trimSpaces(string str); // remove spaces at the beginning and end of the string
 
 bool dirExists(const string& path);
+
+uint64 getSystemTime();
+
+string base36(int num);
 
 struct DateTime
 {

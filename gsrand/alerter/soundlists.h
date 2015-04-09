@@ -506,8 +506,8 @@ static const char * player[NUM_PLAYER] =
 	"sprayer",
 };
 
-// 17 out of 71
-#define NUM_WEAPONS 27
+// 31 out of 71
+#define NUM_WEAPONS 31
 static const char * weapons[NUM_WEAPONS] =
 {
 	"rocket1",
@@ -537,6 +537,10 @@ static const char * weapons[NUM_WEAPONS] =
 	"cbar_hitbod2",
 	"cbar_hitbod3",
 	"cbar_miss1",
+	"spore_hit1",
+	"spore_hit2",
+	"spore_hit3",
+	"spore_ammo",
 };
 
 #define NUM_AGRUNT 26

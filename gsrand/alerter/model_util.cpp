@@ -162,8 +162,10 @@ void add_to_black_list(string model, string special_name)
 	}
 }
 
-void find_all_models(string modelPath)
+void find_all_models(string modelPath, int& total_models)
 {
+	string last_print = str(total_models);
+
 	user_monster_models.clear();
 	user_prop_models.clear();
 	user_player_models.clear();
@@ -173,6 +175,8 @@ void find_all_models(string modelPath)
 	user_apache_models.clear(); 
 
 	vector<string> dirs = getAllSubdirs(modelPath);
+
+	uint64 last_print_time = getSystemTime();
 
 	for (uint i = 0; i < dirs.size(); i++)
 	{
@@ -185,6 +189,13 @@ void find_all_models(string modelPath)
 
 		for (uint k = 0; k < results.size(); k++)
 		{
+			if (getSystemTime() - last_print_time > 1000*50)
+			{
+				backspace(last_print.size());
+				last_print = str(total_models);
+				print(last_print);
+				last_print_time = getSystemTime();
+			}
 			int end_name = results[k].length() - 4; // skip .mdl
 			if (cpath.find("player/") == 0)
 			{
@@ -246,6 +257,7 @@ void find_all_models(string modelPath)
 							add_to_black_list(cpath + results[k].substr(0, end_name), "*apache");
 					}
 					user_apache_models.push_back(cpath + results[k].substr(0, end_name));
+					total_models++;
 				}
 
 				int numTextures = mdlHead.numtextures;
@@ -281,17 +293,22 @@ void find_all_models(string modelPath)
 					if (matchStr(prefix, "v_"))
 					{
 						user_v_models.push_back(cpath + results[k].substr(0, end_name));
+						total_models++;
 						continue;
 					}
 					else if (matchStr(prefix, "p_")) // T models cause crash for P models
 					{
 						if (!uses_t_model)
+						{
 							user_p_models.push_back(cpath + results[k].substr(0, end_name));
+							total_models++;
+						}
 						continue;
 					}
 					else if (matchStr(prefix, "w_"))
 					{
 						user_w_models.push_back(cpath + results[k].substr(0, end_name));
+						total_models++;
 						continue;
 					}
 				}
@@ -305,6 +322,7 @@ void find_all_models(string modelPath)
 					if (seq.numframes == 1 || mdlHead.numbones == 1 || string(seq.label).find("idle") != string::npos)
 					{
 						user_prop_models.push_back(cpath + results[k].substr(0, end_name));
+						total_models++;
 						continue;
 					}
 					// TODO: Check the sequence for movement, don't just assume it's a monster
@@ -362,16 +380,22 @@ void find_all_models(string modelPath)
 				fin.close();
 
 				user_monster_models.push_back(cpath + results[k].substr(0, end_name));
+				total_models++;
 			}				
 		}
 	}
+	backspace(last_print.size());
+	last_print = str(total_models);
+	print(last_print);
 }
 
 void get_all_models()
 {	
 	parse_model_lists(); // get all monster whitelists and blacklists
 
-	find_all_models("../valve/models/");
+	int total_models = 0;
+	print("0");
+	find_all_models("../valve/models/", total_models);
 	vector<string> temp_monster_models = user_monster_models;
 	vector<string> temp_prop_models = user_prop_models;
 	vector<string> temp_player_models = user_player_models;
@@ -380,7 +404,7 @@ void get_all_models()
 	vector<string> temp_w_models = user_w_models;
 	vector<string> temp_apache_models = user_apache_models;
 
-	find_all_models("../svencoop_downloads/models/");
+	find_all_models("../svencoop_downloads/models/", total_models);
 	insert_unique(user_monster_models, temp_monster_models);
 	insert_unique(user_prop_models, temp_prop_models);
 	insert_unique(user_player_models, temp_player_models);
@@ -389,7 +413,7 @@ void get_all_models()
 	insert_unique(user_w_models, temp_w_models);
 	insert_unique(user_apache_models, temp_apache_models);
 
-	find_all_models("models/");
+	find_all_models("models/", total_models);
 	insert_unique(temp_monster_models, user_monster_models);
 	insert_unique(temp_prop_models, user_prop_models);
 	insert_unique(temp_player_models, user_player_models);
@@ -397,6 +421,10 @@ void get_all_models()
 	insert_unique(temp_p_models, user_p_models);
 	insert_unique(temp_w_models, user_w_models);
 	insert_unique(temp_apache_models, user_apache_models);
+
+	int print_total = total_models;
+	total_models = user_monster_models.size() + user_prop_models.size() + user_v_models.size() + 
+				   user_p_models.size() + user_w_models.size() + user_apache_models.size() + user_player_models.size();
 
 	filter_default_model_content(user_monster_models);
 	filter_default_model_content(user_prop_models);
@@ -420,6 +448,17 @@ void get_all_models()
 	for (uint i = 0; i < user_player_models.size(); ++i)
 		all_user_models.push_back("models/" + user_player_models[i] + ".mdl");
 
+	int after_models = user_monster_models.size() + user_prop_models.size() + user_v_models.size() + 
+				   user_p_models.size() + user_w_models.size() + user_apache_models.size() + user_player_models.size();
+
+	if (after_models != total_models)
+	{
+		backspace(str(print_total).size());
+		int nFiltered = total_models - after_models;
+		print(str(after_models) + " (" + str(nFiltered) + " excluded)");
+	}
+	println("");
+
 	// i'll be using this model to indicate replacement errors
 	vector<string>::iterator it = find(user_prop_models.begin(), user_prop_models.end(), "not_precached");
 	if (it != user_prop_models.end())
@@ -438,6 +477,9 @@ void get_all_models()
 				it->second.erase(it->second.begin() + i--); // model doesn't exist in user's models
 	}
 
+
+
+	/*
 	if (false)
 	{
 		vector<string> some_user_models;
@@ -452,7 +494,7 @@ void get_all_models()
 		writeLog();
 		return;
 	}
-
+	
 	if (false)
 	{
 		println("#define NUM_APACHE_MODELS " + str(user_apache_models.size()));
@@ -506,15 +548,19 @@ void get_all_models()
 
 		writeLog(); 
 	}
-
+	*/
 }
 
-void find_all_sprites(string spritePath)
+void find_all_sprites(string spritePath, int& total_sprites)
 {
+	string last_print = str(total_sprites);
+
 	user_sprites.clear();
 	user_animated_sprites.clear();
 
 	vector<string> dirs = getAllSubdirs(spritePath);
+
+	uint64 last_print_time = getSystemTime();
 
 	for (uint i = 0; i < dirs.size(); i++)
 	{
@@ -525,6 +571,13 @@ void find_all_sprites(string spritePath)
 			cpath = getSubStr(dirs[i], dir_find + string("sprites/").length()); // skip sprites/
 		for (uint k = 0; k < results.size(); k++)
 		{
+			if (getSystemTime() - last_print_time > 1000*50)
+			{
+				backspace(last_print.size());
+				last_print = str(total_sprites);
+				print(last_print);
+				last_print_time = getSystemTime();
+			}
 			string name = getSubStr(results[k],0,results[k].length()-4);
 			if (name.length() > 0)
 			{
@@ -554,22 +607,29 @@ void find_all_sprites(string spritePath)
 					user_animated_sprites.push_back(cpath + results[k].substr(0, end_name));
 				else
 					user_sprites.push_back(cpath + results[k].substr(0, end_name));
+				total_sprites++;
 			}				
 		}
 	}
+
+	backspace(last_print.size());
+	last_print = str(total_sprites);
+	print(last_print);
 }
 
 void get_all_sprites()
 {
-	find_all_sprites("../valve/sprites/");
+	int total_sprites = 0;
+	print("0");
+	find_all_sprites("../valve/sprites/", total_sprites);
 	vector<string> temp_sprites = user_sprites;
 	vector<string> temp_animated_sprites = user_animated_sprites;
 
-	find_all_sprites("../svencoop_downloads/sprites/");
+	find_all_sprites("../svencoop_downloads/sprites/", total_sprites);
 	insert_unique(user_sprites, temp_sprites);
 	insert_unique(user_animated_sprites, temp_animated_sprites);
 
-	find_all_sprites("sprites/");
+	find_all_sprites("sprites/", total_sprites);
 	insert_unique(temp_sprites, user_sprites);
 	insert_unique(temp_animated_sprites, user_animated_sprites);
 
@@ -578,9 +638,22 @@ void get_all_sprites()
 	if (it != user_sprites.end())
 		user_sprites.erase(it);
 
+	int print_total = total_sprites;
+	total_sprites = user_animated_sprites.size() + user_sprites.size();
+
 	filter_default_content(user_animated_sprites, ANIMATED_SPRITES, NUM_ANIMATED_SPRITES);
 	filter_default_content(user_sprites, STATIC_SPRITES, NUM_STATIC_SPRITES);
 
+	int new_total = user_animated_sprites.size() + user_sprites.size();
+	if (total_sprites != new_total)
+	{
+		backspace(str(print_total).size());
+		int nFiltered = total_sprites - new_total;
+		print(str(new_total) + " (" + str(nFiltered) + " excluded)");
+	}
+	println("");
+
+	/*
 	if (false)
 	{
 		println("#define NUM_ANIMATED_SPRITES " + str(user_animated_sprites.size()));
@@ -599,7 +672,7 @@ void get_all_sprites()
 
 		writeLog(); 
 	}
-
+	*/
 }
 
 void init_random_monster_models()

@@ -19,7 +19,7 @@ Wad::~Wad(void)
 {
 }
 
-void Wad::readInfo()
+bool Wad::readInfo()
 {
 	string path = getWorkDir() + filename;
 	const char * file = (path.c_str());
@@ -27,16 +27,41 @@ void Wad::readInfo()
 	if (!fileExists(file))
 	{
 		err(filename + " does not exist!");
-		return;
+		return false;
 	}
 
 	ifstream fin(file, ifstream::in|ios::binary);
+	if (!fin.good())
+		return false;
 
+	uint begin = fin.tellg();
+	fin.seekg (0, ios::end);
+	uint end = fin.tellg();
+	uint sz = end - begin;
+	fin.seekg(0, ios::beg);
+
+	if (sz < sizeof(WADHEADER))
+	{
+		fin.close();
+		return false;
+	}
 
 	//
 	// WAD HEADER
 	//
-	fin.read((char*)&header, sizeof(WADHEADER));
+	fin.read((char*)&header, sizeof(WADHEADER)); 
+
+	if (string(header.szMagic).find("WAD3") != 0)
+	{
+		fin.close();
+		return false;
+	}
+
+	if (header.nDirOffset >= sz)
+	{
+		fin.close();
+		return false;
+	}
 
 	//
 	// WAD DIRECTORY ENTRIES
@@ -47,12 +72,12 @@ void Wad::readInfo()
 
 	for (int i = 0; i < numTex; i++)
 	{
-		if (fin.eof()) { err("Unexpected end of file"); return; }
+		if (fin.eof()) { println("Unexpected end of WAD"); return false; }
 		fin.read((char*)&dirEntries[i], sizeof(WADDIRENTRY)); 
 	}
+	fin.close();
 
-	//println("first dir entry at " + str(header.nDirOffset) + " points to " + str(dirEntries[0].nFilePos));
-	//println("Read " + str(numTex) + " Wad Directory Entries");
+	return true;
 }
 
 void Wad::loadCache()
@@ -194,7 +219,7 @@ bool Wad::write( std::string filename, WADTEX ** textures, int numTex )
 		miptex.nOffsets[3] = sizeof(BSPMIPTEX) + sz + sz2 + sz3;
 
 		myFile.write ((char*)&miptex, sizeof(BSPMIPTEX));
-		myFile.write ((char*)textures[i]->data, szAll);			
+		myFile.write ((char*)textures[i]->data, szAll);
 	}
 
 	int offset = 12;

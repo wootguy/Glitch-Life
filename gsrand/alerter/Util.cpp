@@ -20,6 +20,30 @@ void print(const string& str)
 	printlog.push_back(str);
 }
 
+void backspace(int amount)
+{
+	if (amount <=0)
+		return;
+	string output;
+	for (int i = 0; i < amount; i++)
+		output += "\b \b";
+
+	OutputDebugString((output).c_str());
+    cout << output.c_str();
+	printlog.push_back(output);
+}
+
+uint64 getSystemTime()
+{
+	LARGE_INTEGER fq, li;
+	QueryPerformanceFrequency(&fq);
+	QueryPerformanceCounter(&li);
+
+	double freq = (double)fq.QuadPart;
+	double time = (double)li.QuadPart*1000.0*1000.0;
+	return (uint64)(time/freq);
+}
+
 void err(const string& str)
 {
     #ifdef OS_WIN
@@ -236,6 +260,11 @@ bool matchStrCase(const string& str, const string& str2)
 bool isLetter(char c)
 {
     return ( c >= 65 && c <= 90) || (c >= 97 && c <= 122);
+}
+
+bool isCapitalLetter(char c)
+{
+	return c >= 65 && c <= 90;
 }
 
 bool isNumeric(char c)
@@ -769,4 +798,16 @@ bool dirExists(const string& path)
 
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES && 
 			(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}
+
+string base36(int num)
+{
+	string b36;
+
+	while (num)
+	{
+		b36 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[num % 36] + b36;
+		num /= 36; 
+	}
+	return b36;
 }

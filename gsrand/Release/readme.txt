@@ -32,6 +32,10 @@ turn on RES file generation and enable a safety setting to prevent crashes.
 You might also want to take a look at the sentence_mode setting if you plan 
 to distribute your files manually (not via the RES file).
 
+It's a good idea to use the timestamp map prefix so that players won't get
+a "Your map differs" error after you re-randomize your maps. Once you know
+people have downloaded your maps, you should never use that map prefix again.
+
 After the maps are generated, you are asked if you want to copy the
 randomized maps to a folder. Select the 'copy' option so that you can easily
 pack up the files to send to your buddies or your fast-dl server. If you have

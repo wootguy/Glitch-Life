@@ -13,11 +13,13 @@ void create_tex_embed_wad(vector<Wad>& wads);
 
 void get_all_skies();
 
-void writeWad(vector<string> wadTextures, vector<Wad> wads, string mapname);
+void writeWad(vector<string>& wadTextures, vector<Wad>& wads, string mapname);
 
 BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad>& wads, BSP * map);
 
 int makeMapWad(BSP * map, string map_name, vector<Wad>& wads);
+
+vector<string> unEmbedAllTextures(BSP * map, int& grapple_id, int& global_id);
 
 void embedAllTextures(BSP * map, Entity ** ents);
 
