@@ -395,49 +395,118 @@ WADTEX ** loadRandomTextures(vector<string> wadTextures, vector<Wad>& wads)
 
 void writeWad(vector<string>& wadTextures, vector<Wad>& wads, string mapname)
 {
-	WADTEX ** newTex = loadRandomTextures(wadTextures, wads);
-
-	if (corruptMode != CORRUPT_NONE)
+	if (wads.size() <= 0)
 	{
-		println("Corrupting textures...");
-		for (uint i = 0; i < wadTextures.size(); i++)
-		{
-			if (masterWadCorruptions.find(wadTextures[i]) != masterWadCorruptions.end())
-			{
-				int w = newTex[i]->nWidth;
-				int h = newTex[i]->nHeight;
-				int sz = w*h;	   // miptex 0
-				int sz2 = sz / 4;  // miptex 1
-				int sz3 = sz2 / 4; // miptex 2
-				int sz4 = sz3 / 4; // miptex 3
-
-				ctexMode = masterWadCorruptions[wadTextures[i]];
-
-				byte * pal_data = &newTex[i]->data[sz + sz2 + sz3 + sz4 + 2];
-				for (uint k = 0; k < 256*3; k += 3)
-					convert_texture_color(*(COLOR3*)&pal_data[k]);
-			}
-		}
+		println("No usable WADs!");
+		return;
 	}
 
-	if (newTex != NULL)
+	if (wadTextures.size() > 0)
 	{
-		Wad newWad = Wad();
 		string filename = mapname + ".wad";
-
-		if (texMode == TEX_MASTERWAD)
-			println("Writing " + filename + "...");
-		newWad.write(filename, newTex, wadTextures.size());
 		res_list.insert(filename);
 		super_res_list.insert(filename);
 
+		println("\nCreating " + filename);
+		print("Writing textures: ");
+
+		ofstream fout(filename, ios::out | ios::binary | ios::trunc);
+		Wad output(filename);
+		output.header.szMagic[0] = 'W';
+		output.header.szMagic[1] = 'A';
+		output.header.szMagic[2] = 'D';
+		output.header.szMagic[3] = '3';
+		output.header.nDir = wadTextures.size();
+		output.header.nDirOffset = 0; // update this later
+		fout.write ((char*)&output.header, sizeof(WADHEADER));
+
+		vector<int> tex_sizes;
+		vector<string> tex_names;
+		uint64 last_print_time = getSystemTime();
+		string last_print;
+
 		for (uint i = 0; i < wadTextures.size(); i++)
 		{
-			delete [] newTex[i]->data;
-			delete newTex[i];
+			WADTEX * new_tex = load_random_texture(wads);
+			if (new_tex == NULL)
+			{
+				println("Failed to load random textures");
+				break;
+			}
+			string tex_name = wadTextures[i];
+			memcpy(new_tex->szName, tex_name.c_str(), MAXTEXTURENAME);
+
+			if (corruptMode != CORRUPT_NONE)
+			{
+				if (masterWadCorruptions.find(wadTextures[i]) != masterWadCorruptions.end())
+				{
+					int w = new_tex->nWidth;
+					int h = new_tex->nHeight;
+					int sz = w*h;	   // miptex 0
+					int sz2 = sz / 4;  // miptex 1
+					int sz3 = sz2 / 4; // miptex 2
+					int sz4 = sz3 / 4; // miptex 3
+
+					ctexMode = masterWadCorruptions[wadTextures[i]];
+
+					byte * pal_data = &new_tex->data[sz + sz2 + sz3 + sz4 + 2];
+					for (uint k = 0; k < 256*3; k += 3)
+						convert_texture_color(*(COLOR3*)&pal_data[k]);
+				}
+			}
+
+			int sz = new_tex->nHeight*new_tex->nWidth;	   // miptex 0
+			int sz2 = sz / 4;  // miptex 1
+			int sz3 = sz2 / 4; // miptex 2
+			int sz4 = sz3 / 4; // miptex 3
+			int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+
+			tex_sizes.push_back(szAll);
+			tex_names.push_back(new_tex->szName);
+
+			fout.write((char*)new_tex, sizeof(BSPMIPTEX));
+			fout.write((char*)new_tex->data, szAll);
+
+			delete [] new_tex->data;
+			delete new_tex;
+
+			if (getSystemTime() - last_print_time > 1000*50)
+			{
+				backspace(last_print.size());
+				last_print = str(i) + " / " + str(wadTextures.size());
+				print(last_print);
+				last_print_time = getSystemTime();
+			}
 		}
-		delete [] newTex;
+
+		backspace(last_print.size());
+		last_print = str(wadTextures.size()) + " / " + str(wadTextures.size());
+		print(last_print);
+
+		int offset = 12;
+		for (int i = 0; i < wadTextures.size(); i++)
+		{
+			WADDIRENTRY entry;
+			entry.nFilePos = offset;
+			entry.nDiskSize = tex_sizes[i] + sizeof(BSPMIPTEX);
+			entry.nSize = tex_sizes[i] + sizeof(BSPMIPTEX);
+			entry.nType = 0x43; // Texture
+			entry.bCompression = false;
+			entry.nDummy = 0;
+			for (int k = 0; k < MAXTEXTURENAME; k++)
+				entry.szName[k] = tex_names[i][k];
+			offset += tex_sizes[i] + sizeof(BSPMIPTEX);
+
+			fout.write ((char*)&entry, sizeof(WADDIRENTRY));
+		}
+
+		// update the header
+		fout.seekp(0);
+		output.header.nDirOffset = offset;
+		fout.write ((char*)&output.header, sizeof(WADHEADER)); 
 	}
+	else
+		println("No wadTextures found");
 }
 
 BSPTEXDATA * genTexLump(vector<string> wadTextures, vector<Wad>& wads, BSP * map)
@@ -629,15 +698,25 @@ vector<string> unEmbedAllTextures(BSP * map, int& grapple_id, int& global_id)
 		if (should_hook && !matchStr(t->szName, "sky") && !matchStr(t->szName, "aaatrigger") && t->szName[0] != '!' &&
 			t->szName[0] != '{')
 		{
-			string gname = "xeno_grapple" + base36(grapple_id++);
-			if (base36(grapple_id).length() > 3)
+			string gname;
+			if (masterWadRenames.find(toLowerCase(t->szName)) != masterWadRenames.end())
+				gname = masterWadRenames[toLowerCase(t->szName)];
+			else
 			{
-				println("Too many textures to grapple! " + grapple_id);
-				grapple_id = 0;
+				gname = "xeno_grapple" + base36(grapple_id++);
+				if (base36(grapple_id).length() > 3)
+				{
+					println("Too many textures to grapple! " + grapple_id);
+					grapple_id = 0;
+				}
+
+				masterWadRenames[toLowerCase(t->szName)] = gname;
 			}
+
 			memcpy(t->szName, gname.c_str(), gname.length());
 			t->szName[gname.length()] = '\0';
 		}
+		/*
 		else if (!matchStr(t->szName, "sky"))
 		{
 			// rename it so that if the next map uses the same name it will be a different texture
@@ -660,7 +739,7 @@ vector<string> unEmbedAllTextures(BSP * map, int& grapple_id, int& global_id)
 			memcpy(t->szName, gname.c_str(), gname.length());
 			t->szName[gname.length()] = '\0';
 		}
-
+		*/
 		memset(t->nOffsets, 0, sizeof(int)*4);
 
 		memcpy(new_lump + writeOffset, t, sizeof(BSPMIPTEX));
@@ -874,5 +953,9 @@ void embedAllTextures(BSP * map, Entity ** ents)
 	map->header.lump[LUMP_TEXTURES].nLength = new_lump_sz;
 
 	for (uint i = 0; i < map_wads.size(); i++)
+	{
+		if (map_wads[i]->dirEntries)
+			delete [] map_wads[i]->dirEntries;
 		delete map_wads[i];
+	}
 }

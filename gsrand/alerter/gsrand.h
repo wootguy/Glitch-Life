@@ -194,6 +194,7 @@ struct membuf : std::streambuf
 
 extern vector<string> masterWadTex;
 extern height_hashmap masterWadCorruptions; // matches a texture name to a corruption type
+extern string_hashmap masterWadRenames; // for grapple texture sharing
 extern string masterWadName;
 
 extern int numOverflow;

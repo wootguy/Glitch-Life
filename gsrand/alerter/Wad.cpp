@@ -6,6 +6,7 @@
 Wad::Wad(void)
 {
 	cache = NULL;
+	dirEntries = NULL;
 }
 
 Wad::Wad( const string& file )
@@ -13,10 +14,13 @@ Wad::Wad( const string& file )
 	this->filename = file;
 	numTex = -1;
 	cache = NULL;
+	dirEntries = NULL;
 }
 
 Wad::~Wad(void)
 {
+	//if (dirEntries)
+	//	delete [] dirEntries;
 }
 
 bool Wad::readInfo()

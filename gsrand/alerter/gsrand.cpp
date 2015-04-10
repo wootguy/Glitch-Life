@@ -96,6 +96,7 @@ int total_model_count = 0;
 
 vector<string> masterWadTex;
 height_hashmap masterWadCorruptions;
+string_hashmap masterWadRenames;
 vector<string> ambients;
 
 string_hashmap random_monster_models;
@@ -789,8 +790,8 @@ bool createCFG(string path, string mapname)
 			if (i != text.size()-1)
 				fout << endl;
 		}
-
-		if (!has_grapple && (mdlMode != MDL_NONE || entMode == ENT_SUPER) && grapple_mode != GRAPPLE_DISABLE)
+		bool should_hook = grapple_mode == GRAPPLE_HOOK_ALWAYS || ((entMode == ENT_SUPER || corruptMode != CORRUPT_NONE) && grapple_mode == GRAPPLE_HOOK);
+		if (!has_grapple && should_hook)
 			fout << "\nweapon_grapple\n";
 		if (entMode == ENT_SUPER)
 		{
@@ -1420,6 +1421,12 @@ void find_user_content()
 		}
 	}
 
+	for (uint i = 0; i < maps.size(); i++)
+	{
+		if (maps[i].find("gsrand_") == 0)
+			maps.erase(maps.begin() + i--);
+	}
+
 	if (user_maps.empty())
 		cout << "Found " << maps.size() << " maps\n\n";
 	else
@@ -1545,7 +1552,6 @@ int randomize_maps()
 		MAP_PREFIX = get_date_base36() + "_";
 	generation_date = DateTime::now();
 
-	Entity *** entLists = new Entity**[maps.size()];
 	int idx = 0;
 
 	system("cls");
@@ -1555,6 +1561,7 @@ int randomize_maps()
 	filename_cache.clear();
 	masterWadTex.clear();
 	masterWadCorruptions.clear();
+	masterWadRenames.clear();
 
 	//////////////////////////////
 	// BEGIN THE RANDOMIZATION! //
@@ -1723,40 +1730,21 @@ int randomize_maps()
 		delete [] map->lumps;
 		delete map;
 
-		// this is faster than deleting each entity (deleted after all maps randomized)
 		for (int i = 0; i < numEnts; i++)
 		{
 			if (ents[i] != NULL)
-				ents[i]->keyvalues.clear();
+			{
+				delete ents[i];
+				ents[i] = NULL;
+			}
 		}
+		delete [] ents;
 		
 		println("Done");
 	}	
 
-	/////////////
-	// CLEANUP //
-	/////////////
-
-	for (int i = 0; i < idx; i++)
-	{
-		if (entLists[i] != NULL)
-		{
-			for (int k = 0; k < MAX_MAP_ENTITIES; k++)
-			{
-				if (entLists[i][k] != NULL)
-					delete entLists[i][k];
-				else
-					break;
-			}
-			delete [] entLists[i];
-		}
-	}
-	delete [] entLists;
-
 	if (texMode == TEX_MASTERWAD)
-	{
 		writeWad(masterWadTex, wads, masterWadName);
-	}
 
 	return 0;
 }
@@ -1913,11 +1901,13 @@ void printHelp()
 	cout << "\n                    Texture modes\n"
 		 << "-------------------------------------------------------\n"
 		 << "Write to maps:\n"
-		 << "     Textures are randomized and written into each BSP.\n\n"
+		 << "     Textures are randomized and written into each BSP.\n"
+		 << "     This wil produce the most random results.\n\n"
 		 << "Write to WAD:\n"
 		 << "     Textures from all randomized maps will be written\n"
-		 << "     into a single WAD.\n\n"
-		 << "\n\n\n\n\n\n\n\n\n\n\n\n"
+		 << "     into a single WAD. This option will use less disk\n"
+		 << "     space since textures are shared across maps.\n\n"
+		 << "\n\n\n\n\n\n\n\n\n\n"
 		 << "1: Done\n"
 		 << "0: Next Page\n";
 
@@ -1988,10 +1978,7 @@ void printHelp()
 		<< "Use similar types:\n"
 		<< "     Weapons will be replaced with random weapon\n"
 		<< "     models, monsters with monster models, etc.\n\n"
-		<< "You'll be equipped with a barnacle grapple in case a\n"
-		<< "monster blocks your path due to missing animations\n"
-		<< "(the grapple makes most monsters explode).\n\n"
-		<< "\n\n\n"
+		<< "\n\n\n\n\n\n"
 		<< "WARNING: Model replacement is buggy and will cause crashes. \n"
 		<< "         Check the 'model_safety' setting in gsrand_config.txt \n\n"
 		<< "1: Done\n"
