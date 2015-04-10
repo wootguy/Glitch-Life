@@ -196,6 +196,7 @@ void find_all_models(string modelPath, int& total_models)
 				print(last_print);
 				last_print_time = getSystemTime();
 			}
+
 			int end_name = results[k].length() - 4; // skip .mdl
 			if (cpath.find("player/") == 0)
 			{
@@ -238,11 +239,44 @@ void find_all_models(string modelPath, int& total_models)
 					continue;
 				}
 
-				if (mdlHead.id == 1364411465)
+				if (mdlHead.id != 1414743113)
 				{
+					if (printRejects)
+						println("Invalid ID in header: " + cpath + results[k]);
 					//println("Found weird model: " + name);
 					fin.close();
 					continue;
+				}
+
+				if (mdlHead.version != 10)
+				{
+					if (printRejects)
+						println("Invalid version in header: " + cpath + results[k]);
+					//println("Found weird model: " + name);
+					fin.close();
+					continue;
+				}
+
+				// preload animations
+				bool missing_animations = false;
+				if (mdlHead.numseqgroups > 1)
+				{
+					for (int m = 1; m < mdlHead.numseqgroups; m++)
+					{
+						string suffix = m < 10 ? "0" + str(m) : str(m);
+						string apath = modelPath + cpath + name + suffix + ".mdl";
+						if (!fileExists(apath))
+						{
+							if (printRejects)
+								println("Missing animation model (added to *tmodel blacklist): " + apath);
+							missing_animations = true;
+							// missing animations isn't that big of a deal, we just have to
+							// be sure it isn't used as a p_weapon replacement.
+							// (Assumes *tmodel is always blacklisted for weapons, which it should be)
+							add_to_black_list(cpath + results[k].substr(0, end_name), "*tmodel");
+							break;
+						}
+					}
 				}
 
 				if (mdlHead.numbonecontrollers >= 2)
@@ -296,9 +330,9 @@ void find_all_models(string modelPath, int& total_models)
 						total_models++;
 						continue;
 					}
-					else if (matchStr(prefix, "p_")) // T models cause crash for P models
+					else if (matchStr(prefix, "p_"))
 					{
-						if (!uses_t_model)
+						if (!uses_t_model && !missing_animations)
 						{
 							user_p_models.push_back(cpath + results[k].substr(0, end_name));
 							total_models++;

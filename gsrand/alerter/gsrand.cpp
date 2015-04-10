@@ -136,12 +136,39 @@ string_hashmap filename_cache;
 
 DateTime generation_date;
 
+enum corruption_types
+{
+	CTYPE_VERT,
+	CTYPE_LIGHTMAP,
+	CTYPE_TEXTURE,
+	CTYPES,
+};
+
+enum corrupt_setting_modes
+{
+	CSETTING_CONSTANT,
+	CSETTING_RANDOM,
+};
+
+vector<int> allowed_corruptions[3];
+int corruptSettingMode = 0;
+
 enum parse_modes
 {
 	PARSE_SETTINGS,
 	PARSE_MAPS,
 	PARSE_MODES
 };
+
+bool is_corruption_allowed(int ctype, int mode)
+{
+	if (ctype >= CTYPES || ctype < 0)
+		return false;
+	for (uint i = 0; i < allowed_corruptions[ctype].size(); i++)
+		if (allowed_corruptions[ctype][i] == mode)
+			return true;
+	return false;
+}
 
 void readConfigFile()
 {
@@ -388,6 +415,9 @@ void parse_settings_file()
 	grapple_mode = GRAPPLE_HOOK;
 	gmr_only = false;
 	vertMode = lightMode = ctexMode = 0;
+	corruptSettingMode = 0;
+	for (int i = 0; i < CTYPES; i++)
+		allowed_corruptions[i].clear();
 
 	ifstream myfile(getWorkDir() + "gsrand_config.txt");
 	if (myfile.is_open())
@@ -450,30 +480,43 @@ void parse_settings_file()
 				if (setting_name.find("weapon_skill_mode") == 0) wepSkillMode = atoi(setting_value.c_str());
 				if (setting_name.find("monster_skill_mode") == 0) monSkillMode = atoi(setting_value.c_str());
 				if (setting_name.find("ear_rape_safety") == 0) earRapeMode = atoi(setting_value.c_str());
-				if (setting_name.find("lightmap_corruption") == 0)
+				if (setting_name.find("corruption_mode") == 0)
 				{
-					lightMode = 0;
-					if (setting_value.find("shift") != string::npos) lightMode = LIGHT_SHIFTED;
-					else if (setting_value.find("disco") != string::npos) lightMode = LIGHT_DISCO;
-					else if (setting_value.find("dark")  != string::npos) lightMode = LIGHT_DARK;
-					else if (corruptMode == CORRUPT_CONFIG)
-						println("Invalid value for lightmap_corruption: '" + setting_value + "'");
+					if (setting_value.find("constant")  != string::npos) corruptSettingMode = CSETTING_CONSTANT;
+					if (setting_value.find("random")  != string::npos) corruptSettingMode = CSETTING_RANDOM;
 				}
-				if (setting_name.find("texture_corruption") == 0)
+				if (setting_name.find("corruptions") == 0)
 				{
-					ctexMode = 0;
-					if (setting_value.find("flat")  != string::npos) ctexMode = CTEX_FLAT_COLOR;
-					else if (setting_value.find("shift") != string::npos) ctexMode = CTEX_MISALIGN;
-					else if (setting_value.find("white") != string::npos) ctexMode = CTEX_WHITE;
-					else if (setting_value.find("grey") != string::npos) ctexMode = CTEX_GREY;
-					else if (setting_value.find("bw") != string::npos) ctexMode = CTEX_BW;
-					else if (setting_value.find("contrast") != string::npos) ctexMode = CTEX_CONTRAST;
-					else if (setting_value.find("invert") != string::npos) ctexMode = CTEX_INVERT;
-					else if (setting_value.find("random") != string::npos) ctexMode = CTEX_RANDOM;
-					else if (corruptMode == CORRUPT_CONFIG)
-						println("Invalid value for texture_corruption: '" + setting_value + "'");
+					if (setting_value.find("flip")  != string::npos) 
+						allowed_corruptions[CTYPE_VERT].push_back(VERT_FLIP);
+					if (setting_value.find("scale") != string::npos)
+						allowed_corruptions[CTYPE_VERT].push_back(VERT_SCALE);
+					if (setting_value.find("blend") != string::npos)
+						allowed_corruptions[CTYPE_VERT].push_back(VERT_DISTORT);
+					if (setting_value.find("weird") != string::npos)
+						allowed_corruptions[CTYPE_LIGHTMAP].push_back(LIGHT_SHIFTED);
+					if (setting_value.find("disco") != string::npos)
+						allowed_corruptions[CTYPE_LIGHTMAP].push_back(LIGHT_DISCO);
+					if (setting_value.find("dark") != string::npos)
+						allowed_corruptions[CTYPE_LIGHTMAP].push_back(LIGHT_DARK);
+					if (setting_value.find("flat")  != string::npos) 
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_FLAT_COLOR);
+					if (setting_value.find("shift") != string::npos)
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_MISALIGN);
+					if (setting_value.find("white") != string::npos) 
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_WHITE);
+					if (setting_value.find("grey") != string::npos)
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_GREY);
+					if (setting_value.find("bw") != string::npos) 
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_GREY);
+					if (setting_value.find("contrast") != string::npos) 
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_CONTRAST);
+					if (setting_value.find("invert") != string::npos) 
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_INVERT);
+					if (setting_value.find("random") != string::npos)
+						allowed_corruptions[CTYPE_TEXTURE].push_back(CTEX_RANDOM);
 				}
-				else if (setting_name.find("vertex_corruption_scale") == 0)
+				else if (setting_name.find("corruption_scale") == 0)
 				{
 					vector<string> values = splitString(setting_value, " ");
 					if (values.size() >= 3)
@@ -484,18 +527,9 @@ void parse_settings_file()
 					}
 					else if (values.size() > 0)
 						vertScaleX = vertScaleY = vertScaleZ = atof(values[0].c_str());
-					else if (corruptMode == CORRUPT_CONFIG)
-						println("Invalid value for vertex_corruption_scale: '" + setting_value + "'");
 				}
-				else if (setting_name.find("vertex_corruption_blend") == 0) 
+				else if (setting_name.find("corruption_blend") == 0) 
 					vertDistort = atoi(setting_value.c_str());
-				else if (setting_name.find("vertex_corruption") == 0)
-				{
-					vertMode = 0;
-					if (setting_value.find("flip")  != string::npos) vertMode |= VERT_FLIP;
-					if (setting_value.find("scale") != string::npos) vertMode |= VERT_SCALE;
-					if (setting_value.find("blend") != string::npos) vertMode |= VERT_DISTORT;
-				}
 				if (setting_name.find("random_seed") == 0)
 				{
 					random_seed = setting_value;
@@ -536,11 +570,19 @@ void parse_settings_file()
 				}
 				else
 					user_maps.push_back(line + string(".bsp"));
-
 			}
-			
 		}
 		myfile.close();
+
+		if (corruptSettingMode == CSETTING_CONSTANT)
+		{
+			for (uint i = 0; i < allowed_corruptions[CTYPE_VERT].size(); i++)
+				vertMode |= allowed_corruptions[CTYPE_VERT][i];
+			if (allowed_corruptions[CTYPE_LIGHTMAP].size()) 
+				lightMode = allowed_corruptions[CTYPE_LIGHTMAP][0];
+			if (allowed_corruptions[CTYPE_TEXTURE].size()) 
+				ctexMode = allowed_corruptions[CTYPE_TEXTURE][0];
+		}
 	}
 	else
 		println("WARNING: gsrand_config.txt is missing.");
@@ -881,7 +923,7 @@ bool createMOTD(string path, string mapname)
 	fout << "Map generation settings:\n";
 	fout << "    Texture Mode: ";
 	if (texMode == TEX_MAP)            fout << "Write to map\n";
-	else if (texMode == TEX_MASTERWAD) fout << "Write to a common WAD\n";
+	else if (texMode == TEX_MASTERWAD) fout << "Write to shared WAD\n";
 	else if (texMode == TEX_NONE)      fout << "Do not change\n";
 
 	fout << "    Entity Mode: ";
@@ -1568,9 +1610,11 @@ int randomize_maps()
 	//////////////////////////////
 
 	int grapple_id = 0, global_id = 0; // for master wad tex naming
-	masterWadName = "gsrand_" + getSubStr(MAP_PREFIX, 0, MAP_PREFIX.length()-1);
-	if (prefixMode == PREFIX_GSRAND)
-		masterWadName = "gsrand";
+	masterWadName = "gsrand";
+	if (prefixMode == PREFIX_CUSTOM)
+		masterWadName = MAP_PREFIX + "_gsrand";
+	if (prefixMode == PREFIX_TIME)
+		masterWadName = "gsrand_" + getSubStr(MAP_PREFIX, 0, MAP_PREFIX.length()-1);
 
 	for (uint f = 0; f < maps.size(); f++)
 	{
@@ -1611,6 +1655,25 @@ int randomize_maps()
 						lightMode = LIGHT_DARK;
 				}
 				if (rand() % 2 == 0) ctexMode = rand() % CTEX_MODES;
+				vertScaleX = (float)(150 - (rand() % 126)) * 0.01f;
+				vertScaleY = vertScaleZ = vertScaleX;
+				if (rand() % 2) vertDistort = 4;
+				else			vertDistort = 2;
+				if (vertMode & VERT_SCALE) vertDistort *= vertScaleX;
+
+				if (!singleplayer) vertMode &= ~VERT_DISTORT; // unstable on dedicated servers
+			}
+			else if (corruptMode == CORRUPT_CONFIG && corruptSettingMode == CSETTING_RANDOM)
+			{
+				vertMode = lightMode = ctexMode = 0;
+				if (rand() % 3 == 0 && is_corruption_allowed(CTYPE_VERT, VERT_FLIP)) vertMode |= VERT_FLIP;
+				if (rand() % 4 == 0 && is_corruption_allowed(CTYPE_VERT, VERT_SCALE)) vertMode |= VERT_SCALE; 
+				if (rand() % 2 == 0 && is_corruption_allowed(CTYPE_VERT, VERT_DISTORT)) vertMode |= VERT_DISTORT;
+				if (rand() % 4 == 0 && allowed_corruptions[CTYPE_LIGHTMAP].size())
+					lightMode = allowed_corruptions[CTYPE_LIGHTMAP][ rand() % allowed_corruptions[CTYPE_LIGHTMAP].size() ];
+				if (rand() % 2 == 0 && allowed_corruptions[CTYPE_TEXTURE].size())
+					ctexMode = allowed_corruptions[CTYPE_TEXTURE][ rand() % allowed_corruptions[CTYPE_TEXTURE].size() ];
+
 				vertScaleX = (float)(150 - (rand() % 126)) * 0.01f;
 				vertScaleY = vertScaleZ = vertScaleX;
 				if (rand() % 2) vertDistort = 4;
@@ -1900,13 +1963,13 @@ void printHelp()
 	system("cls");
 	cout << "\n                    Texture modes\n"
 		 << "-------------------------------------------------------\n"
-		 << "Write to maps:\n"
-		 << "     Textures are randomized and written into each BSP.\n"
+		 << "Write to map:\n"
+		 << "     Textures are randomized and written into each map.\n"
 		 << "     This wil produce the most random results.\n\n"
-		 << "Write to WAD:\n"
+		 << "Write to shared WAD:\n"
 		 << "     Textures from all randomized maps will be written\n"
 		 << "     into a single WAD. This option will use less disk\n"
-		 << "     space since textures are shared across maps.\n\n"
+		 << "     space when textures are shared across maps.\n\n"
 		 << "\n\n\n\n\n\n\n\n\n\n"
 		 << "1: Done\n"
 		 << "0: Next Page\n";
@@ -1951,13 +2014,10 @@ void printHelp()
 		<< "     distorted at random. Lightmaps and texture colors\n"
 		<< "     will be randomly shifted, inverted, barfed on, etc.\n\n"
 		<< "Use config settings:\n"
-		<< "     All maps will use the same corruption settings.\n"
-		<< "     Use this if you want to play an entire map series\n"
-		<< "     upside-down or something. Specify corruption\n"
-		<< "     settings in gsrand_config.txt\n\n"
-		<< "\n\n\n\n\n"
-		<< "WARNING: Map geometry randomization is buggy and may prevent\n"
-		<< "         you from finishing a map without cheats.\n\n"
+		<< "     Configure corruptions to be constant or to use a\n"
+		<< "     restricted set of corruptions. See gsrand_config.txt\n"
+		<< "     for more info.\n\n"
+		<< "\n\n\n\n\n\n\n\n"
 		<< "1: Done\n"
 		<< "0: Next Page\n";
 
@@ -2090,13 +2150,13 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system("cls"); // WINDOWS ONLY
-		cout << std::setw(80) << right << "version 3\n";
+		cout << std::setw(80) << right << "version 3.5 Bronze\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
 		cout << "Options:\n\n";
 		cout << " 1) Texture Mode : ";
-		if (texMode == TEX_MAP)            cout << "Write to maps\n";
-		else if (texMode == TEX_MASTERWAD) cout << "Write to WAD\n";
+		if (texMode == TEX_MAP)            cout << "Write to map\n";
+		else if (texMode == TEX_MASTERWAD) cout << "Write to shared WAD\n";
 		else if (texMode == TEX_NONE)      cout << "Do not change\n";
 
 		cout << " 2) Entity  Mode : ";

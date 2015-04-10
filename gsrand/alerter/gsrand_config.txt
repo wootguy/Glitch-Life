@@ -117,12 +117,12 @@ monster_skill_mode = 1
 //    scale = make the map bigger or smaller
 //    blend = Throw the map into a blender for a bit (unsafe for dedicated servers)
 //
-// These are the available lightmap corruptions:
-//    shift = Adjust the colors to look more like barf or candy.
+// These are the available lightmap corruptions (NOT combinable):
+//    weird = Adjust the colors to look more like barf or candy.
 //    disco = Randomize every pixel of light. Models will flash as they move.
 //    dark  = Make the map pitch black. Players will become bright light sources.
 //
-// These are the available texture corruptions:
+// These are the available texture corruptions (NOT combinable):
 //    flat  = Scale up textures so much that only 1 pixel colors an entire surface.
 //    shift = Randomly shift texture coordinates around.
 //    white = Replace every texture with pure white. It looks nice with the right lighting.
@@ -132,18 +132,22 @@ monster_skill_mode = 1
 //    invert = invert texture and lightmap colors.
 //    random = randomize texture colors (like pixelated candy barf).
 //
-// vertex_corruption_scale = how much to scale the map when using "scale" corruption.
-// vertex_corruption_blend = how much to shift vertices when using "blend" corruption.
+// corruption_scale = how much to scale the map when using "scale" corruption.
+// corruption_blend = how much to shift vertices when using "blend" corruption.
 //
 // You can use 3 values (X Y Z) for scale (e.g. vertex_corruption_scale = 1 1 2) 
 // but this will likely result in crashes and broken collision. Also, note that HL
 // has a 4096-unit map boundary, so values greater than 1 may not work properly.
+//
+// If corruption_mode is set to "constant", then the corruption settings below
+// will be used for every map. If corruption_mode is set to "random", then
+// the randomizer will apply random corruptions from the "corruptions" list.
+// "corruption_scale" and "corruption_blend" are ignored in "random" mode.
 
-vertex_corruption       = flip scale blend
-vertex_corruption_scale = 0.5
-vertex_corruption_blend = 4     // values bigger than 4 are unsafe - expect crashes.
-lightmap_corruption     = shift
-texture_corruption      = white
+corruption_mode  = random
+corruptions      = flip blend weird shift grey bw contrast invert
+corruption_scale = 0.5
+corruption_blend = 4     // values bigger than 4 are unsafe - expect crashes.
 
 // If print_rejects is set to "1", then any content that is rejected will be
 // shown in the console with a reason why it was rejected. This does not include

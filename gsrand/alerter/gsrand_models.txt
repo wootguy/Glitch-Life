@@ -32,12 +32,8 @@
 [BLACKLISTS_BEGIN]
 
 [anything] // unsafe to use for any kind of replacement
-models/doctor.mdl // problematic model (won't even load in the model viewer)
-
 // non-default models found with limited testing:
 // These models crash when used with custom_precache
-models/zombie_nights/zombie.mdl
-models/zombie_nights/zombiet.mdl // not sure why this one is picked up
 models/txas/servers.mdl
 models/snwcam.mdl
 

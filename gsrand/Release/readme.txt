@@ -119,6 +119,26 @@ It's not working :<
 
 ----------------------------- Changelog -----------------------------
 
+ version 3
+-----------
+
+New Features:
++ Added ear_rape_safety setting (for impulse 101)
+
+Fixes:
+- Fixed the "common wad" texture mode
+- Fixed memory usage spikes and leaks
+- Possibly fixed RNG's crash with texture modes
+- Fixed grapple not being provided with corruption modes
+- Fixed gsrand_ maps being included in map list
+- Timestamp map prefixes are lowercase now (fixes server issues)
+- Fixed spore ammo and impact noises not being randomized
+
+Other changes:
+- Real-time status updates when finding content
+- Removed "Write WAD for each map" texture mode
+
+
  version 2
 -----------
 

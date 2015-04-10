@@ -22,7 +22,7 @@ void print(const string& str)
 
 void backspace(int amount)
 {
-	if (amount <=0)
+	if (amount <= 0)
 		return;
 	string output;
 	for (int i = 0; i < amount; i++)
@@ -30,7 +30,20 @@ void backspace(int amount)
 
 	OutputDebugString((output).c_str());
     cout << output.c_str();
-	printlog.push_back(output);
+	if (printlog.size())
+	{
+		string& last_print = printlog[printlog.size()-1];
+		while (last_print.size() <= amount)
+		{
+			amount -= last_print.size();
+			printlog.pop_back();
+			if (!printlog.size())
+				return;
+			last_print = printlog[printlog.size()-1];
+		}
+		if (amount > 0)
+			last_print = last_print.substr(0, last_print.size()-amount);
+	}
 }
 
 uint64 getSystemTime()
