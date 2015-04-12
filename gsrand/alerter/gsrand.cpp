@@ -170,6 +170,43 @@ bool is_corruption_allowed(int ctype, int mode)
 	return false;
 }
 
+string get_corruption_title(int ctype, int mode)
+{
+	if (ctype == CTYPE_VERT)
+	{
+		switch(mode)
+		{
+			case VERT_DISTORT: return "blend";
+			case VERT_SCALE:   return "scale";
+			case VERT_FLIP:    return "flip";
+		}
+	}
+	if (ctype == CTYPE_LIGHTMAP)
+	{
+		switch(mode)
+		{
+			case LIGHT_DARK:    return "dark";
+			case LIGHT_DISCO:   return "disco";
+			case LIGHT_SHIFTED: return "weird";
+		}
+	}
+	if (ctype == CTYPE_TEXTURE)
+	{
+		switch(mode)
+		{
+			case CTEX_FLAT_COLOR: return "flat";
+			case CTEX_MISALIGN:   return "shift";
+			case CTEX_WHITE:      return "white";
+			case CTEX_GREY:		  return "grey";
+			case CTEX_BW:		  return "bw";
+			case CTEX_CONTRAST:   return "contrast";
+			case CTEX_INVERT:	  return "invert";
+			case CTEX_RANDOM:	  return "random";
+		}
+	}
+	return "???";
+}
+
 void readConfigFile()
 {
 	if (!fileExists("gsrand.cfg"))
@@ -419,7 +456,7 @@ void parse_settings_file()
 	for (int i = 0; i < CTYPES; i++)
 		allowed_corruptions[i].clear();
 
-	ifstream myfile(getWorkDir() + "gsrand_config.txt");
+	ifstream myfile("gsrand_config.txt");
 	if (myfile.is_open())
 	{
 		int parse_mode = PARSE_SETTINGS;
@@ -981,6 +1018,24 @@ bool createMOTD(string path, string mapname)
 			if (ctexMode == CTEX_INVERT) fout << "Invert colors\n";
 			if (ctexMode == CTEX_RANDOM) fout << "Random\n";
 		} 
+
+		if (corruptMode == CORRUPT_CONFIG)
+		{
+			fout << "    corruption_mode: ";
+			if (corruptSettingMode == CSETTING_CONSTANT) fout << "Constant\n";
+			if (corruptSettingMode == CSETTING_RANDOM) fout << "Random\n";
+			fout << "    corruptions: ";
+			for (uint i = 0; i < CTYPES; i++)
+				for (uint k = 0; k < allowed_corruptions[i].size(); k++)
+					fout << get_corruption_title(i, allowed_corruptions[i][k]) + " ";
+			fout << "\n";
+			if (corruptSettingMode == CSETTING_CONSTANT)
+			{
+				fout << "    corruption_scale: " << vertScaleX << ", " << vertScaleY << ", " << vertScaleZ;
+				fout << "    corruption_blend: " << vertDistort;
+			}
+
+		}
 	}
 
 
@@ -1048,7 +1103,7 @@ byte * loadTextureChunk(string filename, int& lump_len)
 
 BSP * loadBSP(string mapname, bool loadAll)
 {
-	string filename = getWorkDir() + "maps/" + mapname + ".bsp";
+	string filename = "maps/" + mapname + ".bsp";
 	if (!fileExists(filename))
 	{
 		err("file does not exist: " + filename);
@@ -1091,7 +1146,7 @@ BSP * loadBSP(string mapname, bool loadAll)
 
 void loadLumpBackup(BSP * map, int lump, string suffix)
 {
-	string filename = getWorkDir() + "maps/" + map->name + suffix;
+	string filename = "maps/" + map->name + suffix;
 	if (!fileExists(filename))
 	{
 		//println("Ent backup file does not exist: " + filename);
@@ -1118,7 +1173,7 @@ void loadLumpBackup(BSP * map, int lump, string suffix)
 
 void saveLumpBackup(BSP * map, int lump, string suffix)
 {
-	string filename = getWorkDir() + "maps/" + map->name + suffix;
+	string filename = "maps/" + map->name + suffix;
 	if (fileExists(filename))
 	{
 		//println("Entity backup file already exists.");
@@ -1293,7 +1348,7 @@ vector<string> create_res_list(Entity ** ents, string mapname)
 
 		if (!fileExists(name) && !fileExists("../valve/" + name) && !fileExists("../svencoop_downloads/" + name))
 		{
-			if (name.find(".wad") != string::npos && name.find("gsrand") == 0)
+			if (name.find(".wad") != string::npos && name.find("gsrand") != string::npos)
 				continue; // probably hasn't been generated yet
 			println("WARNING: Missing resource - '" + name + "'"); 
 			continue;
@@ -1445,12 +1500,12 @@ vector<Wad> wads;
 vector<string> maps;
 void find_user_content()
 {
-	string path = getWorkDir() + "maps/";
+	string path = "maps/";
 	maps = user_maps;
 
 	int missing = 0;
 	if (user_maps.empty())
-		maps = getDirFiles(getWorkDir() + "maps/","bsp");
+		maps = getDirFiles("maps/","bsp");
 	else
 	{
 		for (uint i = 0; i < maps.size(); ++i)
@@ -1814,7 +1869,7 @@ int randomize_maps()
 
 void undoEverything()
 {
-	string path = getWorkDir() + "maps/";
+	string path = "maps/";
 
 	int numUpdated = 0;
 	int numRemoved = 0;
@@ -1941,16 +1996,13 @@ void undoEverything()
 		println("Deleted " + str(numRemoved) + " CFG/RES/MOTD files.");
 
 	numRemoved = 0;
-	files = getDirFiles(getWorkDir(),"wad");
+	files = getDirFiles("","wad");
 	for (uint f = 0; f < files.size(); f++)
 	{
-		if (files[f].length() < 8)
-			continue;
-		string prefix = getSubStr(files[f],0,6);
-		if (matchStrCase(prefix,"gsrand"))
+		if (files[f].find("gsrand") != string::npos)
 		{
 			numRemoved++;
-			remove( string(getWorkDir() + files[f]).c_str() );
+			remove( string(files[f]).c_str() );
 		}
 	}
 
@@ -2250,14 +2302,15 @@ int main(int argc, char* argv[])
 			{
 				println("\nAll done!");
 
-				println("\nWhat do you want to do with the randomized maps?");
-				println("\n0) Nothing");
-				println("1) Copy them into a folder");
+				println("\nDo you want to share these maps?\n"
+						"The program can collect all the content needed to play them.");
+				println("\n0) No, leave me alone");
+				println("1) Copy everything into a folder");
 				bool have_7zip = fileExists("7za.exe");
 				if (have_7zip)
 				{
-					println("2) 7zip them with fast compression   (-mx1)");
-					println("3) 7zip them with normal compression (-mx5)");
+					println("2) 7zip everything with fast compression   (-mx1)");
+					println("3) 7zip everything with normal compression (-mx5)");
 					//println("3) Yes - Don't use any compression     (-mx0)");
 				}
 
@@ -2353,7 +2406,7 @@ int main(int argc, char* argv[])
 					if (fileExists(output_name))
 					{
 						println("\nThe archive was named '" + output_name + "' and is located here:");
-						println(getWorkDir() + output_name);
+						println(output_name);
 					}
 				}
 				else if (zip_action == 1) // just copy
@@ -2406,7 +2459,7 @@ int main(int argc, char* argv[])
 					if (dirExists(output_name))
 					{
 						println("\nThe folder was named '" + output_name + "' and is located here:");
-						println(getWorkDir() + output_name);
+						println(output_name);
 					}
 				}
 

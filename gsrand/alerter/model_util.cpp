@@ -198,11 +198,6 @@ void find_all_models(string modelPath, int& total_models)
 			}
 
 			int end_name = results[k].length() - 4; // skip .mdl
-			if (cpath.find("player/") == 0)
-			{
-				user_player_models.push_back(cpath + results[k].substr(0, end_name));
-				continue;
-			}
 			string name = getSubStr(results[k],0,results[k].length()-4);
 
 			// skip animation models
@@ -228,6 +223,10 @@ void find_all_models(string modelPath, int& total_models)
 			if (name.length() > 0)
 			{
 				ifstream fin (dirs[i] + results[k], ios::binary);
+
+				//
+				// Verify the model is valid
+				//
 
 				studiohdr_t mdlHead;
 				fin.read((char*)&mdlHead, sizeof(studiohdr_t));
@@ -318,6 +317,15 @@ void find_all_models(string modelPath, int& total_models)
 				{
 					if (printRejects)
 						println("More than 16 textures: " + cpath + results[k]);
+					continue;
+				}
+
+				// 
+				// Start figuring out where to put the model
+				//
+				if (cpath.find("player/") == 0)
+				{
+					user_player_models.push_back(cpath + results[k].substr(0, end_name));
 					continue;
 				}
 

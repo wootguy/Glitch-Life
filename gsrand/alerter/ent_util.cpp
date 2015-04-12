@@ -119,7 +119,7 @@ void ripent(BSP * map, Entity** entData, bool restore)
 		map->header.lump[lumpOrder[i]].nOffset = lumpOffsets[i];
 
 	
-	string filename = getWorkDir() + "maps/" + map->name + ".bsp";
+	string filename = "maps/" + map->name + ".bsp";
 
 	ofstream fout(filename, ios::out | ios::binary | ios::trunc);
 	fout.write((char*)&map->header, sizeof(BSPHEADER));
@@ -203,6 +203,7 @@ bool needsRipent(BSP * map, Entity** ents)
 int add_gsrand_ents(Entity ** ents)
 {
 	int idx = -1;
+	bool hasFog = false;
 	for (int i = 0; i < MAX_MAP_ENTITIES; i++)
 	{
 		if (ents[i] == NULL)
@@ -215,6 +216,9 @@ int add_gsrand_ents(Entity ** ents)
 		if (bypassHlsp && ents[i]->keyvalues.find("master") != ents[i]->keyvalues.end())
 			if (matchStr(cname, "trigger_once") && matchStr(ents[i]->keyvalues["master"], "alldead_ms"))
 				ents[i]->keyvalues.erase("master"); // bypass "kill all monsters" bullshit
+
+		if (matchStr(cname, "env_fog"))
+			hasFog = true;
 	}
 	if (idx < 0)
 		return 0;
@@ -235,6 +239,29 @@ int add_gsrand_ents(Entity ** ents)
 		ent->addKeyvalue("m_iszCVarToChange", "mp_disable_autoclimb");
 		ent->addKeyvalue("message", "0");
 		ent->addKeyvalue("targetname", "gsrand_cvars");
+	}
+
+	if (!hasFog && entMode != ENT_NONE && rand() % 3 == 0)
+	{
+		int dist = 256;
+		int range = 2048;
+		if (rand() % 3 == 0) // close range
+		{
+			if (rand() % 4 == 0) 
+			{
+				dist = 300; 
+				range = 304; // super close mega dense
+			}
+			else 
+			{
+				dist = 128;
+				range = 768; // kind of close
+			}
+		}
+		ents[idx++] = ent = new Entity("env_fog");
+		ent->addKeyvalue("rendercolor", str(rand() % 256) + " " + str(rand() % 256) + " " + str(rand() % 256) );
+		ent->addKeyvalue("iuser2", str(dist));
+		ent->addKeyvalue("iuser3", str(range));
 	}
 
 	bool should_effects = sndEffects == 2 || (sndEffects == 1 && (sndMode == SND_ALL || sndMode == SND_WORLD));
@@ -608,6 +635,27 @@ void do_entity_randomization(Entity** ents, string mapname)
 		    matchStr(cname, "env_beam"))
 		{
 			ents[i]->keyvalues["rendercolor"] = str(rand() % 256) + " " + str(rand() % 256) + " " + str(rand() % 256);
+		}
+
+		if (matchStr(cname, "env_fog") && rand() % 2)
+		{
+			int dist = 256;
+			int range = 2048;
+			if (rand() % 3 == 0) // close range
+			{
+				if (rand() % 4 == 0) 
+				{
+					dist = 300; 
+					range = 304; // super close mega dense
+				}
+				else 
+				{
+					dist = 128;
+					range = 768; // kind of close
+				}
+			}
+			ents[i]->keyvalues["iuser2"] = str(dist);
+			ents[i]->keyvalues["iuser3"] = str(range);
 		}
 
 		if (matchStr(cname, "env_funnel"))

@@ -25,7 +25,7 @@ Wad::~Wad(void)
 
 bool Wad::readInfo()
 {
-	string path = getWorkDir() + filename;
+	string path = filename;
 	const char * file = (path.c_str());
 
 	if (!fileExists(file))
@@ -119,7 +119,7 @@ WADTEX * Wad::readTexture( int dirIndex )
 
 WADTEX * Wad::readTexture( const string& texname )
 {
-	string path = getWorkDir() + filename;
+	string path = filename;
 	const char * file = (path.c_str());
 
 	ifstream fin(file, ifstream::in|ios::binary);

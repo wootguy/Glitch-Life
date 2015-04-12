@@ -260,12 +260,8 @@ vector<Wad> getWads()
 		vector<string> files = getDirFiles(wad_paths[k], "wad");
 		for (uint i = 0; i < files.size(); i++)
 		{
-			if (files[i].length() >= 6)
-			{
-				string prefix = getSubStr(files[i],0,6);
-				if (matchStrCase(prefix,"gsrand"))
-					continue; 
-			}
+			if (files[i].find("gsrand") != string::npos)
+				continue;
 			string wad = files[i];
 			bool is_default = false;
 			for (int d = 0; d < NUM_DEFAULT_WADS; d++)

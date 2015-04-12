@@ -61,7 +61,7 @@ static void init_default_monster_heights()
 
 static void parse_model_lists()
 {
-	ifstream myfile(getWorkDir() + "gsrand_models.txt");
+	ifstream myfile("gsrand_models.txt");
 	if (myfile.is_open())
 	{
 		vector<string> current_targets; // which classnames the models apply to

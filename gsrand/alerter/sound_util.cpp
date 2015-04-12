@@ -518,7 +518,7 @@ string constructSentence()
 
 void writeSentences(string mapName)
 {
-	string file2 = getWorkDir() + "maps/" + mapName + "_sentences.gsrand";
+	string file2 = "maps/" + mapName + "_sentences.gsrand";
 	res_list.insert("maps/" + mapName + "_sentences.gsrand");
 	ofstream fout;
 	fout.open (file2, ios::out | ios::trunc);
@@ -530,7 +530,7 @@ void writeSentences(string mapName)
 
 void formatSentences()
 {
-	string file = getWorkDir() + "maps/sentences.txt";
+	string file = "maps/sentences.txt";
 	vector<string> text;
 	string line;
 	ifstream myfile (file);
@@ -568,7 +568,7 @@ void formatSentences()
 	}
 	myfile.close();
 
-	string file2 = getWorkDir() + "maps/sentences2.txt";
+	string file2 = "maps/sentences2.txt";
 	ofstream fout;
 	println(file2);
 	fout.open (file2, ios::out | ios::trunc);
@@ -626,6 +626,15 @@ void do_ent_sounds(Entity** ents, string mapname)
 		{
 			string snd = ents[i]->keyvalues["message"];
 			ents[i]->keyvalues["message"] = get_random_sound();
+			
+			if (earRapeMode >= 1)
+			{
+				// no looping
+				ents[i]->keyvalues["spawnflags"] = str( atoi(ents[i]->keyvalues["spawnflags"].c_str()) | 32 );
+				ents[i]->keyvalues["playmode"] = "0";
+				ents[i]->keyvalues["volume"] = "5";
+			}
+			
 			if (rand() % 2)
 			{
 				bool looping_sound = (atoi(ents[i]->keyvalues["spawnflags"].c_str()) & 32) == 0; 
@@ -639,6 +648,7 @@ void do_ent_sounds(Entity** ents, string mapname)
 				} while(looping_sound != looping_preset);
 			}
 			res_list.insert("sound/" + ents[i]->keyvalues["message"]);
+
 			continue;
 		}
 
@@ -657,7 +667,19 @@ void do_ent_sounds(Entity** ents, string mapname)
 				}
 			}
 		}
+		
+		if (matchStr(cname, "func_rotating"))
+		{
+			if (earRapeMode >= 1)
+				ents[i]->keyvalues["volume"] = "5";
+		}
 
+		if (cname.find("func_plat") == 0)
+		{
+			if (earRapeMode >= 1)
+				ents[i]->keyvalues["volume"] = "0.5";
+		}
+		
 		bool should_effects = sndEffects == 2 || (sndEffects == 1 && (sndMode == SND_ALL || sndMode == SND_WORLD));
 		if (matchStr(cname, "env_sound") && should_effects)
 		{
