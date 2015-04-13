@@ -119,6 +119,24 @@ It's not working :<
 
 ----------------------------- Changelog -----------------------------
 
+ version 4
+-----------
+
+New Features:
++ Corruption settings reworked (see gsrand_config.txt)
++ More fog randomization (change densities and randomly add fog to maps)
++ ear_rape_safety stops looping and halves volume of some sounds
++ Rotating entities and trains have a higher minimum random speed
+
+Fixes:
+- Fixed model replacement crash: player model with T submodel used for p_weapon
+- Fixed model replacement crash: model with missing animation submodels used for p_weapon
+- Fixed invalid models being used for replacement (e.g. valve/models/doctor.mdl)
+- Fixed unicode characters in program path preventing gsrand.exe from finding files
+- Fixed WADs with "gsrand" in the name being used for randomization
+- Fixed custom prefixes being cutoff in shared WAD names
+
+
  version 3
 -----------
 

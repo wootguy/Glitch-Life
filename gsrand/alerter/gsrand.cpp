@@ -2202,7 +2202,7 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system("cls"); // WINDOWS ONLY
-		cout << std::setw(80) << right << "version 3.5 Bronze\n";
+		cout << std::setw(80) << right << "version 4\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
 		cout << "Options:\n\n";

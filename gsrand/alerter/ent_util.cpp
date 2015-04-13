@@ -821,7 +821,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			if (entMode == ENT_SUPER)
 			{
-				int randSpeed = (int)pow(2.0,(rand()%5+7));
+				int randSpeed = (int)pow(2.0,(rand()%4+8));
 				int randRot1 = (int)pow(2.0,rand()%10);
 				int randRot2 = (int)pow(2.0,rand()%10);
 				int randRot3 = (int)pow(2.0,rand()%10);
@@ -879,7 +879,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			if (entMode == ENT_SUPER)
 			{
-				int randSpeed = (int)pow(2.0,rand()%8+4);
+				int randSpeed = (int)pow(2.0,rand()%7+5);
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
 
 				int flags = atoi(ents[i]->keyvalues["spawnflags"].c_str());
@@ -894,7 +894,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			if (entMode == ENT_SUPER)
 			{
-				int randSpeed = (int)pow(2.0,rand()%6+4);
+				int randSpeed = (int)pow(2.0,rand()%6+5);
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
 
 				int flags = atoi(ents[i]->keyvalues["spawnflags"].c_str());
@@ -1009,7 +1009,6 @@ void do_entity_randomization(Entity** ents, string mapname)
 					ents[i]->keyvalues["classify"] = "14";
 					ents[i]->keyvalues["health"] = "50";
 				}
-				if (rand() % 2) 
 				
 				ents[i]->keyvalues["showhudinfo"] = "1";
 				ents[i]->keyvalues["repairable"] = "1";

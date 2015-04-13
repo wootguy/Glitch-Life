@@ -24,10 +24,10 @@ sentence_mode = 0
 enable_noclip     = 0   // let's you fly around and go through walls
 			// Press USE and JUMP keys together to activate
 
-enable_impulse101 = 1   // gives you all weapons and ammo
+enable_impulse101 = 0   // gives you all weapons and ammo
 			// Press USE and RELOAD keys together to activate
 
-enable_godmode    = 1   // makes you invincible
+enable_godmode    = 0   // makes you invincible
 			// Press USE and CROUCH keys together to activate
 
 // If ear_rape_safety is set to "1", then the weapon/ammo pickup noises will
