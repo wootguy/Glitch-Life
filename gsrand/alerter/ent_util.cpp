@@ -247,7 +247,7 @@ int add_gsrand_ents(Entity ** ents)
 		int range = 2048;
 		if (rand() % 3 == 0) // close range
 		{
-			if (rand() % 4 == 0) 
+			if (rand() % 10 == 0) 
 			{
 				dist = 300; 
 				range = 304; // super close mega dense
@@ -643,7 +643,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 			int range = 2048;
 			if (rand() % 3 == 0) // close range
 			{
-				if (rand() % 4 == 0) 
+				if (rand() % 10 == 0) 
 				{
 					dist = 300; 
 					range = 304; // super close mega dense
@@ -691,11 +691,12 @@ void do_entity_randomization(Entity** ents, string mapname)
 			int gibs = atoi(ents[i]->keyvalues["m_iGibs"].c_str());
 			float delay = atof(ents[i]->keyvalues["delay"].c_str());
 			float time = max(0.8f, gibs*delay);
-			float new_delay = 0.05f;
+			float new_delay = 0.2f;
 			int new_gibs = time / new_delay;
 			ents[i]->keyvalues["m_iGibs"] = str(new_gibs);
 			ents[i]->keyvalues["delay"] = str(new_delay);
 			ents[i]->keyvalues["m_flVelocity"] = str( max(900, atoi(ents[i]->keyvalues["m_flVelocity"].c_str())) );
+			// TODO: max gib lilfe
 			int r = rand() % 4;
 			if (r == 0) ents[i]->keyvalues["m_flVariance"] = "0.02";
 			else if (r == 1) ents[i]->keyvalues["m_flVariance"] = "1";

@@ -72,7 +72,9 @@ bool print_clip = false;
 bool print_face = false;
 bool print_before = false;
 
-// return true if also child flip
+// This function was a nightmare to implement and test. It still doesn't work right on some levels.
+// I recommend ripping this out and starting over with a better understanding of how BSP planes work
+// returns true if node contents should also be flipped
 bool do_plane_flip(BSPPLANE& p, int idx, bool is_clip)
 {
 	bool flip_contents = false; // flip BSP nodes in tree
@@ -751,7 +753,7 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 			string name = t->szName;
 			//println("OLD TEX " + str(i) + ": " + name);
 			if (t->szName[0] != '{' && !matchStr(name, "sky") && !matchStr(name, "xeno_14b") && 
-			    name.find("+") == string::npos && false) // TODO: Why do some textures cause a crash?
+			    name.find("+") == string::npos && false) // TODO: Why do some textures cause a crash (xeno_14b)?
 			{
 				continue;
 			}
@@ -769,7 +771,7 @@ void corrupt_map_textures(BSP * map, Entity ** ents)
 			}
 
 			int pal_offset = offset + sizeof(BSPMIPTEX) + sz + sz2 + sz3 + sz4 + 2;
-			for (int i = pal_offset; i < pal_offset + 256*3; i+=3) // don't replace transparent color (TODO: do it anyway in case mapper misuses tex)
+			for (int i = pal_offset; i < pal_offset + 256*3; i+=3)
 				convert_texture_color(*(COLOR3*)&textures[i]);
 		}
 	}

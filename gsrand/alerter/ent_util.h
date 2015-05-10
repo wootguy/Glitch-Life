@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include <string>
 
+// button values
 #define IN_ATTACK    1
 #define IN_JUMP      2
 #define IN_DUCK      4

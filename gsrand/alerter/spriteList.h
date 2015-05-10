@@ -1,4 +1,6 @@
 #include <string>
+// List of all default sprites
+// TODO: update this when SC 5.0 comes out
 
 using namespace std;
 

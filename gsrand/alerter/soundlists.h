@@ -1,6 +1,8 @@
 #pragma once
-// Wow why did I decide to hardcode all of this stuff in here.
-// Way to go making it a chore to add new sounds and whatnot
+// I think these are all the default sounds that come with SC 4.8
+// TODO: update this when SC 5.0 comes out and default sounds change.
+//       I don't think this was auto-generated...
+
 #include <string>
 using namespace std;
 

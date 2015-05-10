@@ -318,7 +318,14 @@ WADTEX * load_random_texture(vector<Wad>& wads)
 	for (uint i = 0; i < wads.size(); ++i)
 	{
 		if (r >= wads[i].header.nDir)
+		{
+			if (i == wads.size()-1)
+			{
+				// was gonna try to fix RNG's WAD problem here but meh
+				println("The number of textures was overestimated");
+			}
 			r -= wads[i].header.nDir;
+		}
 		else
 		{
 			WADDIRENTRY& de = wads[i].dirEntries[r];

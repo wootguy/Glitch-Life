@@ -32,15 +32,6 @@ extern vector<string> dont_replace; // shouldn't be replaced
 extern vector<string> weapon_types;
 extern height_hashmap default_monster_heights;
 
-// to regenerate:
-// run "mcache" command
-// copy output to tet file. Edit with NP++
-// find and replace regex ".+: " with "default_precache_models.push_back\(""
-// find and replace regex "\(.*$" with ""\);"
-// select all text, right click, set to lowercase
-// remove the entries that aren't actually models (e.g. "(!P)" or "maps/mapname.bsp")
-// remove doctor.mdl (seems to be a broken model in HL?)
-
 static void init_default_monster_heights()
 {
 	default_monster_heights["monster_headcrab"] = 24;
@@ -322,7 +313,7 @@ static void init_default_model_lists()
 	default_ammo_models["spore"]      = "spore"; // ????
 	default_ammo_models["sporeclip"]  = "spore_ammo"; // ????
 
-	// TODO: ACtually find the default models. None of these are right
+	// TODO: Actually find the default models. None of these are right. Well maybe they are idk.
 	default_item_models["airtank"] = "airtank";
 	default_item_models["antidote"] = "antidote";
 	default_item_models["armorvest"] = "armorvest";

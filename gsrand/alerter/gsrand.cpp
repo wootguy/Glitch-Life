@@ -1,5 +1,5 @@
-// alerter.cpp : Defines the entry point for the console application.
-//
+// this is where all the magic happens
+
 #include "gsrand.h"
 #include <sys/stat.h>
 #include <conio.h>
@@ -1622,6 +1622,7 @@ void find_user_content()
 		writeLog();
 }
 
+// This is where randomization begins
 string masterWadName;
 int randomize_maps()
 {

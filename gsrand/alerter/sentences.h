@@ -1,4 +1,5 @@
 #pragma once
+// Just a massive list of all the custom sentences you can use
 
 #define NUM_SENTENCES 1965
 static const char * sentences[NUM_SENTENCES] =

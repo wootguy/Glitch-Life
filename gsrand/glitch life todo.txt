@@ -3,7 +3,14 @@ glitch-life todo:
 GL_UPLOAD 16 error c1a0
 TEST: stadium3 monsters not renamed
 speedup res generation somehow?
-
+model replacement for random friendlies didnt work
+longjump module not randomized
+crashes from gibshooters (op4 boss)
+repariable breakables are just confusing/irritating
+black maps too likely? increase light brightness?
+some textures not BW in write to map mode? (looked like xeno_grapple)
+flip custom barnacle models so you can actually see them
+wads not saying "excluded X" when using content modes
 
 Nice-to-haves:
 

@@ -1,6 +1,7 @@
 #pragma once
 // this is auto-generated (thank god)
-// the commented out functions in main() make this
+// the commented out code in sound_util.cpp can make this
+// TODO: update this when SC 5.0 comes out and default sounds change
 
 #define NUM_MASTER_sound 1
 static const char * MASTER_sound[NUM_MASTER_sound] =
