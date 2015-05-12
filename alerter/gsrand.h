@@ -3,7 +3,6 @@
 #include "Globals.h"
 #include "Util.h"
 #include <iostream>
-//#include <windows.h>
 #include <fstream>
 #include <time.h>
 #include <math.h>
@@ -15,7 +14,9 @@
 #include "spriteList.h"
 #include "Wad.h"
 
-#ifndef _Longlong
+#if defined(WIN32) || defined(_WIN32)
+#include <windows.h>
+#else
 typedef long _Longlong;
 #endif
 
