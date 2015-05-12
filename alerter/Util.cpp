@@ -596,7 +596,7 @@ vector<string> getDirFiles( string path, string extension )
             continue;
         
         if(std::equal(extension.rbegin(), extension.rend(), name.rbegin()))
-            results.push_back(extension);
+            results.push_back(name);
     }
     
     closedir(dir);
@@ -661,8 +661,12 @@ vector<string> getSubdirs( string path )
         if(!entry)
             break;
         
-        if(entry->d_type == DT_DIR)
-            results.push_back(string(entry->d_name));
+        string name = string(entry->d_name);
+        
+        if(entry->d_type == DT_DIR &&
+           !matchStr(name, ".") &&
+           !matchStr(name, ".."))
+            results.push_back(name);
     }
     
     closedir(dir);
