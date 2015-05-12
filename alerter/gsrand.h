@@ -3,9 +3,10 @@
 #include "Globals.h"
 #include "Util.h"
 #include <iostream>
-#include <windows.h>
+//#include <windows.h>
 #include <fstream>
 #include <time.h>
+#include <math.h>
 #include "soundlists.h"
 #include "Entity.h"
 #include "sentences.h"
@@ -13,6 +14,10 @@
 #include "modelList.h"
 #include "spriteList.h"
 #include "Wad.h"
+
+#ifndef _Longlong
+typedef long _Longlong;
+#endif
 
 enum mdl_modes
 {
@@ -236,7 +241,7 @@ extern int total_map_models;
 extern string_hashmap random_monster_models;
 extern string_hashmap random_weapon_models;
 
-typedef tr1::unordered_map< string, vector<string> > list_hashmap;
+typedef std::unordered_map< string, vector<string> > list_hashmap;
 
 // lists of everything the program could find
 extern vector<string> user_sounds; 

@@ -1,3 +1,4 @@
+#include "gsrand.h"
 #include "Entity.h"
 #include <string>
 #include "Util.h"

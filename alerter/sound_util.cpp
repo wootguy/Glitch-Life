@@ -1,3 +1,4 @@
+#include <string.h>
 #include "sound_util.h"
 #include "ent_util.h"
 #include "gsrand.h"
@@ -49,7 +50,7 @@ void getAllSounds()
 					if (getSystemTime() - last_print_time > 1000*50)
 					{
 						backspace(last_print.size());
-						last_print = str(user_unique_sounds.size());
+						last_print = str((int)user_unique_sounds.size());
 						print(last_print);
 						last_print_time = getSystemTime();
 					}
@@ -59,7 +60,7 @@ void getAllSounds()
 	}
 
 	backspace(last_print.size());
-	last_print = str(user_unique_sounds.size());
+	last_print = str((int)user_unique_sounds.size());
 	print(last_print);
 
 	for (set<string>::iterator it = user_unique_sounds.begin(); it != user_unique_sounds.end(); it++)
@@ -97,7 +98,7 @@ void getAllSounds()
 		{
 			backspace(str(old_count).size());
 			int nFiltered = old_count - user_sounds.size();
-			print(str(user_sounds.size()) + " (" + str(nFiltered) + " excluded)");
+			print(str((int)user_sounds.size()) + " (" + str(nFiltered) + " excluded)");
 		}
 	}
 
@@ -205,7 +206,7 @@ void genSoundList()
 			codeDirs.push_back(formatted);
 			dirSizes.push_back(sounds.size());
 			string num_cnt = "NUM_" + formatted; 
-			println("#define " + num_cnt + " " + str(sounds.size()));
+			println("#define " + num_cnt + " " + str((int)sounds.size()));
 			println("static const char * " + formatted + "[" + num_cnt + "] =\n{");
 			for (uint s = 0; s < sounds.size(); s++)
 			{
@@ -215,7 +216,7 @@ void genSoundList()
 		}	
 	}
 
-	println("#define NUM_MASTER_DIRS " + str(validDirs.size()));
+	println("#define NUM_MASTER_DIRS " + str((int)validDirs.size()));
 	println("static const char ** masterList[NUM_MASTER_DIRS];");
 	println("static int           masterSize[NUM_MASTER_DIRS];");
 	println("static const char *  masterDirs[NUM_MASTER_DIRS];");
@@ -236,8 +237,8 @@ void genSoundList()
 	}
 	println("}\n");
 
-	println("found " + str(all.size()) + " files in " + str(dirs.size()) + " dirs");
-	println("Valid dirs: " + str(validDirs.size()));
+	println("found " + str((int)all.size()) + " files in " + str((int)dirs.size()) + " dirs");
+	println("Valid dirs: " + str((int)validDirs.size()));
 	writeLog();
 }
 
@@ -280,7 +281,7 @@ vector<sound> getReplacableSounds(bool printInfo)
 	for (int i = 0; i < NUM_MASTER_debris; i++)
 		writable.push_back(sound("debris/" + string(MASTER_debris[i])));
 
-	if (printInfo) println("Wrote global sounds: " + str(writable.size()));
+	if (printInfo) println("Wrote global sounds: " + str((int)writable.size()));
 
 	/*
 	for (int i = 0; i < WEAPON_TYPES; i++)
@@ -368,7 +369,7 @@ vector<sound> getReplacableSounds(bool printInfo)
 			writable.push_back(sound("doors/" + string(doorstops[i]) + ".wav"));
 	}
 
-	if (printInfo) println("Wrote door sounds: " + str(writable.size()));
+	if (printInfo) println("Wrote door sounds: " + str((int)writable.size()));
 	
 
 	/*
@@ -402,7 +403,7 @@ vector<sound> getReplacableSounds(bool printInfo)
 	if (printInfo) println("Wrote material sounds: " + str(writable.size()));
 	*/
 	
-	if (printInfo) println("Wrote ambient sounds: " + str(writable.size()));
+	if (printInfo) println("Wrote ambient sounds: " + str((int)writable.size()));
 
 	if (writable.size() > MAX_REPLACEMENTS)
 		numOverflow++;

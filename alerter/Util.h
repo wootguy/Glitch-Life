@@ -190,7 +190,7 @@ string relative_path_to_absolute(string start_dir, string path);
 
 void insert_unique(const vector<string>& insert, vector<string>& insert_into);
 
-vector<string> splitString( string str, char * delimitters);
+vector<string> splitString( string str, const char * delimitters);
 
 string trimSpaces(string str); // remove spaces at the beginning and end of the string
 

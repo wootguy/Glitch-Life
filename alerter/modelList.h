@@ -5,11 +5,9 @@
 #include <fstream>
 #include "Util.h"
 
-using namespace std;
-
-typedef tr1::unordered_map< string, vector<string> > list_hashmap;
-typedef tr1::unordered_map< string, string > string_hashmap;
-typedef tr1::unordered_map< string, int > height_hashmap;
+typedef std::unordered_map< string, vector<string> > list_hashmap;
+typedef std::unordered_map< string, string > string_hashmap;
+typedef std::unordered_map< string, int > height_hashmap;
 
 extern string_hashmap default_monster_models;
 extern string_hashmap default_friendly_monster_models;
@@ -87,8 +85,8 @@ static void parse_model_lists()
 					else
 					{
 						current_targets.clear();
-						int and = name.find("&");
-						if (and != string::npos)
+						int ampersand = name.find("&");
+						if (ampersand != string::npos)
 							current_targets = splitString(name, "&");
 						else
 							current_targets.push_back(name);

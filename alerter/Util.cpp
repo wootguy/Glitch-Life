@@ -4,11 +4,26 @@
 #include <fstream>
 #include <cmath>
 #include <iostream>
-#include <Windows.h>
 #include "Globals.h"
 #include <algorithm>
+#include <string.h>
+
+#if defined(WIN32) || defined(_WIN32)
+#include <Windows.h>
 #include <direct.h>
 #define GetCurrentDir _getcwd
+#else
+#include <time.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#define GetCurrentDir getcwd
+
+typedef char TCHAR;
+
+void OutputDebugString(const char *str) {}
+#endif
 
 vector<string> printlog;
 
@@ -48,6 +63,7 @@ void backspace(int amount)
 
 uint64 getSystemTime()
 {
+    #if defined(WIN32) || defined(_WIN32)
 	LARGE_INTEGER fq, li;
 	QueryPerformanceFrequency(&fq);
 	QueryPerformanceCounter(&li);
@@ -55,6 +71,9 @@ uint64 getSystemTime()
 	double freq = (double)fq.QuadPart;
 	double time = (double)li.QuadPart*1000.0*1000.0;
 	return (uint64)(time/freq);
+    #else
+    return time(NULL);
+    #endif
 }
 
 void err(const string& str)
@@ -531,11 +550,13 @@ int ceilPow2( int value )
 
 vector<string> getDirFiles( string path, string extension )
 {
+    vector<string> results;
+    
+    #if defined(WIN32) || defined(_WIN32)
 	path = path + "*." + extension;
-	winPath(path);
-	WIN32_FIND_DATA FindFileData;
-	HANDLE hFind;
-	vector<string> results;
+    winPath(path);
+    WIN32_FIND_DATA FindFileData;
+    HANDLE hFind;
 
 	//println("Target file is " + path);
 	hFind = FindFirstFile(path.c_str(), &FindFileData);
@@ -553,7 +574,35 @@ vector<string> getDirFiles( string path, string extension )
 
 		FindClose(hFind);
 	}
-	return results;
+    #else
+    DIR *dir = opendir(path.c_str());
+    
+    if(!dir)
+        return results;
+    
+    while(true)
+    {
+        dirent *entry = readdir(dir);
+        
+        if(!entry)
+            break;
+        
+        if(entry->d_type == DT_DIR)
+            continue;
+        
+        string name = string(entry->d_name);
+        
+        if(extension.size() > name.size())
+            continue;
+        
+        if(std::equal(extension.rbegin(), extension.rend(), name.rbegin()))
+            results.push_back(extension);
+    }
+    
+    closedir(dir);
+    #endif
+    
+    return results;
 }
 
 void winPath( string& path )
@@ -567,11 +616,13 @@ void winPath( string& path )
 
 vector<string> getSubdirs( string path )
 {
-	path = path + "*";
-	winPath(path);
-	WIN32_FIND_DATA FindFileData;
-	HANDLE hFind;
 	vector<string> results;
+    
+    #if defined(WIN32) || defined(_WIN32)
+    path = path + "*";
+    winPath(path);
+    WIN32_FIND_DATA FindFileData;
+    HANDLE hFind;
 
 	//println("Target file is " + path);
 	hFind = FindFirstFile(path.c_str(), &FindFileData);
@@ -597,7 +648,27 @@ vector<string> getSubdirs( string path )
 
 		FindClose(hFind);
 	}
-	return results;
+    #else
+    DIR *dir = opendir(path.c_str());
+    
+    if(!dir)
+        return results;
+    
+    while(true)
+    {
+        dirent *entry = readdir(dir);
+        
+        if(!entry)
+            break;
+        
+        if(entry->d_type == DT_DIR)
+            results.push_back(string(entry->d_name));
+    }
+    
+    closedir(dir);
+    #endif
+	
+    return results;
 }
 
 char * loadFile( string file )
@@ -621,13 +692,20 @@ char * loadFile( string file )
 
 DateTime DateTime::now()
 {
+    #if defined(WIN32) || defined(_WIN32)
 	SYSTEMTIME t;
 	GetLocalTime(&t);
 	return DateTime(t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond);
+    #else
+    time_t now = time(NULL);
+    tm *data = localtime(&now);
+    return DateTime(data->tm_year, data->tm_mon, data->tm_mday, data->tm_hour, data->tm_min, data->tm_sec);
+    #endif
 }
 
 string DateTime::str()
 {
+    #if defined(WIN32) || defined(_WIN32)
 	TIME_ZONE_INFORMATION tz;
 	GetTimeZoneInformation(&tz);
 	string zone = ::str(-tz.Bias / 60);
@@ -645,10 +723,27 @@ string DateTime::str()
 		suffix = "PM";
 	}
 	return ::str(year) + "/" + ::str(month) + "/" + ::str(day) + " " + ::str(s_hour) + ":" + s_min + " " + suffix + " " + zone;
+    #else
+    char buffer[256];
+    time_t now = time(NULL);
+    tm *data = localtime(&now);
+    data->tm_year = year;
+    data->tm_mon = month;
+    data->tm_mday = day;
+    data->tm_hour = hour;
+    data->tm_min = minute;
+    data->tm_sec = second;
+    
+    //YY/MM/DD HH:MM SS ZZZZ
+    strftime(buffer, 256, "%Y/%m/%d %I:%M %p (UTC %z)", data);
+    
+    return string(buffer);
+    #endif
 }
 
 string DateTime::compact_str()
 {
+    #if defined(WIN32) || defined(_WIN32)
 	string s_min = minute < 10 ? ("0" + ::str(minute)) : ::str(minute);
 	string s_hour = hour < 10 ? ("0" + ::str(hour)) : ::str(hour);
 	string s_day = day < 10 ? ("0" + ::str(day)) : ::str(day);
@@ -656,6 +751,22 @@ string DateTime::compact_str()
 	string s_year = year < 10 ? ("0" + ::str(year % 100)) : ::str(year % 100);
 
 	return s_year + s_month + s_day + s_hour + s_min;
+    #else
+    char buffer[256];
+    time_t now = time(NULL);
+    tm *data = localtime(&now);
+    data->tm_year = year;
+    data->tm_mon = month;
+    data->tm_mday = day;
+    data->tm_hour = hour;
+    data->tm_min = minute;
+    data->tm_sec = second;
+    
+    //YY/MM/DD HH:MM SS ZZZZ
+    strftime(buffer, 256, "%Y/%m/%d %I:%M %p (UTC %z)", data);
+    
+    return string(buffer);
+    #endif
 }
 
 void recurseSubdirs(string path, vector<string>& dirs)
@@ -747,7 +858,7 @@ string trimSpaces(string s)
 	return s;
 }
 
-vector<string> splitString( string str, char * delimitters )
+vector<string> splitString( string str, const char * delimitters )
 {
 	vector<string> split;
 	if (str.size() == 0)
@@ -765,6 +876,7 @@ vector<string> splitString( string str, char * delimitters )
 
 string getFilename(string filename)
 {
+    #if defined(WIN32) || defined(_WIN32)
 	vector<string> components;
 	string old_filename = filename;
 	std::replace( filename.begin(), filename.end(), '/', '\\'); // windows slashes required
@@ -803,14 +915,23 @@ string getFilename(string filename)
 	}
 
     return result;
+    #else
+    //shouldn't do anything on *nix, if I understood the intention of this function correctly
+    return filename;
+    #endif
 }
 
 bool dirExists(const string& path)
 {
+    #if defined(WIN32) || defined(_WIN32)
 	DWORD dwAttrib = GetFileAttributesA(path.c_str());
 
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES && 
 			(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+    #else
+    struct stat data;
+    return stat(path.c_str(), &data) == 0 && S_ISDIR(data.st_mode);
+    #endif
 }
 
 string base36(int num)
