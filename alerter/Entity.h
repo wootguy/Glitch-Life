@@ -2,7 +2,7 @@
 #include "Keyvalue.h"
 #include <unordered_map>
 
-typedef std::tr1::unordered_map< std::string, std::string > hashmap;
+typedef std::unordered_map< std::string, std::string > hashmap;
 
 class Entity
 {

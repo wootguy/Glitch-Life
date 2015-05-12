@@ -56,7 +56,7 @@ void ripent(BSP * map, Entity** entData, bool restore)
 	}
 	else
 	{
-		if (!prefixMode != PREFIX_NONE)
+		if (prefixMode == PREFIX_NONE)
 			saveLumpBackup(map, LUMP_ENTITIES, ".entbackup");			
 	}
 
@@ -411,7 +411,7 @@ Entity ** getMapEnts(BSP * map, bool printInfo, int& numEnts)
 				continue;
 
 			if (printInfo)
-				println(str(lineNum) + ": End of entity. " + str(ent->keyvalues.size()) + " keys. Class: " + ent->keyvalues["classname"]);
+				println(str(lineNum) + ": End of entity. " + str((int)ent->keyvalues.size()) + " keys. Class: " + ent->keyvalues["classname"]);
 			//ents.push_back(ent);
 			ents[idx++] = ent;
 			ent = NULL;

@@ -1,3 +1,4 @@
+#include <string.h>
 #include "bsp_util.h"
 #include "gsrand.h"
 
@@ -128,7 +129,7 @@ bool do_plane_flip(BSPPLANE& p, int idx, bool is_clip)
 	{
 		// do nothing, x isn't affected
 	}
-	else if (p.vNormal.x > 0 && p.vNormal.z <= 0 ||                     // + ? -    + ? 0
+	else if ((p.vNormal.x > 0 && p.vNormal.z <= 0) ||                     // + ? -    + ? 0
 		(p.vNormal.x < 0 && p.vNormal.y < 0 && p.vNormal.z == 0))       // - - 0
 	{
 		p.vNormal.y *= -1;
