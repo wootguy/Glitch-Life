@@ -12,6 +12,6 @@ public:
 	Keyvalue(void);
 	~Keyvalue(void);
 
-	vec3 Keyvalue::getVector();
+	vec3 getVector();
 };
 
