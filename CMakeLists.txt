@@ -5,8 +5,12 @@ if(MSVC)
     if(NOT MSVC_VERSION GREATER 1600) #MSVC 10
         message(FATAL "Visual Studio 10 or greater is required")
     endif()
-else()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wno-unused")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+    set(CMAKE_CXX_FLAGS_RELEASE "-Os")
+else()
+    message(WARNING "Unknown compiler, no flags set")
 endif()
 
 include_directories(alerter)
