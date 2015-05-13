@@ -1,0 +1,64 @@
+ version 4
+-----------
+
+New Features:
++ Corruption settings reworked (see gsrand_config.txt)
++ More fog randomization (change densities and randomly add fog to maps)
++ ear_rape_safety stops looping and halves volume of some sounds
++ Rotating entities and trains have a higher minimum random speed
+
+Fixes:
+- Fixed model replacement crash: player model with T submodel used for p_weapon
+- Fixed model replacement crash: model with missing animation submodels used for p_weapon
+- Fixed invalid models being used for replacement (e.g. valve/models/doctor.mdl)
+- Fixed unicode characters in program path preventing gsrand.exe from finding files
+- Fixed WADs with "gsrand" in the name being used for randomization
+- Fixed custom prefixes being cutoff in shared WAD names
+
+
+ version 3
+-----------
+
+New Features:
++ Added ear_rape_safety setting (for impulse 101)
+
+Fixes:
+- Fixed the "common wad" texture mode
+- Fixed memory usage spikes and leaks
+- Possibly fixed RNG's crash with texture modes
+- Fixed grapple not being provided with corruption modes
+- Fixed gsrand_ maps being included in map list
+- Timestamp map prefixes are lowercase now (fixes server issues)
+- Fixed spore ammo and impact noises not being randomized
+
+Other changes:
+- Real-time status updates when finding content
+- Removed "Write WAD for each map" texture mode
+
+
+ version 2
+-----------
+
+New Features:
++ Model randomization finished (unstable)
++ Sprite randomization
++ Skybox randomization
++ New entity randomizations
++ BSP corruptions (geometry + lighting + textures)
++ Sound effect randomization (reverb, pitch, etc.)
++ BSP model randomization (off by default)
++ Skill file generation (weapon/monster damage modifiers)
++ MOTD file generation (Helpful tips for new players)
++ RES file generation (for server hosters)
++ Non-default content is usable
++ Textures embedded in maps are usable (yay porn)
++ Cheats via entities (no restrictions!)
++ Grapple weapon can attach to most walls
++ Configuration file added for advanced settings and map selection
++ Custom and timestamp map prefixes supported
++ Randomizations can be zipped if 7za.exe is present
++ HLSP "Kill all monsters" restriction is bypassed
+
+Fixes:
+- Map prefixes work properly now
+- Visual C++ Runtime no longer required
