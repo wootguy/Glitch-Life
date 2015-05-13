@@ -1,10 +1,11 @@
+#include <string.h>
 #include "tex_util.h"
 #include "gsrand.h"
 #include "bsp_util.h"
 
 void find_all_skies(string skyPath)
 {
-	string last_print = str(user_skies.size());
+	string last_print = str((int)user_skies.size());
 
 	user_skies.clear();
 
@@ -47,7 +48,7 @@ void find_all_skies(string skyPath)
 			{
 				user_skies.push_back(sky_name);	
 				backspace(last_print.size());
-				last_print = str(user_skies.size());
+				last_print = str((int)user_skies.size());
 				print(last_print);
 			}
 			else if (printRejects)
@@ -76,7 +77,7 @@ void get_all_skies()
 	{
 		backspace(str(old_sz).size());
 		int nfiltered = old_sz - user_skies.size();
-		print(str(user_skies.size()) + " (" + str(nfiltered) + " excluded)");
+		print(str((int)user_skies.size()) + " (" + str(nfiltered) + " excluded)");
 	}
 	println("");
 
@@ -218,7 +219,11 @@ void create_tex_embed_wad(vector<Wad>& wads)
 			entry.bCompression = false;
 			entry.nDummy = 0;
 			for (int k = 0; k < MAXTEXTURENAME; k++)
+			{
+				if(tex_names[i].size() >= k)
+					break;
 				entry.szName[k] = tex_names[i][k];
+			}
 			offset += tex_sizes[i] + sizeof(BSPMIPTEX);
 
 			fout.write ((char*)&entry, sizeof(WADDIRENTRY));
@@ -270,8 +275,8 @@ vector<Wad> getWads()
 				if (matchStr(wad, name))
 					is_default = true;
 			}
-			if (is_default && contentMode == CONTENT_CUSTOM || 
-				!is_default && contentMode == CONTENT_DEFAULT)
+			if ((is_default && contentMode == CONTENT_CUSTOM) || 
+				(!is_default && contentMode == CONTENT_DEFAULT))
 				continue;
 
 			if (user_unique_wads.find(wad) == user_unique_wads.end())
@@ -282,7 +287,7 @@ vector<Wad> getWads()
 				{
 					wads.push_back(w);
 					backspace(last_print.size());
-					last_print = str(wads.size());
+					last_print = str((int)wads.size());
 					print(last_print);
 				}
 				else if (printRejects)
@@ -296,7 +301,7 @@ vector<Wad> getWads()
 	}
 
 	backspace(last_print.size());
-	last_print = str(wads.size());
+	last_print = str((int)wads.size());
 	println(last_print);
 
 	return wads;
@@ -360,7 +365,7 @@ WADTEX ** loadRandomTextures(vector<string> wadTextures, vector<Wad>& wads)
 	if (wadTextures.size() > 0)
 	{
 		if (texMode == TEX_MASTERWAD)
-			println("Loading " + str(wadTextures.size()) + " random textures...");
+			println("Loading " + str((int)wadTextures.size()) + " random textures...");
 
 		int grapple_id = 0;
 		WADTEX ** newTex = new WADTEX*[wadTextures.size()];
@@ -476,14 +481,14 @@ void writeWad(vector<string>& wadTextures, vector<Wad>& wads, string mapname)
 			if (getSystemTime() - last_print_time > 1000*50)
 			{
 				backspace(last_print.size());
-				last_print = str(i) + " / " + str(wadTextures.size());
+				last_print = str(i) + " / " + str((int)wadTextures.size());
 				print(last_print);
 				last_print_time = getSystemTime();
 			}
 		}
 
 		backspace(last_print.size());
-		last_print = str(wadTextures.size()) + " / " + str(wadTextures.size());
+		last_print = str((int)wadTextures.size()) + " / " + str((int)wadTextures.size());
 		print(last_print);
 
 		int offset = 12;
@@ -709,7 +714,7 @@ vector<string> unEmbedAllTextures(BSP * map, int& grapple_id, int& global_id)
 				gname = "xeno_grapple" + base36(grapple_id++);
 				if (base36(grapple_id).length() > 3)
 				{
-					println("Too many textures to grapple! " + grapple_id);
+					println("Too many textures to grapple! " + str(grapple_id));
 					grapple_id = 0;
 				}
 
@@ -894,7 +899,7 @@ void embedAllTextures(BSP * map, Entity ** ents)
 			string gname = "xeno_grapple" + str(grapple_id++);
 			if (grapple_id > 999)
 			{
-				println("Too many textures! " + grapple_id);
+				println("Too many textures! " + str(grapple_id));
 				grapple_id -= 1000;
 			}
 			memcpy(t->szName, gname.c_str(), gname.length());

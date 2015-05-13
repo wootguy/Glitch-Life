@@ -2,7 +2,6 @@
 
 #include "gsrand.h"
 #include <sys/stat.h>
-#include <conio.h>
 #include <iomanip>
 #include <algorithm>
 #include "sound_util.h"
@@ -10,6 +9,33 @@
 #include "tex_util.h"
 #include "ent_util.h"
 #include "bsp_util.h"
+
+#if defined(WIN32) || defined(_WIN32)
+#include <conio.h>
+#define CLEAR_COMMAND "cls"
+#else
+#include <termios.h>
+#define CLEAR_COMMAND "clear"
+
+char _getch()
+{
+	termios old, unbuffered;
+	char result;
+	tcgetattr(0, &old);
+	
+	unbuffered = old;
+	unbuffered.c_lflag &= ~ICANON;
+	unbuffered.c_lflag &= ~ECHO;
+	
+	tcsetattr(0, TCSANOW, &unbuffered);
+	
+	result = getchar();
+	
+	tcsetattr(0, TCSANOW, &old);
+	
+	return result;
+}
+#endif
 
 bool verbose = false;
 bool superRandom = false;
@@ -360,8 +386,8 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 					break;
 				}
 			}
-			if (match && contentMode == CONTENT_DEFAULT ||
-				!match && contentMode == CONTENT_CUSTOM)
+			if ((match && contentMode == CONTENT_DEFAULT) ||
+				(!match && contentMode == CONTENT_CUSTOM))
 				filtered.push_back(unfiltered[i]);		
 		}
 		unfiltered = filtered;
@@ -406,7 +432,18 @@ void init_default_content()
 	
 	for (uint d = 0; d < NUM_MASTER_DIRS; ++d)
 		for (uint s = 0; s < masterSize[d]; ++s)
+		{
+			if(masterDirs[d] == NULL)
+				continue;
+			
+			if(masterList[d] == NULL)
+				continue;
+			
+			if(masterList[d][s] == NULL)
+				continue;
+			
 			default_content.push_back(string("sound/") + masterDirs[d] + string("/") + masterList[d][s]);
+		}
 	default_content.push_back("sound/thunder.wav"); // the only default sound not in a folder
 
 	for (uint s = 0; s < NUM_MODEL_V; ++s)
@@ -951,7 +988,7 @@ bool createMOTD(string path, string mapname)
 		fout << "    - Press the USE and JUMP keys together to activate noclip.\n";
 	if (cheatImpulse)
 		fout << "    - Press the USE and RELOAD keys together for all weapons and ammo.\n";
-	if (grapple_mode == GRAPPLE_HOOK_ALWAYS || entMode == ENT_SUPER && grapple_mode == GRAPPLE_HOOK)
+	if ((grapple_mode == GRAPPLE_HOOK_ALWAYS) || (entMode == ENT_SUPER && grapple_mode == GRAPPLE_HOOK))
 		fout << "    - You can use the barnacle weapon to latch on to walls and swing around like spiderman.\n";
 	fout << "\n";
 
@@ -1652,7 +1689,7 @@ int randomize_maps()
 
 	int idx = 0;
 
-	system("cls");
+	system(CLEAR_COMMAND);
 
 	every_random_replacement.clear();
 	super_res_list.clear();
@@ -1940,7 +1977,7 @@ void undoEverything()
 		remove( string(path + files[f]).c_str() );
 
 	if (files.size() > 0)
-		println("Deleted " + str(files.size()) + " GSRAND files");
+		println("Deleted " + str((int)files.size()) + " GSRAND files");
 
 	numUpdated = 0;
 	numRemoved = 0;
@@ -2013,7 +2050,7 @@ void undoEverything()
 
 void printHelp()
 {
-	system("cls");
+	system(CLEAR_COMMAND);
 	cout << "\n                    Texture modes\n"
 		 << "-------------------------------------------------------\n"
 		 << "Write to map:\n"
@@ -2034,7 +2071,7 @@ void printHelp()
 		if (choice == '0') break;
 	}
 
-	system("cls");
+	system(CLEAR_COMMAND);
 	cout << "\n                    Entity modes\n"
 		<< "-------------------------------------------------------\n"
 		<< "Super random:\n"
@@ -2059,7 +2096,7 @@ void printHelp()
 		if (choice == '0') break;
 	}
 
-	system("cls");
+	system(CLEAR_COMMAND);
 	cout << "\n                  Corruption modes\n"
 		<< "-------------------------------------------------------\n"
 		<< "Super random:\n"
@@ -2081,7 +2118,7 @@ void printHelp()
 		if (choice == '0') break;
 	}
 
-	system("cls");
+	system(CLEAR_COMMAND);
 	cout << "\n                     Model modes\n"
 		<< "-------------------------------------------------------\n"
 		<< "Super random:\n"
@@ -2104,7 +2141,7 @@ void printHelp()
 		if (choice == '0') break;
 	}
 
-	system("cls");
+	system(CLEAR_COMMAND);
 	cout << "\n                     Sound modes\n"
 		<< "-------------------------------------------------------\n"
 		<< "Everything:\n"
@@ -2128,7 +2165,7 @@ void printHelp()
 		if (choice == '0') break;
 	}
 
-	system("cls");
+	system(CLEAR_COMMAND);
 	cout << "\n                    Content modes\n"
 		<< "-------------------------------------------------------\n"
 		<< "Everything:\n"
@@ -2156,7 +2193,7 @@ void printHelp()
 		if (choice == '0') break;
 	}
 
-	system("cls");
+	system(CLEAR_COMMAND);
 	cout << "\n                      Map prefix\n"
 		<< "-------------------------------------------------------\n"
 		<< "No Prefix:\n"
@@ -2202,7 +2239,7 @@ int main(int argc, char* argv[])
 
 	while (true)
 	{
-		system("cls"); // WINDOWS ONLY
+		system(CLEAR_COMMAND); // WINDOWS ONLY
 		cout << std::setw(80) << right << "version 4\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
@@ -2295,7 +2332,7 @@ int main(int argc, char* argv[])
 		}
 		else if (choice == '8')
 		{
-			system("cls"); // WINDOWS ONLY
+			system(CLEAR_COMMAND); // WINDOWS ONLY
 			initLists();
 
 			bool should_pause = true;
@@ -2332,7 +2369,7 @@ int main(int argc, char* argv[])
 					
 				if (zip_action != 0)
 				{
-					println("\n\nBrace yourself. There are " + str(super_res_list.size()) + " files to process.\n");
+					println("\n\nBrace yourself. There are " + str((int)super_res_list.size()) + " files to process.\n");
 					if (zip_action > 1 && dirExists("..\\svencoop_downloads"))
 						println("\nNote: Content from 'svencoop_downloads' may be copied to your 'svencoop' folder");
 					system("pause");
@@ -2476,7 +2513,7 @@ int main(int argc, char* argv[])
 		}
 		else if (choice == '9')
 		{
-			system("cls"); // WINDOWS ONLY
+			system(CLEAR_COMMAND); // WINDOWS ONLY
 			undoEverything();
 			print("\nDone. ");
 			writeLog();

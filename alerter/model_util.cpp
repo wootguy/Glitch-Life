@@ -2,6 +2,7 @@
 #include "ent_util.h"
 #include "gsrand.h"
 #include <set>
+#include <algorithm>
 #include "studio.h"
 
 //
@@ -143,8 +144,8 @@ void filter_default_model_content(vector<string>& unfiltered)
 					break;
 				}
 			}
-			if (match && contentMode == CONTENT_DEFAULT ||
-				!match && contentMode == CONTENT_CUSTOM)
+			if ((match && contentMode == CONTENT_DEFAULT) ||
+				(!match && contentMode == CONTENT_CUSTOM))
 				filtered.push_back(unfiltered[i]);		
 		}
 		unfiltered = filtered;
@@ -1053,7 +1054,8 @@ string get_random_replacement(string model, vector<string>& replaced, vector<str
 	{
 		do
 		{
-			replacement = random_model_replace(model, string_hashmap());
+			string_hashmap unused;
+			replacement = random_model_replace(model, unused);
 		} while(replacement.find_first_of(" ") != string::npos);
 	}
 	else
@@ -1307,7 +1309,7 @@ set<string> writeGMR(string new_gmr_path, string old_gmr_path, string_hashmap& e
 	myfile.close();
 
 	if (replaced.size() > 255)
-		print("TOO MANY MODELS: " + str(replaced.size()) + ". ");
+		print("TOO MANY MODELS: " + str((int)replaced.size()) + ". ");
 
 	return models_used_as_replacements;
 }
@@ -1378,7 +1380,7 @@ string replace_entity_model(Entity * ent, string model_key, int model_type, int&
 	do
 	{
 		if (mdlMode == MDL_NONE || !potential_additions)
-			return false;
+			return "";
 		if (mdlMode == MDL_TYPED)
 			ent->keyvalues[model_key] = "models/" + get_random_model(model_type) + ".mdl";
 		else
@@ -1420,7 +1422,7 @@ string replace_entity_sprite(Entity * ent, string model_key, int sprite_type, in
 	}
 
 	if (mdlMode == MDL_NONE || !potential_additions)
-		return false;
+		return "";
 	if (mdlMode == MDL_TYPED)
 		ent->keyvalues[model_key] = "sprites/" + get_random_sprite(sprite_type) + ".spr";
 	else
@@ -1573,7 +1575,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 	// these are always replaced by GMR
 	if (replace_level <= 1)
 	{
-		for (string_hashmap::iterator it = ent_models.begin(); it != ent_models.end(); ++it)
+		for (string_hashmap::iterator it = ent_models.begin(); it != ent_models.end();)
 		{
 			string cname = it->second;
 			it->second = "";
@@ -1610,7 +1612,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 			{
 				if (matchStr(cname, "monster_kingpin") || matchStr(cname, "monster_tentacle"))
 				{
-					ent_models.erase(it--);
+					ent_models.erase(it++);
 					continue; // replacing would cause a crash
 				}
 				else if (matchStr(cname, "monster_apache") || matchStr(cname, "monster_sentry"))
@@ -1698,15 +1700,17 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 			else
 			{
 				// not a recognized class
-				ent_models.erase(it--);
+				ent_models.erase(it++);
 				continue;
 			}
 			if (!it->second.length())
 			{
 				println("Couldn't replace model for " + cname);
-				ent_models.erase(it--);
+				ent_models.erase(it++);
 				continue;
 			}
+			
+			it++;
 		}
 	}
 	if (replace_level > 1)
