@@ -219,7 +219,11 @@ void create_tex_embed_wad(vector<Wad>& wads)
 			entry.bCompression = false;
 			entry.nDummy = 0;
 			for (int k = 0; k < MAXTEXTURENAME; k++)
+			{
+				if(tex_names[i].size() >= k)
+					break;
 				entry.szName[k] = tex_names[i][k];
+			}
 			offset += tex_sizes[i] + sizeof(BSPMIPTEX);
 
 			fout.write ((char*)&entry, sizeof(WADDIRENTRY));
