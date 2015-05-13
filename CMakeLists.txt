@@ -3,7 +3,7 @@ project(glitch-life)
 
 if(MSVC)
     if(NOT MSVC_VERSION GREATER 1600) #MSVC 10
-        message(FATAL "Visual Studio 10 or greater is required")
+        message(FATAL_ERROR "Visual Studio 10 or greater is required")
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wno-unused")
