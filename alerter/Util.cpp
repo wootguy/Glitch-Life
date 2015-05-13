@@ -738,7 +738,6 @@ string DateTime::str()
     data->tm_min = minute;
     data->tm_sec = second;
     
-    //YY/MM/DD HH:MM SS ZZZZ
     strftime(buffer, 256, "%Y/%m/%d %I:%M %p (UTC %z)", data);
     
     return string(buffer);
@@ -766,8 +765,7 @@ string DateTime::compact_str()
     data->tm_min = minute;
     data->tm_sec = second;
     
-    //YY/MM/DD HH:MM SS ZZZZ
-    strftime(buffer, 256, "%Y/%m/%d %I:%M %p (UTC %z)", data);
+    strftime(buffer, 256, "%y%m%d%H%M", data);
     
     return string(buffer);
     #endif
