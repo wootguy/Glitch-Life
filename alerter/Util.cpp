@@ -47,7 +47,7 @@ void backspace(int amount)
     cout << output.c_str();
 	if (printlog.size())
 	{
-		string& last_print = printlog[printlog.size()-1];
+		string last_print = printlog[printlog.size()-1];
 		while (last_print.size() <= amount)
 		{
 			amount -= last_print.size();
