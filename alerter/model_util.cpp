@@ -1575,7 +1575,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 	// these are always replaced by GMR
 	if (replace_level <= 1)
 	{
-		for (string_hashmap::iterator it = ent_models.begin(); it != ent_models.end(); ++it)
+		for (string_hashmap::iterator it = ent_models.begin(); it != ent_models.end();)
 		{
 			string cname = it->second;
 			it->second = "";
@@ -1612,7 +1612,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 			{
 				if (matchStr(cname, "monster_kingpin") || matchStr(cname, "monster_tentacle"))
 				{
-					ent_models.erase(it);
+					ent_models.erase(it++);
 					continue; // replacing would cause a crash
 				}
 				else if (matchStr(cname, "monster_apache") || matchStr(cname, "monster_sentry"))
@@ -1700,15 +1700,17 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 			else
 			{
 				// not a recognized class
-				ent_models.erase(it);
+				ent_models.erase(it++);
 				continue;
 			}
 			if (!it->second.length())
 			{
 				println("Couldn't replace model for " + cname);
-				ent_models.erase(it);
+				ent_models.erase(it++);
 				continue;
 			}
+			
+			it++;
 		}
 	}
 	if (replace_level > 1)
