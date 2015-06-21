@@ -86,6 +86,14 @@ random_solid_ent_models = 0
 
 random_sound_effects = 1
 
+// Set random_fog to "0" to disable fog randomization (if using entity randomization).
+
+random_fog = 1
+
+// Set random_gravity to "0" to disable gravity randomization (if using entity randomization). 
+
+random_gravity = 1
+
 // If grapple_mode is greater than "0" then a barnacle grapple weapon will be provided 
 // when using model or entity randomization, or corruptions. The grapple is useful for 
 // bypassing buggy map sections or gibbing monsters that won't/can't get out of the way.

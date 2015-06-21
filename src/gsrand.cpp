@@ -76,6 +76,8 @@ int wepSkillMode = 1;
 int monSkillMode = 1;
 int sentenceMode = 0;
 int earRapeMode = 0;
+int fogEnabled = 1;
+int gravityEnabled = 1;
 
 int numOverflow = 0;
 bool sparks;
@@ -554,6 +556,8 @@ void parse_settings_file()
 				if (setting_name.find("weapon_skill_mode") == 0) wepSkillMode = atoi(setting_value.c_str());
 				if (setting_name.find("monster_skill_mode") == 0) monSkillMode = atoi(setting_value.c_str());
 				if (setting_name.find("ear_rape_safety") == 0) earRapeMode = atoi(setting_value.c_str());
+				if (setting_name.find("random_fog") == 0) fogEnabled = atoi(setting_value.c_str());
+				if (setting_name.find("random_gravity") == 0) gravityEnabled = atoi(setting_value.c_str());
 				if (setting_name.find("corruption_mode") == 0)
 				{
 					if (setting_value.find("constant")  != string::npos) corruptSettingMode = CSETTING_CONSTANT;
@@ -2240,7 +2244,7 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system(CLEAR_COMMAND); // WINDOWS ONLY
-		cout << std::setw(80) << right << "version 4\n";
+		cout << std::setw(80) << right << "version 4 (SiEgE edition)\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
 		cout << "Options:\n\n";

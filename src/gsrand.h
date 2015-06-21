@@ -317,6 +317,8 @@ extern float vertScaleX, vertScaleY, vertScaleZ;
 extern int wepSkillMode, monSkillMode;
 extern int sentenceMode;
 extern int earRapeMode;
+extern int fogEnabled;
+extern int gravityEnabled;
 
 enum model_types
 {
