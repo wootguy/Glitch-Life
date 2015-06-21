@@ -241,7 +241,7 @@ int add_gsrand_ents(Entity ** ents)
 		ent->addKeyvalue("targetname", "gsrand_cvars");
 	}
 
-	if (!hasFog && entMode != ENT_NONE && rand() % 3 == 0)
+	if (fogEnabled && !hasFog && entMode != ENT_NONE && rand() % 3 == 0)
 	{
 		int dist = 256;
 		int range = 2048;
@@ -302,7 +302,7 @@ int add_gsrand_ents(Entity ** ents)
 		ent->addKeyvalue("message", "350");
 		ent->addKeyvalue("targetname", "gsrand_cvars");
 		
-		if (texMode != TEX_NONE && grapple_mode == GRAPPLE_HOOK && rand() % 5)
+		if (gravityEnabled && texMode != TEX_NONE && grapple_mode == GRAPPLE_HOOK && rand() % 5)
 		{
 			ents[idx++] = ent = new Entity("trigger_setcvar");
 			ent->addKeyvalue("m_iszCVarToChange", "sv_gravity");
@@ -637,7 +637,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 			ents[i]->keyvalues["rendercolor"] = str(rand() % 256) + " " + str(rand() % 256) + " " + str(rand() % 256);
 		}
 
-		if (matchStr(cname, "env_fog") && rand() % 2)
+		if (fogEnabled && matchStr(cname, "env_fog") && rand() % 2)
 		{
 			int dist = 256;
 			int range = 2048;
