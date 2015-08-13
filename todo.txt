@@ -1,5 +1,8 @@
 glitch-life todo:
 
+animated textures don't work
+monsters getting super long names? (vinesauce ep.3)
+xentree not randomized (can it be?)
 GL_UPLOAD 16 error c1a0
 TEST: stadium3 monsters not renamed
 speedup res generation somehow?
