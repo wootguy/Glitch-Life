@@ -319,6 +319,8 @@ extern int sentenceMode;
 extern int earRapeMode;
 extern int fogEnabled;
 extern int gravityEnabled;
+extern int maxContentBytes; // any files larger than this won't be used in randomization
+extern int textureCompression;
 
 enum model_types
 {
@@ -338,7 +340,7 @@ enum sprite_types
 	SPRITE_TYPE_GENERIC
 };
 
-void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default);
+void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default, vector<string>& search_paths, string ext);
 
 Keyvalue extractKeyvalue(std::string line);
 

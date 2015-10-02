@@ -713,7 +713,7 @@ string DateTime::str()
 	TIME_ZONE_INFORMATION tz;
 	GetTimeZoneInformation(&tz);
 	string zone = ::str(-tz.Bias / 60);
-	if (-tz.Bias > 0)
+	if (-tz.Bias >= 0)
 		zone = "+" + zone;
 	zone = " (UTC" + zone + ")";
 

@@ -50,6 +50,9 @@ to spend a lot of time downloading on every level change. With my 10Mbps
 upload speed, it took about 3-5 minutes for a single player to join my server. 
 Each of my map RES files had about 200 to 300 items in it.
 
+Another way to reduce download times is to use the max_file_size and
+texture_compression settings in the config file. These can easily
+halve the size of your maps.
 
 -------------------------- Content Selection -------------------------- 
 

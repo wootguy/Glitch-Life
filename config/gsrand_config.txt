@@ -164,6 +164,22 @@ corruption_blend = 4     // values bigger than 4 are unsafe - expect crashes.
 
 print_rejects = 0
 
+// If max_file_size is set to a non-zero value, then any models, sounds, or sprites
+// bigger than the set amount will not be used in the generated maps. This helps keep
+// download times low. You can specify the size in bytes "B", kilobytes "KB", or 
+// megabytes "MB". There has to be a space between the number and the byte unit.
+// I recommend using "1 MB" or "100 KB". I wouldn't go any lower than 50 KB.
+
+max_file_size = 0 KB
+
+// If texture_compression is non-zero, then textures are compressed to save space:
+//    1 = 128x128 max texture resolution (best quality)
+//    2 = 64x64   max texture resolution (optimal size/quality trade-off)
+//    3 = 32x32   max texture resolution (you can hardly tell what you're looking at)
+//    4 = 16x16   max texture resolution (ok that's just too small)
+
+texture_compression = 0
+
 // [maps] is a list of maps that gsrand will randomize.
 // If this list is empty, then EVERY map will be randomized.
 //

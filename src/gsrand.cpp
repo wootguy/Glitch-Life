@@ -78,6 +78,8 @@ int sentenceMode = 0;
 int earRapeMode = 0;
 int fogEnabled = 1;
 int gravityEnabled = 1;
+int maxContentBytes = 0;
+int textureCompression = 0;
 
 int numOverflow = 0;
 bool sparks;
@@ -372,9 +374,9 @@ void initLists()
 	msize[BARNEY] = NUM_BARNEY;
 }
 
-void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default)
+void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default, vector<string>& search_paths, string ext)
 {
-	if (contentMode != CONTENT_EVERYTHING)
+	if (contentMode != CONTENT_EVERYTHING || maxContentBytes && search_paths.size())
 	{
 		vector<string> filtered;
 		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
@@ -387,10 +389,33 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 					match = true;
 					break;
 				}
+			}	
+			if ((match && contentMode != CONTENT_CUSTOM) ||
+				(!match && contentMode != CONTENT_DEFAULT))
+			{
+				if (!match && maxContentBytes && search_paths.size())
+				{
+					// make sure custom content is under the file size limit
+					ifstream fin;
+					for (int k = 0; k < search_paths.size(); k++)
+					{
+						fin = ifstream(search_paths[k] + unfiltered[i] + ext, ios::binary);
+						if (fin.is_open())
+							break;
+					}
+					if (!fin.is_open())
+					{
+						println("Failed to find " + unfiltered[i]);
+						continue;
+					}
+					fin.seekg(0, fin.end);
+					int length = fin.tellg();
+					fin.seekg(0, fin.beg);
+					if (length > maxContentBytes)
+						continue;
+				}
+				filtered.push_back(unfiltered[i]);	
 			}
-			if ((match && contentMode == CONTENT_DEFAULT) ||
-				(!match && contentMode == CONTENT_CUSTOM))
-				filtered.push_back(unfiltered[i]);		
 		}
 		unfiltered = filtered;
 	}	
@@ -558,6 +583,26 @@ void parse_settings_file()
 				if (setting_name.find("ear_rape_safety") == 0) earRapeMode = atoi(setting_value.c_str());
 				if (setting_name.find("random_fog") == 0) fogEnabled = atoi(setting_value.c_str());
 				if (setting_name.find("random_gravity") == 0) gravityEnabled = atoi(setting_value.c_str());
+				if (setting_name.find("texture_compression") == 0) textureCompression = atoi(setting_value.c_str());
+				if (setting_name.find("max_file_size") == 0)
+				{
+					int sep = setting_value.find(" ");
+					if (sep != string::npos) 
+					{
+						float amount = atof( getSubStr(setting_value, 0, sep).c_str() );
+						string scale = toLowerCase( getSubStr(setting_value, sep+1) );
+						if (scale == "b")
+							; // no-op
+						else if (scale == "kb")
+							amount *= 1024;
+						else if (scale == "mb")
+							amount *= 1024*1024;
+						else
+							print("Invalid max_file_size unit: " + scale);
+
+						maxContentBytes = (int)amount; 
+					}
+				} 
 				if (setting_name.find("corruption_mode") == 0)
 				{
 					if (setting_value.find("constant")  != string::npos) corruptSettingMode = CSETTING_CONSTANT;
@@ -1091,6 +1136,13 @@ bool createMOTD(string path, string mapname)
 		fout << "    sentence_mode: " << (int)sentenceMode << "\n";
 	fout << "    random_solid_ent_models: " << bspModelSwap << "\n";
 	fout << "    random_sound_effects: " << sndEffects << "\n";
+	fout << "    fog_enabled: " << fogEnabled << "\n";
+	fout << "    gravity_enabled: " << gravityEnabled << "\n";
+	if (maxContentBytes)
+		fout << "    max_file_size: " << (maxContentBytes/1024) << " KB\n";
+	else
+		fout << "    max_file_size: Not set\n";
+	fout << "    texture_compression: " << textureCompression << "\n";
 
 	if (random_seed.length())
 		fout << "    random_seed: " << random_seed << "\n";
@@ -2244,7 +2296,7 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system(CLEAR_COMMAND); // WINDOWS ONLY
-		cout << std::setw(80) << right << "version 4 (SiEgE edition)\n";
+		cout << std::setw(80) << right << "version 4.1\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
 		cout << "Options:\n\n";

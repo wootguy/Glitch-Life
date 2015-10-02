@@ -73,7 +73,7 @@ void getAllSounds()
 
 	vector<string> filtered_sounds;
 	filtered_sounds.reserve(user_sounds.size());
-	if (contentMode != CONTENT_EVERYTHING)
+	if (contentMode != CONTENT_EVERYTHING || maxContentBytes)
 	{
 		int old_count = user_sounds.size();
 		for (uint i = 0, sz = user_sounds.size(); i < sz; ++i)
@@ -86,12 +86,35 @@ void getAllSounds()
 				if (matchStr(user_sounds[i], default_sounds[d]))
 				{
 					match = true;
-					if (contentMode == CONTENT_DEFAULT)
+					if (contentMode != CONTENT_CUSTOM)
 						filtered_sounds.push_back(user_sounds[i]);
 				}
 			}
-			if (!match && contentMode == CONTENT_CUSTOM) // must not have found a match
+			if (!match && contentMode != CONTENT_DEFAULT) // must not have found a match
+			{
+				// check if custom sound is under the file size limit
+				if (maxContentBytes)
+				{
+					ifstream fin;
+					for (int k = 0; k < sound_paths.size(); k++)
+					{
+						fin = ifstream(sound_paths[k] + user_sounds[i], ios::binary);
+						if (fin.is_open())
+							break;
+					}
+					if (!fin.is_open())
+					{
+						println("Failed to find " + user_sounds[i]);
+						continue;
+					}
+					fin.seekg(0, fin.end);
+					int length = fin.tellg();
+					fin.seekg(0, fin.beg);
+					if (length > maxContentBytes)
+						continue;
+				}
 				filtered_sounds.push_back(user_sounds[i]);
+			}
 		}
 		user_sounds = filtered_sounds;
 		if (old_count != user_sounds.size())
