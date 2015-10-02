@@ -71,8 +71,10 @@ void get_all_skies()
 
 	insert_unique(temp_skies, user_skies);
 
+	vector<string> search_paths;
+
 	int old_sz = user_skies.size();
-	filter_default_content(user_skies, SKIES, NUM_SKIES);
+	filter_default_content(user_skies, SKIES, NUM_SKIES, search_paths, ".tga");
 	if (user_skies.size() != old_sz)
 	{
 		backspace(str(old_sz).size());
@@ -347,6 +349,92 @@ WADTEX * load_random_texture(vector<Wad>& wads)
 			else
 			{
 				WADTEX * tex = wads[i].readTexture(r);
+
+				int maxDim = max(256 >> textureCompression, 16);
+				if (textureCompression && tex->nWidth * tex->nWidth > maxDim*maxDim)
+				{
+					WADTEX * ctex = new WADTEX;
+					float scale = (float)maxDim / (float)max(tex->nWidth, tex->nHeight);
+					ctex->nWidth = (float)tex->nWidth * scale;
+					ctex->nHeight = (float)tex->nHeight * scale;
+					// round to multiple of 16
+					ctex->nWidth = max( ((ctex->nWidth >> 4) << 4), 16);
+					ctex->nHeight = max( ((ctex->nHeight >> 4) << 4), 16);
+
+					float xScale = (float)tex->nWidth / (float)ctex->nWidth;
+					float yScale = (float)tex->nHeight / (float)ctex->nHeight;
+					int w = ctex->nWidth;
+					int h = ctex->nHeight;
+					int sz = w*h;	   // miptex 0
+					int sz2 = sz / 4;  // miptex 1
+					int sz3 = sz2 / 4; // miptex 2
+					int sz4 = sz3 / 4; // miptex 3
+					int szAll = sz + sz2 + sz3 + sz4 + 2 + 256*3 + 2;
+
+					int wOld = tex->nWidth;
+					int hOld = tex->nHeight;
+					int szOld = wOld*hOld;	 // miptex 0
+					int sz2Old = szOld / 4;  // miptex 1
+					int sz3Old = sz2Old / 4; // miptex 2
+					int sz4Old = sz3Old / 4; // miptex 3
+					int szAllOld = szOld + sz2Old + sz3Old + sz4Old + 2 + 256*3 + 2;
+						
+					ctex->nOffsets[0] = sizeof(BSPMIPTEX);
+					ctex->nOffsets[1] = sizeof(BSPMIPTEX) + sz;
+					ctex->nOffsets[2] = sizeof(BSPMIPTEX) + sz + sz2;
+					ctex->nOffsets[3] = sizeof(BSPMIPTEX) + sz + sz2 + sz3;
+
+					//println("Compressing " + string(tex->szName) + " " + str(tex->nWidth) + "x" + str(tex->nHeight) + " -> " + str(ctex->nWidth) + "x" + str(ctex->nHeight) + " " + str(xScale) + " " + str(yScale));
+
+					// compress
+					ctex->data = new byte[szAll];
+					memset(ctex->data, 0, szAll);
+					for (int y = 0; y < h; y++)
+					{
+						for (int x = 0; x < w; x++)
+						{
+							int dst = y*w + x;
+							int src = (int)(y*yScale)*wOld + x*xScale;
+							ctex->data[dst] = tex->data[src];
+						}
+					}
+
+					// generate mipmaps
+					int maxMipLevel = 3;
+					int dWidth = w;
+					int dHeight = h;
+					w = w/2;
+					h = h/2;
+					int skip = 2;
+					int mipLevel = 1;
+
+					byte * buffer = ctex->data + sz;
+
+					while (mipLevel <= maxMipLevel)
+					{
+						unsigned int idx = 0;
+						for (int y = 0; y < dHeight; y += skip)
+						{
+							for (int x = 0; x < dWidth; x += skip)
+							{
+								int src = (y*dWidth + x);
+								buffer[idx++] = ctex->data[src];		
+							}
+						}
+						buffer += w*h;
+						mipLevel++;
+						w /= 2;
+						h /= 2;
+						skip *= 2;
+					}
+					// copy pallete and texture name
+					memcpy(ctex->data + szAll - (256*3 + 2), tex->data + szAllOld - (256*3 + 2), 256*3);
+					memcpy(ctex->szName, tex->szName, 16);
+
+					delete [] tex->data;
+					delete tex;
+					tex = ctex;
+				}
 				return tex;
 			}
 		}

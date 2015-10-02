@@ -90,7 +90,7 @@ string get_random_sprite(int request_model_type)
 
 void filter_default_model_content(vector<string>& unfiltered)
 {
-	if (contentMode != CONTENT_EVERYTHING)
+	if (contentMode != CONTENT_EVERYTHING || maxContentBytes)
 	{
 		vector<string> filtered;
 		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
@@ -144,9 +144,61 @@ void filter_default_model_content(vector<string>& unfiltered)
 					break;
 				}
 			}
-			if ((match && contentMode == CONTENT_DEFAULT) ||
-				(!match && contentMode == CONTENT_CUSTOM))
-				filtered.push_back(unfiltered[i]);		
+			if ((match && contentMode != CONTENT_CUSTOM) ||
+				(!match && contentMode != CONTENT_DEFAULT))
+			{
+				if (!match && maxContentBytes)
+				{
+					// make sure custom content is under the file size limit
+					string model_paths[] = {"models/", "../svencoop_downloads/models/", "../valve/models/"};
+					ifstream fin;
+					int pathIdx = -1;
+					for (int k = 0; k < 3; k++)
+					{
+						fin = ifstream(model_paths[k] + unfiltered[i] + ".mdl", ios::binary);
+						if (fin.is_open())
+						{
+							pathIdx = k;
+							break;
+						}
+					}
+					if (pathIdx == -1)
+					{
+						println("Failed to find " + unfiltered[i]);
+						continue;
+					}
+					fin.seekg(0, fin.end);
+					int length = fin.tellg();
+					fin.seekg(0, fin.beg);
+
+					// Add animation models to the total size
+					for (int m = 1; m < 100; m++)
+					{
+						string suffix = m < 10 ? "0" + str(m) : str(m);
+						fin = ifstream(model_paths[pathIdx] + unfiltered[i] + suffix + ".mdl", ios::binary);
+						if (fin.is_open())
+						{
+							fin.seekg(0, fin.end);
+							length += fin.tellg();
+						}
+						else
+							break;
+					}
+
+					// Add texture model to the total size
+					fin = ifstream(model_paths[pathIdx] + unfiltered[i] + "t.mdl", ios::binary);
+					if (fin.is_open())
+					{
+						fin.seekg(0, fin.end);
+						length += fin.tellg();
+					}
+
+					if (length > maxContentBytes)
+						continue;
+				}
+				filtered.push_back(unfiltered[i]);	
+			}
+					
 		}
 		unfiltered = filtered;
 	}	
@@ -684,8 +736,13 @@ void get_all_sprites()
 	int print_total = total_sprites;
 	total_sprites = user_animated_sprites.size() + user_sprites.size();
 
-	filter_default_content(user_animated_sprites, ANIMATED_SPRITES, NUM_ANIMATED_SPRITES);
-	filter_default_content(user_sprites, STATIC_SPRITES, NUM_STATIC_SPRITES);
+	vector<string> search_paths;
+	search_paths.push_back("sprites/");
+	search_paths.push_back("../svencoop_downloads/sprites/");
+	search_paths.push_back("../valve/sprites/");
+
+	filter_default_content(user_animated_sprites, ANIMATED_SPRITES, NUM_ANIMATED_SPRITES, search_paths, ".spr");
+	filter_default_content(user_sprites, STATIC_SPRITES, NUM_STATIC_SPRITES, search_paths, ".spr");
 
 	int new_total = user_animated_sprites.size() + user_sprites.size();
 	if (total_sprites != new_total)
