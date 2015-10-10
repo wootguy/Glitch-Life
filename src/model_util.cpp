@@ -88,13 +88,27 @@ string get_random_sprite(int request_model_type)
 	return "tile";
 }
 
+static int total_count = 0;
+static int exclude_count = 0;
+static string last_print = "";
+
 void filter_default_model_content(vector<string>& unfiltered)
 {
+	uint64 last_print_time = 0;
 	if (contentMode != CONTENT_EVERYTHING || maxContentBytes)
 	{
 		vector<string> filtered;
 		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
 		{
+			if (getSystemTime() - last_print_time > 1000*50)
+			{
+				backspace(last_print.size());
+				int nFiltered = (i - filtered.size()) + exclude_count;
+				last_print = str(total_count - nFiltered) + " (" + str(nFiltered) + " excluded)";
+				print(last_print);
+				last_print_time = getSystemTime();
+			}
+
 			bool match = false;
 			for (int k = 0; k < NUM_MODEL_MONSTERS; k++)
 			{
@@ -200,6 +214,7 @@ void filter_default_model_content(vector<string>& unfiltered)
 			}
 					
 		}
+		exclude_count += unfiltered.size() - filtered.size();
 		unfiltered = filtered;
 	}	
 }
@@ -521,6 +536,9 @@ void get_all_models()
 	total_models = user_monster_models.size() + user_prop_models.size() + user_v_models.size() + 
 				   user_p_models.size() + user_w_models.size() + user_apache_models.size() + user_player_models.size();
 
+	last_print = str(print_total);
+	total_count = total_models;
+	exclude_count = 0;
 	filter_default_model_content(user_monster_models);
 	filter_default_model_content(user_prop_models);
 	filter_default_model_content(user_v_models);
@@ -548,7 +566,7 @@ void get_all_models()
 
 	if (after_models != total_models)
 	{
-		backspace(str(print_total).size());
+		backspace(last_print.size());
 		int nFiltered = total_models - after_models;
 		print(str(after_models) + " (" + str(nFiltered) + " excluded)");
 	}
@@ -741,13 +759,16 @@ void get_all_sprites()
 	search_paths.push_back("../svencoop_downloads/sprites/");
 	search_paths.push_back("../valve/sprites/");
 
-	filter_default_content(user_animated_sprites, ANIMATED_SPRITES, NUM_ANIMATED_SPRITES, search_paths, ".spr");
-	filter_default_content(user_sprites, STATIC_SPRITES, NUM_STATIC_SPRITES, search_paths, ".spr");
+	last_print = str(print_total);
+	exclude_count = 0;
+	total_count = total_sprites;
+	filter_default_content(user_animated_sprites, ANIMATED_SPRITES, NUM_ANIMATED_SPRITES, search_paths, ".spr", total_count, exclude_count, last_print);
+	filter_default_content(user_sprites, STATIC_SPRITES, NUM_STATIC_SPRITES, search_paths, ".spr", total_count, exclude_count, last_print);
 
 	int new_total = user_animated_sprites.size() + user_sprites.size();
 	if (total_sprites != new_total)
 	{
-		backspace(str(print_total).size());
+		backspace(last_print.size());
 		int nFiltered = total_sprites - new_total;
 		print(str(new_total) + " (" + str(nFiltered) + " excluded)");
 	}
