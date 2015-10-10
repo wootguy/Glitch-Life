@@ -374,13 +374,25 @@ void initLists()
 	msize[BARNEY] = NUM_BARNEY;
 }
 
-void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default, vector<string>& search_paths, string ext)
+void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default, 
+							vector<string>& search_paths, string ext, int& total_count, int& exclude_count, string& last_print)
 {
+	uint64 last_print_time = 0;
 	if (contentMode != CONTENT_EVERYTHING || maxContentBytes && search_paths.size())
 	{
 		vector<string> filtered;
 		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
 		{
+			if (getSystemTime() - last_print_time > 1000*50)
+			{
+				backspace(last_print.size());
+				int nFiltered = (i - filtered.size()) + exclude_count;
+				last_print = str(total_count - nFiltered) + " (" + str(nFiltered) + " excluded)";
+				print(last_print);
+				last_print_time = getSystemTime();
+			}
+			Sleep(5);
+
 			bool match = false;
 			for (int k = 0; k < num_default; k++)
 			{
@@ -417,6 +429,7 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 				filtered.push_back(unfiltered[i]);	
 			}
 		}
+		exclude_count += unfiltered.size() - filtered.size();
 		unfiltered = filtered;
 	}	
 }

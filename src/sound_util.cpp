@@ -114,14 +114,23 @@ void getAllSounds()
 						continue;
 				}
 				filtered_sounds.push_back(user_sounds[i]);
+
+				if (getSystemTime() - last_print_time > 1000*50)
+				{
+					backspace(last_print.size());
+					int nFiltered = i - filtered_sounds.size();
+					last_print = str((int)user_sounds.size() - nFiltered) + " (" + str(nFiltered) + " excluded)";
+					print(last_print);
+					last_print_time = getSystemTime();
+				}
 			}
 		}
 		user_sounds = filtered_sounds;
 		if (old_count != user_sounds.size())
 		{
-			backspace(str(old_count).size());
+			backspace(last_print.size());
 			int nFiltered = old_count - user_sounds.size();
-			print(str((int)user_sounds.size()) + " (" + str(nFiltered) + " excluded)");
+			print(str((int)user_sounds.size() - nFiltered) + " (" + str(nFiltered) + " excluded)");
 		}
 	}
 

@@ -74,10 +74,13 @@ void get_all_skies()
 	vector<string> search_paths;
 
 	int old_sz = user_skies.size();
-	filter_default_content(user_skies, SKIES, NUM_SKIES, search_paths, ".tga");
+	int total_count = old_sz;
+	int exclude_count = 0;
+	string last_print = str(old_sz);
+	filter_default_content(user_skies, SKIES, NUM_SKIES, search_paths, ".tga", total_count, exclude_count, last_print);
 	if (user_skies.size() != old_sz)
 	{
-		backspace(str(old_sz).size());
+		backspace(last_print.size());
 		int nfiltered = old_sz - user_skies.size();
 		print(str((int)user_skies.size()) + " (" + str(nfiltered) + " excluded)");
 	}

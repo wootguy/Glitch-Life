@@ -340,7 +340,8 @@ enum sprite_types
 	SPRITE_TYPE_GENERIC
 };
 
-void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default, vector<string>& search_paths, string ext);
+void filter_default_content(vector<string>& unfiltered, const char ** default_list, int num_default, 
+							vector<string>& search_paths, string ext, int& total_count, int& exclude_count, string& last_print);
 
 Keyvalue extractKeyvalue(std::string line);
 
