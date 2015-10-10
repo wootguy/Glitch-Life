@@ -95,6 +95,11 @@ Note: Skyboxes are used only when Texture randomization is enabled.
 
 -------------------------- Troubleshooting -------------------------- 
 
+I keep crashing with "Bad Surface Extents". Why?
+   This is caused by using the vertex "blend" corruption on a dedicated server.
+   To fix this, disable "singleplayer" in the config or remove "blend" from the
+   list of "corruptions" (also in the config). 
+
 The game keeps crashing! What can I do?
    This is how unstable each randomization option is (on a scale from 1-10):
        Texture = 0
