@@ -63,6 +63,7 @@ bool cheatNoclip = false;
 bool cheatImpulse = false;
 bool cheatGodmode = false;
 bool singleplayer = false;
+bool skipUppercase = false;
 int bspModelSwap = 0;
 int sndEffects = 0;
 int lightMode = 0;
@@ -378,7 +379,7 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 							vector<string>& search_paths, string ext, int& total_count, int& exclude_count, string& last_print)
 {
 	uint64 last_print_time = 0;
-	if (contentMode != CONTENT_EVERYTHING || maxContentBytes && search_paths.size())
+	if (contentMode != CONTENT_EVERYTHING || maxContentBytes && search_paths.size() || skipUppercase)
 	{
 		vector<string> filtered;
 		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
@@ -426,6 +427,8 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 					if (length > maxContentBytes)
 						continue;
 				}
+				if (skipUppercase && hasUppercaseLetters(unfiltered[i]))
+					continue;
 				filtered.push_back(unfiltered[i]);	
 			}
 		}
@@ -585,6 +588,7 @@ void parse_settings_file()
 				if (setting_name.find("singleplayer")  == 0) singleplayer = atoi(setting_value.c_str()) != 0;
 				if (setting_name.find("bypass_hlsp_bullshit_damnit_who_thought_that_was_a_good_idea")  == 0) 
 					bypassHlsp = atoi(setting_value.c_str()) != 0;
+				if (setting_name.find("skip_uppercase")  == 0) skipUppercase = atoi(setting_value.c_str()) != 0;
 				if (setting_name.find("grapple_mode")   == 0) grapple_mode = atoi(setting_value.c_str());
 				if (setting_name.find("tex_embed_mode") == 0) tex_embed_mode = atoi(setting_value.c_str());
 				if (setting_name.find("model_safety")   == 0) modelSafety = atoi(setting_value.c_str());

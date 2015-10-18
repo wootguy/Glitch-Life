@@ -142,6 +142,8 @@ bool fileExists(const string& file);
 // Ex: "C:\Project\thing.jpg" -> "C:\Project"
 string getPath(const string& file);
 
+// returns true if any characters in the string are uppercase letters
+bool hasUppercaseLetters(const string& str);
 
 /*
 	Extract a double value in the string. If none can be found, 0 is returned.
