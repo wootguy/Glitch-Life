@@ -1634,6 +1634,11 @@ void find_user_content()
 			maps.erase(maps.begin() + i--);
 	}
 
+	if (skipUppercase) {
+		cout << "Note: All content in svencoop_downloads will not be used because skip_uppercase is set to \"1\"." <<
+		" Why? Because you don't know if the server you downloaded from renamed the files or not.\n\n";
+	}
+
 	if (user_maps.empty())
 		cout << "Found " << maps.size() << " maps\n\n";
 	else

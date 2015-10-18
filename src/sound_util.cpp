@@ -19,7 +19,8 @@ void getAllSounds()
 	vector<string> sound_paths;
 	sound_paths.push_back("sound/");
 	sound_paths.push_back("../valve/sound/");
-	sound_paths.push_back("../svencoop_downloads/sound/");
+	if (!skipUppercase)
+		sound_paths.push_back("../svencoop_downloads/sound/");
 
 	string last_print = "0";
 	print("0");
