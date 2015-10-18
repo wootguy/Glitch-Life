@@ -95,7 +95,7 @@ static string last_print = "";
 void filter_default_model_content(vector<string>& unfiltered)
 {
 	uint64 last_print_time = 0;
-	if (contentMode != CONTENT_EVERYTHING || maxContentBytes)
+	if (contentMode != CONTENT_EVERYTHING || maxContentBytes || skipUppercase)
 	{
 		vector<string> filtered;
 		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
@@ -210,6 +210,8 @@ void filter_default_model_content(vector<string>& unfiltered)
 					if (length > maxContentBytes)
 						continue;
 				}
+				if (skipUppercase && hasUppercaseLetters(unfiltered[i]))
+					continue;
 				filtered.push_back(unfiltered[i]);	
 			}
 					

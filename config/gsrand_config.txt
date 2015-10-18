@@ -164,6 +164,13 @@ corruption_blend = 4     // values bigger than 4 are unsafe - expect crashes.
 
 print_rejects = 0
 
+// if skip_uppercase is set to "1", then any file paths with uppercase letters will
+// not be used in the randomizations. This is a workaround for adding content to
+// wonky Linux fast-dl servers. If you haven't manually renamed files on your 
+// fast-dl server then you don't need to use this.
+
+skip_uppercase = 1
+
 // If max_file_size is set to a non-zero value, then any models, sounds, or sprites
 // bigger than the set amount will not be used in the generated maps. This helps keep
 // download times low. You can specify the size in bytes "B", kilobytes "KB", or 

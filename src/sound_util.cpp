@@ -73,7 +73,7 @@ void getAllSounds()
 
 	vector<string> filtered_sounds;
 	filtered_sounds.reserve(user_sounds.size());
-	if (contentMode != CONTENT_EVERYTHING || maxContentBytes)
+	if (contentMode != CONTENT_EVERYTHING || maxContentBytes || skipUppercase)
 	{
 		int old_count = user_sounds.size();
 		for (uint i = 0, sz = user_sounds.size(); i < sz; ++i)
@@ -81,6 +81,8 @@ void getAllSounds()
 			bool match = false;
 			if (user_sounds[i].find("thunder.wav") == 0) // the only default sound not in a folder
 				match = true;
+			if (skipUppercase && hasUppercaseLetters(user_sounds[i]))
+				continue;
 			for (uint d = 0; d < default_sounds.size() && !match; ++d)
 			{
 				if (matchStr(user_sounds[i], default_sounds[d]))

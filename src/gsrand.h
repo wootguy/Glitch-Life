@@ -307,6 +307,7 @@ extern bool cheatImpulse;
 extern bool cheatGodmode;
 extern bool singleplayer;
 extern bool bypassHlsp;
+extern bool skipUppercase;
 extern int bspModelSwap;
 extern int sndEffects;
 extern int lightMode;

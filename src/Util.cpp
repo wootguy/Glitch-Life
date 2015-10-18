@@ -400,6 +400,14 @@ string getPath(const string& file)
         return file;
 }
 
+bool hasUppercaseLetters( const string& str )
+{
+	for (int i = 0; i < str.length(); i++)
+		if (isCapitalLetter(str[i]))
+			return true;
+	return false;
+}
+
 double readDouble(const string& line, int dir)
 {
     int numBegin = -1;
