@@ -68,8 +68,12 @@ void get_all_skies()
 	find_all_skies("../valve/gfx/env/");
 	vector<string> temp_skies = user_skies;
 	find_all_skies("gfx/env/");
-
 	insert_unique(temp_skies, user_skies);
+	if (!skipUppercase)
+	{
+		find_all_skies("../svencoop_downloads/gfx/env/");
+		insert_unique(temp_skies, user_skies);
+	}
 
 	vector<string> search_paths;
 

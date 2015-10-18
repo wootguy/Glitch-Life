@@ -516,14 +516,17 @@ void get_all_models()
 	vector<string> temp_w_models = user_w_models;
 	vector<string> temp_apache_models = user_apache_models;
 
-	find_all_models("../svencoop_downloads/models/", total_models);
-	insert_unique(user_monster_models, temp_monster_models);
-	insert_unique(user_prop_models, temp_prop_models);
-	insert_unique(user_player_models, temp_player_models);
-	insert_unique(user_v_models, temp_v_models);
-	insert_unique(user_p_models, temp_p_models);
-	insert_unique(user_w_models, temp_w_models);
-	insert_unique(user_apache_models, temp_apache_models);
+	if (!skipUppercase)
+	{
+		find_all_models("../svencoop_downloads/models/", total_models);
+		insert_unique(user_monster_models, temp_monster_models);
+		insert_unique(user_prop_models, temp_prop_models);
+		insert_unique(user_player_models, temp_player_models);
+		insert_unique(user_v_models, temp_v_models);
+		insert_unique(user_p_models, temp_p_models);
+		insert_unique(user_w_models, temp_w_models);
+		insert_unique(user_apache_models, temp_apache_models);
+	}
 
 	find_all_models("models/", total_models);
 	insert_unique(temp_monster_models, user_monster_models);
@@ -740,9 +743,12 @@ void get_all_sprites()
 	vector<string> temp_sprites = user_sprites;
 	vector<string> temp_animated_sprites = user_animated_sprites;
 
-	find_all_sprites("../svencoop_downloads/sprites/", total_sprites);
-	insert_unique(user_sprites, temp_sprites);
-	insert_unique(user_animated_sprites, temp_animated_sprites);
+	if (!skipUppercase)
+	{
+		find_all_sprites("../svencoop_downloads/sprites/", total_sprites);
+		insert_unique(user_sprites, temp_sprites);
+		insert_unique(user_animated_sprites, temp_animated_sprites);
+	}
 
 	find_all_sprites("sprites/", total_sprites);
 	insert_unique(temp_sprites, user_sprites);
