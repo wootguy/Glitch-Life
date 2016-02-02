@@ -2,6 +2,7 @@
 #include "Util.h"
 #include <iostream>
 #include <fstream>
+#include "gsrand.h"
 
 Wad::Wad(void)
 {
@@ -74,12 +75,24 @@ bool Wad::readInfo()
 	numTex = header.nDir;
 	dirEntries = new WADDIRENTRY[numTex];
 
+	bool usableTextures = false;
 	for (int i = 0; i < numTex; i++)
 	{
 		if (fin.eof()) { println("Unexpected end of WAD"); return false; }
 		fin.read((char*)&dirEntries[i], sizeof(WADDIRENTRY)); 
+		if (dirEntries[i].nType == 0x43) usableTextures = true;
 	}
 	fin.close();
+
+	if (!usableTextures)
+	{
+		delete [] dirEntries;
+		if (printRejects) {
+			println(filename + " was ignored because it contains no regular textures");
+		}
+		return false; // we can't use these types of textures (see fonts.wad as an example)
+	}
+	
 
 	return true;
 }

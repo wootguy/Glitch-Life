@@ -334,8 +334,8 @@ WADTEX * load_random_texture(vector<Wad>& wads)
 		{
 			if (i == wads.size()-1)
 			{
-				// was gonna try to fix RNG's WAD problem here but meh
-				println("The number of textures was overestimated");
+				// this should never happen again. I fixed the bug. Oh god please don't happen again.
+				println("The number of textures was overestimated " + str(wads.size()));
 			}
 			r -= wads[i].header.nDir;
 		}
@@ -349,7 +349,8 @@ WADTEX * load_random_texture(vector<Wad>& wads)
 					println("Failed to find valid textures after 1000 retries");
 					return NULL;
 				}
-				i = 0;
+				// Try a different random texture index
+				i = -1;
 				r = rand() % total_textures;
 			}
 			else
@@ -468,7 +469,7 @@ WADTEX ** loadRandomTextures(vector<string> wadTextures, vector<Wad>& wads)
 			newTex[i] = load_random_texture(wads);
 			if (newTex[i] == NULL)
 			{
-				println("Failed to load random textures");
+				println("Failed to load random texture");
 				break;
 			}
 			string tex_name = wadTextures[i];
