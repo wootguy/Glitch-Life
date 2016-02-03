@@ -1,7 +1,10 @@
 #pragma once
 // this is auto-generated (thank god)
 // the commented out code in sound_util.cpp can make this
-// TODO: update this when SC 5.0 comes out and default sounds change
+// Remove "null.wav" from MASTER_sound since it's not a fun sound.
+
+// Last updated 2/2/16 for SC 5.01
+// TODO: Load this stuff from a file instead of hard-coding it
 
 #define NUM_MASTER_sound 1
 static const char * MASTER_sound[NUM_MASTER_sound] =
@@ -9,12 +12,13 @@ static const char * MASTER_sound[NUM_MASTER_sound] =
 	"thunder.wav",
 };
 
-#define NUM_MASTER_adamr 3
+#define NUM_MASTER_adamr 4
 static const char * MASTER_adamr[NUM_MASTER_adamr] =
 {
 	"bigexplode.wav",
 	"blipblipblip.wav",
 	"electricbuzz.wav",
+	"lava.wav",
 };
 
 #define NUM_MASTER_adamr_hgrunt 1
@@ -59,12 +63,6 @@ static const char * MASTER_adamr_surround[NUM_MASTER_adamr_surround] =
 	"rear_right.wav",
 	"side_left.wav",
 	"side_right.wav",
-};
-
-#define NUM_MASTER_afrikakorps 1
-static const char * MASTER_afrikakorps[NUM_MASTER_afrikakorps] =
-{
-	"afrikakorps_sfx.wav",
 };
 
 #define NUM_MASTER_agrunt 27
@@ -262,7 +260,7 @@ static const char * MASTER_ambience[NUM_MASTER_ambience] =
 	"_comma.wav",
 };
 
-#define NUM_MASTER_apache 5
+#define NUM_MASTER_apache 6
 static const char * MASTER_apache[NUM_MASTER_apache] =
 {
 	"ap_rotor1.wav",
@@ -270,6 +268,7 @@ static const char * MASTER_apache[NUM_MASTER_apache] =
 	"ap_rotor3.wav",
 	"ap_rotor4.wav",
 	"ap_whine1.wav",
+	"osprey_takeoff.wav",
 };
 
 #define NUM_MASTER_aslave 15
@@ -290,12 +289,6 @@ static const char * MASTER_aslave[NUM_MASTER_aslave] =
 	"slv_word6.wav",
 	"slv_word7.wav",
 	"slv_word8.wav",
-};
-
-#define NUM_MASTER_babygar 1
-static const char * MASTER_babygar[NUM_MASTER_babygar] =
-{
-	"gar_breathe3.wav",
 };
 
 #define NUM_MASTER_babygarg 25
@@ -341,7 +334,7 @@ static const char * MASTER_barnacle[NUM_MASTER_barnacle] =
 	"bcl_tongue1.wav",
 };
 
-#define NUM_MASTER_barney 228
+#define NUM_MASTER_barney 332
 static const char * MASTER_barney[NUM_MASTER_barney] =
 {
 	"aghh.wav",
@@ -356,35 +349,127 @@ static const char * MASTER_barney[NUM_MASTER_barney] =
 	"ba_another.wav",
 	"ba_attack1.wav",
 	"ba_attack2.wav",
+	"ba_attacking0.wav",
+	"ba_attacking1.wav",
+	"ba_attacking2.wav",
+	"ba_becareful0.wav",
+	"ba_becareful1.wav",
 	"ba_bring.wav",
+	"ba_button0.wav",
+	"ba_button1.wav",
 	"ba_buttugly.wav",
 	"ba_canal_death1.wav",
 	"ba_canal_wound1.wav",
 	"ba_close.wav",
 	"ba_crazy.wav",
+	"ba_cure0.wav",
+	"ba_cure1.wav",
 	"ba_die1.wav",
 	"ba_die2.wav",
 	"ba_die3.wav",
+	"ba_docprotect0.wav",
+	"ba_docprotect1.wav",
+	"ba_docprotect2.wav",
+	"ba_docprotect3.wav",
 	"ba_dontmake.wav",
+	"ba_door0.wav",
+	"ba_door1.wav",
 	"ba_dotoyou.wav",
 	"ba_duty.wav",
 	"ba_endline.wav",
 	"ba_firepl.wav",
 	"ba_friends.wav",
+	"ba_generic0.wav",
+	"ba_generic1.wav",
+	"ba_generic2.wav",
+	"ba_gethev.wav",
 	"ba_gotone.wav",
 	"ba_heeey.wav",
+	"ba_hello0.wav",
 	"ba_hello1.wav",
 	"ba_hello2.wav",
 	"ba_hello3.wav",
 	"ba_hello4.wav",
 	"ba_hello5.wav",
+	"ba_help0.wav",
+	"ba_ht01_01.wav",
+	"ba_ht01_02.wav",
+	"ba_ht01_03.wav",
+	"ba_ht01_04.wav",
+	"ba_ht01_05.wav",
+	"ba_ht01_06.wav",
+	"ba_ht06_01.wav",
+	"ba_ht06_02.wav",
+	"ba_ht06_02_alt.wav",
+	"ba_ht06_03.wav",
+	"ba_ht06_03_alt.wav",
+	"ba_ht06_04.wav",
+	"ba_ht06_05.wav",
+	"ba_ht06_06.wav",
+	"ba_ht06_07.wav",
+	"ba_ht06_08.wav",
+	"ba_ht06_09.wav",
+	"ba_ht06_10.wav",
+	"ba_ht06_11.wav",
+	"ba_ht07_01.wav",
+	"ba_ht07_02.wav",
+	"ba_ht07_03.wav",
+	"ba_ht07_04.wav",
+	"ba_ht07_05.wav",
+	"ba_ht07_06.wav",
+	"ba_ht07_07.wav",
+	"ba_ht07_08.wav",
+	"ba_ht07_09.wav",
+	"ba_ht07_10.wav",
+	"ba_ht07_11.wav",
+	"ba_ht07_12.wav",
+	"ba_ht07_13.wav",
+	"ba_ht07_14.wav",
+	"ba_ht07_15.wav",
+	"ba_ht07_16.wav",
+	"ba_ht07_17.wav",
+	"ba_ht07_18.wav",
+	"ba_ht07_19.wav",
+	"ba_ht08_01.wav",
+	"ba_ht08_01_alt.wav",
+	"ba_ht08_01_alt2.wav",
+	"ba_ht08_02.wav",
+	"ba_ht08_03.wav",
+	"ba_idle0.wav",
+	"ba_idle1.wav",
+	"ba_idle2.wav",
+	"ba_idle3.wav",
+	"ba_idle4.wav",
+	"ba_idle5.wav",
+	"ba_idle6.wav",
+	"ba_internet.wav",
 	"ba_iwish.wav",
+	"ba_kill0.wav",
+	"ba_kill1.wav",
+	"ba_kill2.wav",
 	"ba_later.wav",
+	"ba_lead0.wav",
+	"ba_lead1.wav",
+	"ba_lead2.wav",
+	"ba_mad0.wav",
+	"ba_mad1.wav",
+	"ba_mad2.wav",
+	"ba_mad3.wav",
+	"ba_needhelp0.wav",
+	"ba_needhelp1.wav",
+	"ba_ok0.wav",
+	"ba_ok1.wav",
+	"ba_ok2.wav",
+	"ba_ok3.wav",
+	"ba_ok4.wav",
+	"ba_ok5.wav",
 	"ba_openfire.wav",
+	"ba_opgate.wav",
 	"ba_pain1.wav",
 	"ba_pain2.wav",
 	"ba_pain3.wav",
 	"ba_pissme.wav",
+	"ba_plfear0.wav",
 	"ba_pok0.wav",
 	"ba_pok1.wav",
 	"ba_pok2.wav",
@@ -408,15 +493,27 @@ static const char * MASTER_barney[NUM_MASTER_barney] =
 	"ba_security2_range1.wav",
 	"ba_security2_range2.wav",
 	"ba_seethat.wav",
+	"ba_shot0.wav",
 	"ba_shot1.wav",
 	"ba_shot2.wav",
 	"ba_shot3.wav",
 	"ba_shot4.wav",
 	"ba_shot5.wav",
 	"ba_somuch.wav",
+	"ba_stare0.wav",
+	"ba_stare1.wav",
+	"ba_stare2.wav",
+	"ba_stare3.wav",
 	"ba_stepoff.wav",
+	"ba_stop0.wav",
+	"ba_stop1.wav",
 	"ba_tomb.wav",
 	"ba_uwish.wav",
+	"ba_wait0.wav",
+	"ba_wait1.wav",
+	"ba_wait2.wav",
+	"ba_wait3.wav",
+	"ba_wait4.wav",
 	"ba_watchit.wav",
 	"ba_whatyou.wav",
 	"ba_whoathere.wav",
@@ -932,7 +1029,64 @@ static const char * MASTER_buttons[NUM_MASTER_buttons] =
 	"spark6.wav",
 };
 
-#define NUM_MASTER_common 27
+#define NUM_MASTER_cards 52
+static const char * MASTER_cards[NUM_MASTER_cards] =
+{
+	"battle1.ogg",
+	"battle10.ogg",
+	"battle2.ogg",
+	"battle3.ogg",
+	"battle4.ogg",
+	"battle5.ogg",
+	"battle6.ogg",
+	"battle7.ogg",
+	"battle8.ogg",
+	"battle9.ogg",
+	"bluewin.ogg",
+	"bonusround1.ogg",
+	"bonusround2.ogg",
+	"bonusround3.ogg",
+	"bonusround4.ogg",
+	"bonusround5.ogg",
+	"bonusround6.ogg",
+	"bonusstage1.ogg",
+	"bonusstage2.ogg",
+	"bonusstage3.ogg",
+	"darkwavehorror.ogg",
+	"draw.ogg",
+	"elevator.ogg",
+	"fuu.ogg",
+	"gargfun.ogg",
+	"greenwin.ogg",
+	"levelup_1.ogg",
+	"levelup_2.ogg",
+	"levelup_3.ogg",
+	"levelup_4.ogg",
+	"levelup_5.ogg",
+	"newtech.ogg",
+	"playerjoin.ogg",
+	"playerleave.ogg",
+	"points.ogg",
+	"preparetofight.ogg",
+	"quack.ogg",
+	"quak2.ogg",
+	"redwin.ogg",
+	"snarkfun.ogg",
+	"teamblueisdefeated.ogg",
+	"teamblueisready.ogg",
+	"teamgreenisdefeated.ogg",
+	"teamgreenisready.ogg",
+	"teamredisdefeated.ogg",
+	"teamredisready.ogg",
+	"teamyellowisdefeated.ogg",
+	"teamyellowisready.ogg",
+	"winnersong.ogg",
+	"yay.ogg",
+	"yellwin.ogg",
+	"zombiefun.ogg",
+};
+
+#define NUM_MASTER_common 28
 static const char * MASTER_common[NUM_MASTER_common] =
 {
 	"bodydrop1.wav",
@@ -956,6 +1110,7 @@ static const char * MASTER_common[NUM_MASTER_common] =
 	"npc_step4.wav",
 	"nuke_explode.wav",
 	"nuke_ticking.wav",
+	"null.wav",
 	"splash_large.wav",
 	"wpn_denyselect.wav",
 	"wpn_hudoff.wav",
@@ -1007,8 +1162,8 @@ static const char * MASTER_crystal[NUM_MASTER_crystal] =
 #define NUM_MASTER_crystal2 4
 static const char * MASTER_crystal2[NUM_MASTER_crystal2] =
 {
-	"boss.mp3",
 	"boss_die.mp3",
+	"boss_loop.mp3",
 	"crystal_pickup.wav",
 	"thunder.wav",
 };
@@ -1090,11 +1245,15 @@ static const char * MASTER_debris[NUM_MASTER_debris] =
 	"zap8.wav",
 };
 
-#define NUM_MASTER_demonprey 2
-static const char * MASTER_demonprey[NUM_MASTER_demonprey] =
+#define NUM_MASTER_descrcl 6
+static const char * MASTER_descrcl[NUM_MASTER_descrcl] =
 {
-	"funkymusicshort.mp3",
-	"weirdlaugh12.wav",
+	"bugs.ogg",
+	"muezzin.ogg",
+	"desertwind.wav",
+	"fanfare.wav",
+	"flag.wav",
+	"music1.wav",
 };
 
 #define NUM_MASTER_doors 23
@@ -1243,80 +1402,6 @@ static const char * MASTER_drill[NUM_MASTER_drill] =
 	"squad07.wav",
 	"thirdroom01.wav",
 	"thirdroom02.wav",
-};
-
-#define NUM_MASTER_escape_series 8
-static const char * MASTER_escape_series[NUM_MASTER_escape_series] =
-{
-	"boss.mp3",
-	"credits.mp3",
-	"escape2_escape_route.mp3",
-	"boss.wav",
-	"escape1_escape_route.wav",
-	"escape2_fox.wav",
-	"escape2_take_off.wav",
-	"secret.wav",
-};
-
-#define NUM_MASTER_escape_series_barney 9
-static const char * MASTER_escape_series_barney[NUM_MASTER_escape_series_barney] =
-{
-	"escape_barney_1.wav",
-	"escape_barney_2.wav",
-	"escape_barney_3.wav",
-	"escape_barney_4.wav",
-	"escape_barney_5.wav",
-	"escape_barney_6.wav",
-	"escape_barney_7.wav",
-	"escape_barney_8.wav",
-	"escape_barney_9.wav",
-};
-
-#define NUM_MASTER_escape_series_escape2 1
-static const char * MASTER_escape_series_escape2[NUM_MASTER_escape_series_escape2] =
-{
-	"escape2_intro.wav",
-};
-
-#define NUM_MASTER_escape_series_escape3 15
-static const char * MASTER_escape_series_escape3[NUM_MASTER_escape_series_escape3] =
-{
-	"boss.mp3",
-	"behind.wav",
-	"bloodandrust.wav",
-	"boss.wav",
-	"breakingdown.wav",
-	"brutalskrik.wav",
-	"cagesound.wav",
-	"dank.wav",
-	"freakguyscream2.wav",
-	"intro.wav",
-	"sewers.wav",
-	"siren.wav",
-	"slasher.wav",
-	"timetorun.wav",
-	"whisper.wav",
-};
-
-#define NUM_MASTER_escape_series_fast_zombie 16
-static const char * MASTER_escape_series_fast_zombie[NUM_MASTER_escape_series_fast_zombie] =
-{
-	"claw_miss1.wav",
-	"claw_miss2.wav",
-	"claw_strike1.wav",
-	"claw_strike2.wav",
-	"claw_strike3.wav",
-	"zo_alert10.wav",
-	"zo_alert20.wav",
-	"zo_alert30.wav",
-	"zo_attack1.wav",
-	"zo_attack2.wav",
-	"zo_idle1.wav",
-	"zo_idle2.wav",
-	"zo_idle3.wav",
-	"zo_idle4.wav",
-	"zo_pain1.wav",
-	"zo_pain2.wav",
 };
 
 #define NUM_MASTER_extended 1
@@ -1543,6 +1628,63 @@ static const char * MASTER_fgrunt[NUM_MASTER_fgrunt] =
 	"yes.wav",
 	"yessir.wav",
 	"zone.wav",
+};
+
+#define NUM_MASTER_fortified 7
+static const char * MASTER_fortified[NUM_MASTER_fortified] =
+{
+	"callme.mp3",
+	"sc30menugleum_loop.mp3",
+	"hex_beep.ogg",
+	"hex_beepoff.ogg",
+	"hex_beepon.ogg",
+	"hex_buzz.ogg",
+	"hex_buzzoff.ogg",
+};
+
+#define NUM_MASTER_fortified_cornet 2
+static const char * MASTER_fortified_cornet[NUM_MASTER_fortified_cornet] =
+{
+	"fortifiedlose.wav",
+	"fortifiedwin.wav",
+};
+
+#define NUM_MASTER_fortified_intro 7
+static const char * MASTER_fortified_intro[NUM_MASTER_fortified_intro] =
+{
+	"intro1.ogg",
+	"intro2.ogg",
+	"intro3.ogg",
+	"intro4.ogg",
+	"intro5.ogg",
+	"intro6.ogg",
+	"intro7.ogg",
+};
+
+#define NUM_MASTER_fortified_merkwurdiglust 4
+static const char * MASTER_fortified_merkwurdiglust[NUM_MASTER_fortified_merkwurdiglust] =
+{
+	"byeblondi.ogg",
+	"plead1.ogg",
+	"plead2.ogg",
+	"scheisse.ogg",
+};
+
+#define NUM_MASTER_fortified_mrgeneral 12
+static const char * MASTER_fortified_mrgeneral[NUM_MASTER_fortified_mrgeneral] =
+{
+	"comm01.ogg",
+	"comm02.ogg",
+	"comm03.ogg",
+	"failed01.ogg",
+	"failed02.ogg",
+	"main.ogg",
+	"memorial1.ogg",
+	"memorial2.ogg",
+	"memorial3.ogg",
+	"shoothim.ogg",
+	"shuttlelaunch.ogg",
+	"teleunlock.ogg",
 };
 
 #define NUM_MASTER_fvox 142
@@ -1823,22 +1965,6 @@ static const char * MASTER_grunts2[NUM_MASTER_grunts2] =
 	"radio2.wav",
 };
 
-#define NUM_MASTER_hammerhead 11
-static const char * MASTER_hammerhead[NUM_MASTER_hammerhead] =
-{
-	"biggun1.wav",
-	"biggun3.wav",
-	"burning1.wav",
-	"mgun_burst1.wav",
-	"mine_deploy.wav",
-	"mortar.wav",
-	"mortarhit.wav",
-	"rifle1.wav",
-	"rifle2.wav",
-	"turretrot2.wav",
-	"warn3.wav",
-};
-
 #define NUM_MASTER_hassault 7
 static const char * MASTER_hassault[NUM_MASTER_hassault] =
 {
@@ -1872,7 +1998,7 @@ static const char * MASTER_headcrab[NUM_MASTER_headcrab] =
 	"hc_pain3.wav",
 };
 
-#define NUM_MASTER_hgrunt 334
+#define NUM_MASTER_hgrunt 346
 static const char * MASTER_hgrunt[NUM_MASTER_hgrunt] =
 {
 	"a!.wav",
@@ -1885,6 +2011,15 @@ static const char * MASTER_hgrunt[NUM_MASTER_hgrunt] =
 	"alien.wav",
 	"all!.wav",
 	"all.wav",
+	"alt_soldier04.wav",
+	"alt_soldier05.wav",
+	"alt_soldier06.wav",
+	"alt_soldier07.wav",
+	"alt_soldier08.wav",
+	"alt_soldier09.wav",
+	"alt_soldier10.wav",
+	"alt_soldier11.wav",
+	"alt_soldier12.wav",
 	"am!.wav",
 	"am.wav",
 	"anything!.wav",
@@ -2031,6 +2166,9 @@ static const char * MASTER_hgrunt[NUM_MASTER_hgrunt] =
 	"hostiles.wav",
 	"hot!.wav",
 	"hot.wav",
+	"ht05_halfway.wav",
+	"ht07_dontknow.wav",
+	"ht07_tracking.wav",
 	"hundredmeters.wav",
 	"i!.wav",
 	"i.wav",
@@ -2211,6 +2349,31 @@ static const char * MASTER_hgrunt[NUM_MASTER_hgrunt] =
 	"_period.wav",
 };
 
+#define NUM_MASTER_hl_items 3
+static const char * MASTER_hl_items[NUM_MASTER_hl_items] =
+{
+	"clipinsert1.wav",
+	"cliprelease1.wav",
+	"guncock1.wav",
+};
+
+#define NUM_MASTER_hl_weapons 12
+static const char * MASTER_hl_weapons[NUM_MASTER_hl_weapons] =
+{
+	"357_cock1.wav",
+	"dbarrel1.wav",
+	"dryfire1.wav",
+	"glauncher.wav",
+	"glauncher2.wav",
+	"hks1.wav",
+	"hks2.wav",
+	"hks3.wav",
+	"reload1.wav",
+	"reload3.wav",
+	"sbarrel1.wav",
+	"scock1.wav",
+};
+
 #define NUM_MASTER_holo 50
 static const char * MASTER_holo[NUM_MASTER_holo] =
 {
@@ -2321,13 +2484,19 @@ static const char * MASTER_hunger_alfred[NUM_MASTER_hunger_alfred] =
 	"_period.wav",
 };
 
-#define NUM_MASTER_hunger_franklin 9
+#define NUM_MASTER_hunger_franklin 15
 static const char * MASTER_hunger_franklin[NUM_MASTER_hunger_franklin] =
 {
 	"frank1.wav",
 	"frank2.wav",
 	"frank3.wav",
 	"frank4.wav",
+	"frankbot1.wav",
+	"frankbot2.wav",
+	"frankbot3.wav",
+	"franklin4.wav",
+	"franklin4_2_2.wav",
+	"franklin5.wav",
 	"frank_die.wav",
 	"frank_run.wav",
 	"standback.wav",
@@ -2543,9 +2712,10 @@ static const char * MASTER_hunger_recorder[NUM_MASTER_hunger_recorder] =
 	"tape_machine.wav",
 };
 
-#define NUM_MASTER_hunger_sheriff 11
+#define NUM_MASTER_hunger_sheriff 15
 static const char * MASTER_hunger_sheriff[NUM_MASTER_hunger_sheriff] =
 {
+	"cussfranklin.wav",
 	"rayward.wav",
 	"sherif1.wav",
 	"sherif2.wav",
@@ -2554,12 +2724,15 @@ static const char * MASTER_hunger_sheriff[NUM_MASTER_hunger_sheriff] =
 	"sherif5.wav",
 	"sherif6.wav",
 	"sombitch.wav",
+	"speech1.wav",
+	"speech2.wav",
 	"suicide.wav",
+	"takemaway.wav",
 	"wav.wav",
 	"_period.wav",
 };
 
-#define NUM_MASTER_hunger_thambs 78
+#define NUM_MASTER_hunger_thambs 83
 static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 {
 	"ap_rotor3new.wav",
@@ -2581,10 +2754,15 @@ static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 	"cricket.wav",
 	"crickets.wav",
 	"crow.wav",
+	"crying_loop_1.wav",
+	"crying_loop_2.wav",
+	"crying_loop_3.wav",
+	"dialtone.wav",
 	"digout1.wav",
 	"distantmortar3.wav",
 	"dogamb1.wav",
 	"frog.wav",
+	"helldream1.wav",
 	"lava.wav",
 	"lava2.wav",
 	"leaves1.wav",
@@ -2741,6 +2919,11 @@ static const char * MASTER_ichy[NUM_MASTER_ichy] =
 static const char * MASTER_incoming[NUM_MASTER_incoming] =
 {
 	"s2.mod",
+	"d.ogg",
+	"f.ogg",
+	"f2.ogg",
+	"w.ogg",
+	"w2.ogg",
 	"cbar_hit1.wav",
 	"cbar_hit2.wav",
 	"cbar_hit3.wav",
@@ -2748,13 +2931,8 @@ static const char * MASTER_incoming[NUM_MASTER_incoming] =
 	"cbar_hitbod2.wav",
 	"cbar_hitbod3.wav",
 	"cbar_miss1.wav",
-	"d.wav",
 	"df.wav",
-	"f.wav",
-	"f2.wav",
 	"s.wav",
-	"w.wav",
-	"w2.wav",
 };
 
 #define NUM_MASTER_infested 3
@@ -2779,7 +2957,7 @@ static const char * MASTER_intro[NUM_MASTER_intro] =
 	"w6_watchit.wav",
 };
 
-#define NUM_MASTER_items 29
+#define NUM_MASTER_items 31
 static const char * MASTER_items[NUM_MASTER_items] =
 {
 	"9mmclip1.wav",
@@ -2804,6 +2982,8 @@ static const char * MASTER_items[NUM_MASTER_items] =
 	"rope1.wav",
 	"rope2.wav",
 	"rope3.wav",
+	"r_item1.wav",
+	"r_item2.wav",
 	"smallmedkit1.wav",
 	"smallmedkit2.wav",
 	"suitcharge1.wav",
@@ -2811,29 +2991,6 @@ static const char * MASTER_items[NUM_MASTER_items] =
 	"suitchargeok1.wav",
 	"weapondrop1.wav",
 	"weapondrop2.wav",
-};
-
-#define NUM_MASTER_it_has_leaks 10
-static const char * MASTER_it_has_leaks[NUM_MASTER_it_has_leaks] =
-{
-	"drip1.wav",
-	"fire1.wav",
-	"jumppad.wav",
-	"lava.WAV",
-	"power.wav",
-	"q_secret.wav",
-	"runeuse.wav",
-	"teleport.wav",
-	"wind2.wav",
-	"windfly.wav",
-};
-
-#define NUM_MASTER_jumpers 3
-static const char * MASTER_jumpers[NUM_MASTER_jumpers] =
-{
-	"death3.wav",
-	"endgame.wav",
-	"saftey.wav",
 };
 
 #define NUM_MASTER_kingpin 19
@@ -2860,9 +3017,10 @@ static const char * MASTER_kingpin[NUM_MASTER_kingpin] =
 	"port_suckout1.wav",
 };
 
-#define NUM_MASTER_last 2
+#define NUM_MASTER_last 3
 static const char * MASTER_last[NUM_MASTER_last] =
 {
+	"lightclunk-big.wav",
 	"lightclunk.wav",
 	"radiobattle.wav",
 };
@@ -2933,22 +3091,35 @@ static const char * MASTER_misc[NUM_MASTER_misc] =
 	"wind2.wav",
 };
 
-#define NUM_MASTER_mommamesa 14
+#define NUM_MASTER_mommamesa 27
 static const char * MASTER_mommamesa[NUM_MASTER_mommamesa] =
 {
+	"hovertank_loop.ogg",
+	"hovertank_start.ogg",
+	"hovertank_stop.ogg",
+	"jp_coolingmetal.ogg",
+	"jp_dinnerparty.ogg",
+	"jp_drippage.ogg",
+	"jp_hydraulic_move_loop.ogg",
+	"jp_hydraulic_stop.ogg",
+	"jp_icemaker.ogg",
+	"jp_waterflow.ogg",
+	"lose.ogg",
+	"pinkslip.ogg",
+	"selfdestruct.ogg",
+	"win.ogg",
 	"ba_attack2.wav",
 	"effect_on.wav",
 	"explode.wav",
 	"lava.wav",
-	"lose.wav",
 	"null.wav",
-	"selfdestruct.wav",
 	"trap_door.wav",
 	"trap_mines.wav",
 	"trap_turrets.wav",
 	"uplink_begin.wav",
 	"waveloop.wav",
-	"win.wav",
+	"weirdlaugh1.wav",
+	"weirdlaugh2.wav",
 	"xtal_down1.wav",
 };
 
@@ -2959,29 +3130,34 @@ static const char * MASTER_mommamesa_gunshot[NUM_MASTER_mommamesa_gunshot] =
 	"p90-1.wav",
 };
 
-#define NUM_MASTER_mommamesa_music 20
+#define NUM_MASTER_mommamesa_megagauss 2
+static const char * MASTER_mommamesa_megagauss[NUM_MASTER_mommamesa_megagauss] =
+{
+	"gauss2.wav",
+	"pulsemachine.wav",
+};
+
+#define NUM_MASTER_mommamesa_music 18
 static const char * MASTER_mommamesa_music[NUM_MASTER_mommamesa_music] =
 {
-	"bgmusic01.wav",
-	"bgmusic01_intro.wav",
-	"bgmusic02.wav",
-	"bgmusic02_intro.wav",
-	"bgmusic03.wav",
-	"bgmusic03_intro.wav",
-	"bgmusic04.wav",
-	"bgmusic05.wav",
-	"chords.wav",
-	"citadel.wav",
-	"credits.wav",
-	"crisis.wav",
-	"crisis_end.wav",
-	"crisis_intro.wav",
-	"eon8.wav",
-	"escape.wav",
-	"gladiator_battle.wav",
+	"chords.mp3",
+	"caves.ogg",
+	"citadel.ogg",
+	"escape.ogg",
+	"fishproblem.ogg",
+	"hitmen.ogg",
+	"outro_01.ogg",
+	"outro_02.ogg",
+	"outro_03.ogg",
+	"perimeter.ogg",
+	"perimeter_idle.ogg",
+	"perimeter_intro.ogg",
+	"portal_lab.ogg",
+	"theroach.ogg",
+	"tunnels.ogg",
+	"uplink.ogg",
+	"victory.ogg",
 	"training.wav",
-	"unknown.wav",
-	"victory.wav",
 };
 
 #define NUM_MASTER_nihilanth 14
@@ -3018,16 +3194,6 @@ static const char * MASTER_ops[NUM_MASTER_ops] =
 	"of6a2_bo01.wav",
 	"of6a2_bo02.wav",
 	"of6a2_bo03.wav",
-};
-
-#define NUM_MASTER_osprey2 5
-static const char * MASTER_osprey2[NUM_MASTER_osprey2] =
-{
-	"askinyou.wav",
-	"damn_you.wav",
-	"fluorescent.wav",
-	"hamburg.wav",
-	"shutfat.wav",
 };
 
 #define NUM_MASTER_otis 107
@@ -3197,7 +3363,7 @@ static const char * MASTER_pitworm[NUM_MASTER_pitworm] =
 	"pit_worm_idle3.wav",
 };
 
-#define NUM_MASTER_plats 36
+#define NUM_MASTER_plats 45
 static const char * MASTER_plats[NUM_MASTER_plats] =
 {
 	"bigmove1.wav",
@@ -3236,9 +3402,18 @@ static const char * MASTER_plats[NUM_MASTER_plats] =
 	"ttrain7.wav",
 	"ttrain_brake1.wav",
 	"ttrain_start1.wav",
+	"vehicle1.wav",
+	"vehicle2.wav",
+	"vehicle3.wav",
+	"vehicle4.wav",
+	"vehicle6.wav",
+	"vehicle7.wav",
+	"vehicle_brake1.wav",
+	"vehicle_ignition.wav",
+	"vehicle_start1.wav",
 };
 
-#define NUM_MASTER_player 91
+#define NUM_MASTER_player 104
 static const char * MASTER_player[NUM_MASTER_player] =
 {
 	"boots1.wav",
@@ -3255,6 +3430,7 @@ static const char * MASTER_player[NUM_MASTER_player] =
 	"geiger6.wav",
 	"heartbeat1.wav",
 	"hud_nightvision.wav",
+	"knifed.wav",
 	"null.wav",
 	"pcv_vest.wav",
 	"pl_dirt1.wav",
@@ -3265,6 +3441,10 @@ static const char * MASTER_player[NUM_MASTER_player] =
 	"pl_dirt3a.wav",
 	"pl_dirt4.wav",
 	"pl_dirt4a.wav",
+	"pl_dirt5.wav",
+	"pl_dirt6.wav",
+	"pl_dirt7.wav",
+	"pl_dirt8.wav",
 	"pl_duct1.wav",
 	"pl_duct2.wav",
 	"pl_duct3.wav",
@@ -3310,10 +3490,18 @@ static const char * MASTER_player[NUM_MASTER_player] =
 	"pl_snow2.wav",
 	"pl_snow3.wav",
 	"pl_snow4.wav",
+	"pl_snow5.wav",
+	"pl_snow6.wav",
+	"pl_snow7.wav",
+	"pl_snow8.wav",
 	"pl_step1.wav",
 	"pl_step2.wav",
 	"pl_step3.wav",
 	"pl_step4.wav",
+	"pl_step5.wav",
+	"pl_step6.wav",
+	"pl_step7.wav",
+	"pl_step8.wav",
 	"pl_swim1.wav",
 	"pl_swim2.wav",
 	"pl_swim3.wav",
@@ -3334,10 +3522,9 @@ static const char * MASTER_player[NUM_MASTER_player] =
 	"sprayer.wav",
 };
 
-#define NUM_MASTER_puchi_spportal 10
+#define NUM_MASTER_puchi_spportal 9
 static const char * MASTER_puchi_spportal[NUM_MASTER_puchi_spportal] =
 {
-	"f2_new.wav",
 	"NA0.wav",
 	"NA2.wav",
 	"NA3.wav",
@@ -3363,13 +3550,6 @@ static const char * MASTER_radio[NUM_MASTER_radio] =
 	"static.wav",
 };
 
-#define NUM_MASTER_Rampage 2
-static const char * MASTER_Rampage[NUM_MASTER_Rampage] =
-{
-	"button3.wav",
-	"of1a6_rd01.wav",
-};
-
 #define NUM_MASTER_richard_boderman 6
 static const char * MASTER_richard_boderman[NUM_MASTER_richard_boderman] =
 {
@@ -3381,209 +3561,12 @@ static const char * MASTER_richard_boderman[NUM_MASTER_richard_boderman] =
 	"null.wav",
 };
 
-#define NUM_MASTER_rng 13
-static const char * MASTER_rng[NUM_MASTER_rng] =
-{
-	"kyper_kuutio2_loop.ogg",
-	"kyper_kuutio3b_loop.ogg",
-	"kyper_kuutio3_loop.ogg",
-	"kyper_kuutio4_loop.ogg",
-	"kyper_kuutio_intro.ogg",
-	"kyper_kuutio_intro2.ogg",
-	"kyper_kuutio_introb.ogg",
-	"kyper_kuutio_loop.ogg",
-	"kyper_kuutio_outro.ogg",
-	"kyper_kuutio_ship.wav",
-	"kyper_kuutio_ship2.wav",
-	"kyper_kuutio_trigger.wav",
-	"kyper_kuutio_trigger2.wav",
-};
-
 #define NUM_MASTER_roach 3
 static const char * MASTER_roach[NUM_MASTER_roach] =
 {
 	"rch_die.wav",
 	"rch_smash.wav",
 	"rch_walk.wav",
-};
-
-#define NUM_MASTER_rosenberg 174
-static const char * MASTER_rosenberg[NUM_MASTER_rosenberg] =
-{
-	"ro_01_admin.wav",
-	"ro_01_alive.wav",
-	"ro_01_assure.wav",
-	"ro_01_callhelp.wav",
-	"ro_01_chargers.wav",
-	"ro_01_dampen.wav",
-	"ro_01_danger.wav",
-	"ro_01_fields.wav",
-	"ro_01_grudge.wav",
-	"ro_01_keller.wav",
-	"ro_01_leaving.wav",
-	"ro_01_letsgo.wav",
-	"ro_01_realize.wav",
-	"ro_01_sigh.wav",
-	"ro_01_spectrom.wav",
-	"ro_01_survived.wav",
-	"ro_01_touch.wav",
-	"ro_01_yesright.wav",
-	"ro_02_careful.wav",
-	"ro_02_despite.wav",
-	"ro_02_elevator.wav",
-	"ro_02_follow.wav",
-	"ro_02_madeit.wav",
-	"ro_02_moving.wav",
-	"ro_02_opendoor.wav",
-	"ro_02_thanks.wav",
-	"ro_02_waithere.wav",
-	"ro_03_aligned.wav",
-	"ro_03_excellent.wav",
-	"ro_03_inside.wav",
-	"ro_03_keller.wav",
-	"ro_03_madeit.wav",
-	"ro_03_makeway.wav",
-	"ro_03_notalign.wav",
-	"ro_03_notalign2.wav",
-	"ro_03_perfect.wav",
-	"ro_03_rotated.wav",
-	"ro_03_senddown.wav",
-	"ro_03_surface.wav",
-	"ro_03_toofar.wav",
-	"ro_03_waithere.wav",
-	"ro_calhoun.wav",
-	"ro_calhoun2.wav",
-	"ro_cure0.wav",
-	"ro_cure1.wav",
-	"ro_cure2.wav",
-	"ro_fear0.wav",
-	"ro_fear1.wav",
-	"ro_fear2.wav",
-	"ro_fear3.wav",
-	"ro_fear4.wav",
-	"ro_fear5.wav",
-	"ro_heal0.wav",
-	"ro_heal1.wav",
-	"ro_heal2.wav",
-	"ro_heal3.wav",
-	"ro_heal4.wav",
-	"ro_inside_car.wav",
-	"ro_letstrythis.wav",
-	"ro_mortal0.wav",
-	"ro_mortal1.wav",
-	"ro_ok0.wav",
-	"ro_ok1.wav",
-	"ro_ok2.wav",
-	"ro_ok3.wav",
-	"ro_ok4.wav",
-	"ro_ok5.wav",
-	"ro_ok6.wav",
-	"ro_ok7.wav",
-	"ro_ok8.wav",
-	"ro_ok9.wav",
-	"ro_outro1.wav",
-	"ro_outro2.wav",
-	"ro_pain0.wav",
-	"ro_pain1.wav",
-	"ro_pain2.wav",
-	"ro_pain3.wav",
-	"ro_pain4.wav",
-	"ro_pain5.wav",
-	"ro_pain6.wav",
-	"ro_pain7.wav",
-	"ro_pain8.wav",
-	"ro_plfear0.wav",
-	"ro_plfear1.wav",
-	"ro_plfear2.wav",
-	"ro_plfear3.wav",
-	"ro_plfear4.wav",
-	"ro_rug.wav",
-	"ro_scared0.wav",
-	"ro_scared1.wav",
-	"ro_scared2.wav",
-	"ro_stop0.wav",
-	"ro_stop1.wav",
-	"ro_stop2.wav",
-	"ro_stop3.wav",
-	"ro_stop4.wav",
-	"ro_tele_almost1.wav",
-	"ro_tele_almost2.wav",
-	"ro_tele_final01.wav",
-	"ro_tele_final02.wav",
-	"ro_tele_final03.wav",
-	"ro_tele_final04.wav",
-	"ro_tele_final05.wav",
-	"ro_tele_final06.wav",
-	"ro_tele_final07.wav",
-	"ro_tele_final08.wav",
-	"ro_tele_final09.wav",
-	"ro_tele_final10.wav",
-	"ro_tele_final11.wav",
-	"ro_tele_final12.wav",
-	"ro_tele_final13.wav",
-	"ro_tele_final14.wav",
-	"ro_tele_final15.wav",
-	"ro_tele_final16.wav",
-	"ro_tele_final17.wav",
-	"ro_tele_final18.wav",
-	"ro_tele_final19.wav",
-	"ro_tele_final20.wav",
-	"ro_tele_final21.wav",
-	"ro_tele_final22.wav",
-	"ro_tele_final23.wav",
-	"ro_tele_final24.wav",
-	"ro_tele_final25.wav",
-	"ro_tele_final26.wav",
-	"ro_tele_final27.wav",
-	"ro_tele_final28.wav",
-	"ro_tele_nocell.wav",
-	"ro_tele_power1.wav",
-	"ro_tele_power2.wav",
-	"ro_tele_power3.wav",
-	"ro_tele_power4.wav",
-	"ro_tele_power5.wav",
-	"ro_tele_xen01.wav",
-	"ro_tele_xen02.wav",
-	"ro_tele_xen03a.wav",
-	"ro_tele_xen03b.wav",
-	"ro_tele_xen04.wav",
-	"ro_tele_xen05.wav",
-	"ro_tele_xen06.wav",
-	"ro_tele_xen07.wav",
-	"ro_tele_xen08.wav",
-	"ro_tele_xen09.wav",
-	"ro_tele_xen10.wav",
-	"ro_tele_xen11.wav",
-	"ro_tele_xen12.wav",
-	"ro_too_slow.wav",
-	"ro_to_teleport.wav",
-	"ro_wait0.wav",
-	"ro_wait1.wav",
-	"ro_wait2.wav",
-	"ro_wait3.wav",
-	"ro_wait4.wav",
-	"ro_wait5.wav",
-	"ro_wait6.wav",
-	"ro_wait7.wav",
-	"ro_wound0.wav",
-	"ro_wound1.wav",
-	"ro_xen_call1.wav",
-	"ro_xen_call2.wav",
-	"ro_xen_call3.wav",
-	"ro_yard_access1.wav",
-	"ro_yard_access2.wav",
-	"ro_yard_almost2.wav",
-	"ro_yard_almost3.wav",
-	"ro_yard_follow1.wav",
-	"ro_yard_follow2.wav",
-	"ro_yard_hurry02.wav",
-	"ro_yard_notime1.wav",
-	"ro_yard_rose1.wav",
-	"ro_yard_rose2.wav",
-	"ro_yard_rose3.wav",
-	"ro_yard_rose4.wav",
-	"ro_yard_scanner.wav",
-	"_comma.wav",
 };
 
 #define NUM_MASTER_sandstone 8
@@ -3599,7 +3582,7 @@ static const char * MASTER_sandstone[NUM_MASTER_sandstone] =
 	"missiles2.wav",
 };
 
-#define NUM_MASTER_scientist 453
+#define NUM_MASTER_scientist 481
 static const char * MASTER_scientist[NUM_MASTER_scientist] =
 {
 	"absolutely.wav",
@@ -3616,6 +3599,10 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"announcer.wav",
 	"areyouthink.wav",
 	"asexpected.wav",
+	"assist.wav",
+	"b01_sci01_whereami.wav",
+	"b01_sci02_briefcase.wav",
+	"b01_sci03_sirplease.wav",
 	"beenaburden.wav",
 	"beverage.wav",
 	"bloodsample.wav",
@@ -3734,6 +3721,7 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"c3a2_sci_shower.wav",
 	"c3a2_sci_straws.wav",
 	"c3a2_sci_uphere.wav",
+	"c3a2_sci_uphere_alt.wav",
 	"cantbeserious.wav",
 	"cantbeworse.wav",
 	"canttakemore.wav",
@@ -3741,11 +3729,15 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"catchone.wav",
 	"chaostheory.wav",
 	"checkatten.wav",
+	"chimp.wav",
 	"completelywrong.wav",
 	"containfail.wav",
 	"corporal.wav",
 	"correcttheory.wav",
 	"cough.wav",
+	"crossgreen.wav",
+	"crowbar.wav",
+	"dangerous.wav",
 	"delayagain.wav",
 	"didyouhear.wav",
 	"dinner.wav",
@@ -3763,6 +3755,7 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"fellowscientist.wav",
 	"fine.wav",
 	"fix.wav",
+	"forcefield_b.wav",
 	"freeman.wav",
 	"freemanalive.wav",
 	"fusionshunt.wav",
@@ -3786,6 +3779,7 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"hello2.wav",
 	"hellofreeman.wav",
 	"hellofromlab.wav",
+	"helloladies.wav",
 	"hellothere.wav",
 	"hideglasses.wav",
 	"holdstill.wav",
@@ -3794,6 +3788,8 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"howinteresting.wav",
 	"hungryyet.wav",
 	"ibelieveso.wav",
+	"icanhelp.wav",
+	"idiotic.wav",
 	"idontthinkso.wav",
 	"ihearsomething.wav",
 	"illwait.wav",
@@ -3809,6 +3805,8 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"iwounded2.wav",
 	"iwoundedbad.wav",
 	"justasked.wav",
+	"keller.wav",
+	"koso.wav",
 	"lambdalab.wav",
 	"leadtheway.wav",
 	"leavingme.wav",
@@ -3859,6 +3857,7 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"peculiarmarks.wav",
 	"peculiarodor.wav",
 	"perfectday.wav",
+	"perfume.wav",
 	"perhaps.wav",
 	"please.wav",
 	"positively.wav",
@@ -3875,6 +3874,7 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"rumorclean.wav",
 	"rumourclean.wav",
 	"runtest.wav",
+	"safetyinnumbers.wav",
 	"saved.wav",
 	"sci_1thou.wav",
 	"sci_2thou.wav",
@@ -3996,6 +3996,7 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"seeheadcrab.wav",
 	"seencup.wav",
 	"shakeunification.wav",
+	"shesgonemad.wav",
 	"shutdownchart.wav",
 	"shutup.wav",
 	"shutup2.wav",
@@ -4003,9 +4004,11 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"slowingyou.wav",
 	"smellburn.wav",
 	"sneeze.wav",
+	"sniffle.wav",
 	"softethics.wav",
 	"somethingfoul.wav",
 	"sorryimleaving.wav",
+	"spinals.wav",
 	"startle1.wav",
 	"startle2.wav",
 	"startle3.wav",
@@ -4024,12 +4027,18 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"stop4.wav",
 	"stopasking.wav",
 	"stopattacking.wav",
+	"sunsets.wav",
 	"survival.wav",
+	"thatsmell.wav",
 	"thatsodd.wav",
 	"theoretically.wav",
 	"thiswillhelp.wav",
+	"ties.wav",
+	"tram.wav",
 	"tunedtoday.wav",
 	"tunnelcalc.wav",
+	"underbarrel.wav",
+	"undertest.wav",
 	"uselessphd.wav",
 	"ushouldsee.wav",
 	"waithere.wav",
@@ -4042,6 +4051,8 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"whoresponsible.wav",
 	"whyaskme.wav",
 	"whyleavehere.wav",
+	"xena.wav",
+	"yawn.wav",
 	"yees.wav",
 	"yes.wav",
 	"yes2.wav",
@@ -4055,28 +4066,6 @@ static const char * MASTER_scientist[NUM_MASTER_scientist] =
 	"youneedmedic.wav",
 	"youwounded.wav",
 	"_comma.wav",
-};
-
-#define NUM_MASTER_sc_activist 17
-static const char * MASTER_sc_activist[NUM_MASTER_sc_activist] =
-{
-	"ALARM.wav",
-	"boomer.wav",
-	"button1.wav",
-	"clock-tic.wav",
-	"drips.wav",
-	"elevbell1.wav",
-	"emdrill.wav",
-	"industrial4.wav",
-	"rocket_groan1.wav",
-	"sc_activist_1.wav",
-	"sc_activist_2.wav",
-	"sc_activist_3.wav",
-	"sc_activist_4.wav",
-	"sc_activist_5.wav",
-	"sc_activist_6.wav",
-	"sc_activist_7.wav",
-	"waterfall3.wav",
 };
 
 #define NUM_MASTER_sc_incoming 10
@@ -4134,48 +4123,6 @@ static const char * MASTER_sc_psyko[NUM_MASTER_sc_psyko] =
 	"slime_pain1.WAV",
 	"slime_pain2.WAV",
 	"tympani.WAV",
-};
-
-#define NUM_MASTER_sc_robination 6
-static const char * MASTER_sc_robination[NUM_MASTER_sc_robination] =
-{
-	"alarm001.wav",
-	"crash.wav",
-	"cuboos_alien_horn2.wav",
-	"darksecret.wav",
-	"item_respawn.wav",
-	"petardo1.wav",
-};
-
-#define NUM_MASTER_sc_royals 26
-static const char * MASTER_sc_royals[NUM_MASTER_sc_royals] =
-{
-	"blade.wav",
-	"chant1.wav",
-	"damn.wav",
-	"deadscrm.wav",
-	"endmusic2e.wav",
-	"endmusic3e.wav",
-	"footsteps.wav",
-	"gogogo.wav",
-	"imsorry.wav",
-	"laugh4.wav",
-	"laugh5.wav",
-	"mummy_alert1.wav",
-	"mummy_alert2.wav",
-	"mummy_alert3.wav",
-	"mummy_attack1.wav",
-	"mummy_attack2.wav",
-	"mummy_idle1.wav",
-	"mummy_idle2.wav",
-	"mummy_idle3.wav",
-	"mummy_idle4.wav",
-	"mummy_pain1.wav",
-	"mummy_pain2.wav",
-	"pharaoh_die.wav",
-	"pharaoh_pain.wav",
-	"thatsit.wav",
-	"yoga.wav",
 };
 
 #define NUM_MASTER_sc_tetris 11
@@ -4351,6 +4298,13 @@ static const char * MASTER_squeek[NUM_MASTER_squeek] =
 	"sqk_hunt3.wav",
 };
 
+#define NUM_MASTER_stadium4 2
+static const char * MASTER_stadium4[NUM_MASTER_stadium4] =
+{
+	"electriciteloop.wav",
+	"powerslam.wav",
+};
+
 #define NUM_MASTER_stukabat 1
 static const char * MASTER_stukabat[NUM_MASTER_stukabat] =
 {
@@ -4422,11 +4376,133 @@ static const char * MASTER_tentacle[NUM_MASTER_tentacle] =
 	"te_swing2.wav",
 };
 
-#define NUM_MASTER_toonrun 5
+#define NUM_MASTER_tfc_ambience 3
+static const char * MASTER_tfc_ambience[NUM_MASTER_tfc_ambience] =
+{
+	"bell.wav",
+	"fire1.wav",
+	"goal_1.wav",
+};
+
+#define NUM_MASTER_tfc_items 14
+static const char * MASTER_tfc_items[NUM_MASTER_tfc_items] =
+{
+	"armoron_1.wav",
+	"damage.wav",
+	"damage2.wav",
+	"damage3.wav",
+	"health1.wav",
+	"inv1.wav",
+	"inv2.wav",
+	"inv3.wav",
+	"itembk2.wav",
+	"protect.wav",
+	"protect2.wav",
+	"protect3.wav",
+	"r_item1.wav",
+	"r_item2.wav",
+};
+
+#define NUM_MASTER_tfc_misc 13
+static const char * MASTER_tfc_misc[NUM_MASTER_tfc_misc] =
+{
+	"b1.wav",
+	"b2.wav",
+	"endgame.wav",
+	"party1.wav",
+	"party2.wav",
+	"r_tele1.wav",
+	"r_tele2.wav",
+	"r_tele3.wav",
+	"r_tele4.wav",
+	"talk.wav",
+	"teleport_in.wav",
+	"teleport_out.wav",
+	"teleport_ready.wav",
+};
+
+#define NUM_MASTER_tfc_player 17
+static const char * MASTER_tfc_player[NUM_MASTER_tfc_player] =
+{
+	"axhit1.wav",
+	"death1.wav",
+	"death2.wav",
+	"death3.wav",
+	"death4.wav",
+	"death5.wav",
+	"drown1.wav",
+	"drown2.wav",
+	"gib.wav",
+	"h2odeath.wav",
+	"pain1.wav",
+	"pain2.wav",
+	"pain3.wav",
+	"pain4.wav",
+	"pain5.wav",
+	"pain6.wav",
+	"plyrjmp8.wav",
+};
+
+#define NUM_MASTER_tfc_speech 2
+static const char * MASTER_tfc_speech[NUM_MASTER_tfc_speech] =
+{
+	"saveme1.wav",
+	"saveme2.wav",
+};
+
+#define NUM_MASTER_tfc_vox 11
+static const char * MASTER_tfc_vox[NUM_MASTER_tfc_vox] =
+{
+	"captured.wav",
+	"endgame.wav",
+	"enemy.wav",
+	"flag.wav",
+	"holds.wav",
+	"nerve_gas_released.wav",
+	"null.wav",
+	"reset.wav",
+	"returned.wav",
+	"scores.wav",
+	"stolen.wav",
+};
+
+#define NUM_MASTER_tfc_weapons 25
+static const char * MASTER_tfc_weapons[NUM_MASTER_tfc_weapons] =
+{
+	"airgun_1.wav",
+	"asscan1.wav",
+	"asscan2.wav",
+	"asscan3.wav",
+	"asscan4.wav",
+	"ax1.wav",
+	"building.wav",
+	"concgren_blast1.wav",
+	"concgren_blast2.wav",
+	"concgren_blast3.wav",
+	"dartgun.wav",
+	"emp_1.wav",
+	"flmfire2.wav",
+	"flmgrexp.wav",
+	"railgun.wav",
+	"sgun1.wav",
+	"shotgn2.wav",
+	"sniper.wav",
+	"spike1.wav",
+	"spike2.wav",
+	"timer.wav",
+	"tink1.wav",
+	"turridle.wav",
+	"turrset.wav",
+	"turrspot.wav",
+};
+
+#define NUM_MASTER_toonrun 7
 static const char * MASTER_toonrun[NUM_MASTER_toonrun] =
 {
 	"FlowerHurt.wav",
+	"lighthum.wav",
 	"ocean.wav",
+	"organ.wav",
 	"piano.wav",
 	"plop.wav",
 	"Smb.wav",
@@ -4505,13 +4581,14 @@ static const char * MASTER_turret[NUM_MASTER_turret] =
 	"tu_spinup.wav",
 };
 
-#define NUM_MASTER_turretfortress 13
+#define NUM_MASTER_turretfortress 14
 static const char * MASTER_turretfortress[NUM_MASTER_turretfortress] =
 {
 	"makov2.mp3",
 	"n2.mp3",
 	"aurora_loop.ogg",
 	"building.wav",
+	"coin.wav",
 	"emp_1.wav",
 	"hammer.wav",
 	"laser.wav",
@@ -4529,22 +4606,6 @@ static const char * MASTER_UI[NUM_MASTER_UI] =
 	"buttonclick.wav",
 	"buttonclickrelease.wav",
 	"buttonrollover.wav",
-};
-
-#define NUM_MASTER_vger 11
-static const char * MASTER_vger[NUM_MASTER_vger] =
-{
-	"all.wav",
-	"beer.wav",
-	"bleeeat.wav",
-	"capture.wav",
-	"goodjob.wav",
-	"heknows.wav",
-	"help.wav",
-	"personnel.wav",
-	"sniper.wav",
-	"theend.wav",
-	"yessir.wav",
 };
 
 #define NUM_MASTER_voltigore 25
@@ -4577,7 +4638,7 @@ static const char * MASTER_voltigore[NUM_MASTER_voltigore] =
 	"voltigore_run_grunt2.wav",
 };
 
-#define NUM_MASTER_vox 618
+#define NUM_MASTER_vox 622
 static const char * MASTER_vox[NUM_MASTER_vox] =
 {
 	"a.wav",
@@ -4711,6 +4772,7 @@ static const char * MASTER_vox[NUM_MASTER_vox] =
 	"damaged.wav",
 	"danger.wav",
 	"day.wav",
+	"deactivate.wav",
 	"deactivated.wav",
 	"decompression.wav",
 	"decontamination.wav",
@@ -4758,6 +4820,7 @@ static const char * MASTER_vox[NUM_MASTER_vox] =
 	"eleven.wav",
 	"eliminate.wav",
 	"emergency.wav",
+	"endgame.wav",
 	"energy.wav",
 	"engage.wav",
 	"engaged.wav",
@@ -4908,6 +4971,7 @@ static const char * MASTER_vox[NUM_MASTER_vox] =
 	"locked.wav",
 	"locker.wav",
 	"lockout.wav",
+	"lol.wav",
 	"lower.wav",
 	"lowest.wav",
 	"magnetic.wav",
@@ -5026,6 +5090,7 @@ static const char * MASTER_vox[NUM_MASTER_vox] =
 	"resistance.wav",
 	"right.wav",
 	"rocket.wav",
+	"rofl.wav",
 	"roger.wav",
 	"romeo.wav",
 	"room.wav",
@@ -5200,7 +5265,7 @@ static const char * MASTER_vox[NUM_MASTER_vox] =
 	"_period.wav",
 };
 
-#define NUM_MASTER_weapons 176
+#define NUM_MASTER_weapons 177
 static const char * MASTER_weapons[NUM_MASTER_weapons] =
 {
 	"357_chamberin.wav",
@@ -5233,6 +5298,7 @@ static const char * MASTER_weapons[NUM_MASTER_weapons] =
 	"cbar_hitbod3.wav",
 	"cbar_miss1.wav",
 	"dbarrel1.wav",
+	"dbarrel2.wav",
 	"debris1.wav",
 	"debris2.wav",
 	"debris3.wav",
@@ -5477,7 +5543,7 @@ static const char * MASTER_zombie[NUM_MASTER_zombie] =
 	"zo_pain2.wav",
 };
 
-#define NUM_MASTER_DIRS 144
+#define NUM_MASTER_DIRS 143
 static const char ** masterList[NUM_MASTER_DIRS];
 static int           masterSize[NUM_MASTER_DIRS];
 static const char *  masterDirs[NUM_MASTER_DIRS];
@@ -5489,54 +5555,54 @@ static void initMasterList()
 	masterList[3] = MASTER_adamr_music;
 	masterList[4] = MASTER_adamr_polar_rescue;
 	masterList[5] = MASTER_adamr_surround;
-	masterList[6] = MASTER_afrikakorps;
-	masterList[7] = MASTER_agrunt;
-	masterList[8] = MASTER_ambience;
-	masterList[9] = MASTER_apache;
-	masterList[10] = MASTER_aslave;
-	masterList[11] = MASTER_babygar;
-	masterList[12] = MASTER_babygarg;
-	masterList[13] = MASTER_barnacle;
-	masterList[14] = MASTER_barney;
-	masterList[15] = MASTER_ba_barney;
-	masterList[16] = MASTER_ba_holo;
-	masterList[17] = MASTER_ba_scientist;
-	masterList[18] = MASTER_blackmesaepf;
-	masterList[19] = MASTER_bodyguard;
-	masterList[20] = MASTER_boid;
-	masterList[21] = MASTER_bootcamp;
-	masterList[22] = MASTER_bshift_barney;
-	masterList[23] = MASTER_bshift_rosenberg;
-	masterList[24] = MASTER_bullchicken;
-	masterList[25] = MASTER_buttons;
-	masterList[26] = MASTER_common;
-	masterList[27] = MASTER_controller;
-	masterList[28] = MASTER_crystal;
-	masterList[29] = MASTER_crystal2;
-	masterList[30] = MASTER_deadsimpleneo;
-	masterList[31] = MASTER_debris;
-	masterList[32] = MASTER_demonprey;
-	masterList[33] = MASTER_doors;
-	masterList[34] = MASTER_drill;
-	masterList[35] = MASTER_escape_series;
-	masterList[36] = MASTER_escape_series_barney;
-	masterList[37] = MASTER_escape_series_escape2;
-	masterList[38] = MASTER_escape_series_escape3;
-	masterList[39] = MASTER_escape_series_fast_zombie;
-	masterList[40] = MASTER_extended;
-	masterList[41] = MASTER_fans;
-	masterList[42] = MASTER_fgrunt;
-	masterList[43] = MASTER_fvox;
-	masterList[44] = MASTER_garg;
-	masterList[45] = MASTER_geneworm;
-	masterList[46] = MASTER_gman;
-	masterList[47] = MASTER_gonarch;
-	masterList[48] = MASTER_gonome;
-	masterList[49] = MASTER_grunts2;
-	masterList[50] = MASTER_hammerhead;
-	masterList[51] = MASTER_hassault;
-	masterList[52] = MASTER_headcrab;
-	masterList[53] = MASTER_hgrunt;
+	masterList[6] = MASTER_agrunt;
+	masterList[7] = MASTER_ambience;
+	masterList[8] = MASTER_apache;
+	masterList[9] = MASTER_aslave;
+	masterList[10] = MASTER_babygarg;
+	masterList[11] = MASTER_barnacle;
+	masterList[12] = MASTER_barney;
+	masterList[13] = MASTER_ba_barney;
+	masterList[14] = MASTER_ba_holo;
+	masterList[15] = MASTER_ba_scientist;
+	masterList[16] = MASTER_blackmesaepf;
+	masterList[17] = MASTER_bodyguard;
+	masterList[18] = MASTER_boid;
+	masterList[19] = MASTER_bootcamp;
+	masterList[20] = MASTER_bshift_barney;
+	masterList[21] = MASTER_bshift_rosenberg;
+	masterList[22] = MASTER_bullchicken;
+	masterList[23] = MASTER_buttons;
+	masterList[24] = MASTER_cards;
+	masterList[25] = MASTER_common;
+	masterList[26] = MASTER_controller;
+	masterList[27] = MASTER_crystal;
+	masterList[28] = MASTER_crystal2;
+	masterList[29] = MASTER_deadsimpleneo;
+	masterList[30] = MASTER_debris;
+	masterList[31] = MASTER_descrcl;
+	masterList[32] = MASTER_doors;
+	masterList[33] = MASTER_drill;
+	masterList[34] = MASTER_extended;
+	masterList[35] = MASTER_fans;
+	masterList[36] = MASTER_fgrunt;
+	masterList[37] = MASTER_fortified;
+	masterList[38] = MASTER_fortified_cornet;
+	masterList[39] = MASTER_fortified_intro;
+	masterList[40] = MASTER_fortified_merkwurdiglust;
+	masterList[41] = MASTER_fortified_mrgeneral;
+	masterList[42] = MASTER_fvox;
+	masterList[43] = MASTER_garg;
+	masterList[44] = MASTER_geneworm;
+	masterList[45] = MASTER_gman;
+	masterList[46] = MASTER_gonarch;
+	masterList[47] = MASTER_gonome;
+	masterList[48] = MASTER_grunts2;
+	masterList[49] = MASTER_hassault;
+	masterList[50] = MASTER_headcrab;
+	masterList[51] = MASTER_hgrunt;
+	masterList[52] = MASTER_hl_items;
+	masterList[53] = MASTER_hl_weapons;
 	masterList[54] = MASTER_holo;
 	masterList[55] = MASTER_hornet;
 	masterList[56] = MASTER_houndeye;
@@ -5563,53 +5629,53 @@ static void initMasterList()
 	masterList[77] = MASTER_infested;
 	masterList[78] = MASTER_intro;
 	masterList[79] = MASTER_items;
-	masterList[80] = MASTER_it_has_leaks;
-	masterList[81] = MASTER_jumpers;
-	masterList[82] = MASTER_kingpin;
-	masterList[83] = MASTER_last;
-	masterList[84] = MASTER_leech;
-	masterList[85] = MASTER_minigun;
-	masterList[86] = MASTER_misc;
-	masterList[87] = MASTER_mommamesa;
-	masterList[88] = MASTER_mommamesa_gunshot;
-	masterList[89] = MASTER_mommamesa_music;
-	masterList[90] = MASTER_nihilanth;
-	masterList[91] = MASTER_omg;
-	masterList[92] = MASTER_ops;
-	masterList[93] = MASTER_osprey2;
-	masterList[94] = MASTER_otis;
-	masterList[95] = MASTER_pitdrone;
-	masterList[96] = MASTER_pitworm;
-	masterList[97] = MASTER_plats;
-	masterList[98] = MASTER_player;
-	masterList[99] = MASTER_puchi_spportal;
-	masterList[100] = MASTER_radio;
-	masterList[101] = MASTER_Rampage;
-	masterList[102] = MASTER_richard_boderman;
-	masterList[103] = MASTER_rng;
-	masterList[104] = MASTER_roach;
-	masterList[105] = MASTER_rosenberg;
-	masterList[106] = MASTER_sandstone;
-	masterList[107] = MASTER_scientist;
-	masterList[108] = MASTER_sc_activist;
-	masterList[109] = MASTER_sc_incoming;
-	masterList[110] = MASTER_sc_mazing;
-	masterList[111] = MASTER_sc_persia;
-	masterList[112] = MASTER_sc_psyko;
-	masterList[113] = MASTER_sc_robination;
-	masterList[114] = MASTER_sc_royals;
-	masterList[115] = MASTER_sc_tetris;
-	masterList[116] = MASTER_sectore;
-	masterList[117] = MASTER_sectore_3;
-	masterList[118] = MASTER_shockroach;
-	masterList[119] = MASTER_shocktrooper;
-	masterList[120] = MASTER_speech;
-	masterList[121] = MASTER_squeek;
-	masterList[122] = MASTER_stukabat;
-	masterList[123] = MASTER_svencoop1;
-	masterList[124] = MASTER_svencoop2;
-	masterList[125] = MASTER_svencoop3;
-	masterList[126] = MASTER_tentacle;
+	masterList[80] = MASTER_kingpin;
+	masterList[81] = MASTER_last;
+	masterList[82] = MASTER_leech;
+	masterList[83] = MASTER_minigun;
+	masterList[84] = MASTER_misc;
+	masterList[85] = MASTER_mommamesa;
+	masterList[86] = MASTER_mommamesa_gunshot;
+	masterList[87] = MASTER_mommamesa_megagauss;
+	masterList[88] = MASTER_mommamesa_music;
+	masterList[89] = MASTER_nihilanth;
+	masterList[90] = MASTER_omg;
+	masterList[91] = MASTER_ops;
+	masterList[92] = MASTER_otis;
+	masterList[93] = MASTER_pitdrone;
+	masterList[94] = MASTER_pitworm;
+	masterList[95] = MASTER_plats;
+	masterList[96] = MASTER_player;
+	masterList[97] = MASTER_puchi_spportal;
+	masterList[98] = MASTER_radio;
+	masterList[99] = MASTER_richard_boderman;
+	masterList[100] = MASTER_roach;
+	masterList[101] = MASTER_sandstone;
+	masterList[102] = MASTER_scientist;
+	masterList[103] = MASTER_sc_incoming;
+	masterList[104] = MASTER_sc_mazing;
+	masterList[105] = MASTER_sc_persia;
+	masterList[106] = MASTER_sc_psyko;
+	masterList[107] = MASTER_sc_tetris;
+	masterList[108] = MASTER_sectore;
+	masterList[109] = MASTER_sectore_3;
+	masterList[110] = MASTER_shockroach;
+	masterList[111] = MASTER_shocktrooper;
+	masterList[112] = MASTER_speech;
+	masterList[113] = MASTER_squeek;
+	masterList[114] = MASTER_stadium4;
+	masterList[115] = MASTER_stukabat;
+	masterList[116] = MASTER_svencoop1;
+	masterList[117] = MASTER_svencoop2;
+	masterList[118] = MASTER_svencoop3;
+	masterList[119] = MASTER_tentacle;
+	masterList[120] = MASTER_tfc_ambience;
+	masterList[121] = MASTER_tfc_items;
+	masterList[122] = MASTER_tfc_misc;
+	masterList[123] = MASTER_tfc_player;
+	masterList[124] = MASTER_tfc_speech;
+	masterList[125] = MASTER_tfc_vox;
+	masterList[126] = MASTER_tfc_weapons;
 	masterList[127] = MASTER_toonrun;
 	masterList[128] = MASTER_tor;
 	masterList[129] = MASTER_tram;
@@ -5618,75 +5684,74 @@ static void initMasterList()
 	masterList[132] = MASTER_turret;
 	masterList[133] = MASTER_turretfortress;
 	masterList[134] = MASTER_UI;
-	masterList[135] = MASTER_vger;
-	masterList[136] = MASTER_voltigore;
-	masterList[137] = MASTER_vox;
-	masterList[138] = MASTER_weapons;
-	masterList[139] = MASTER_weapons_afrikakorps;
-	masterList[140] = MASTER_weapons_cbe;
-	masterList[141] = MASTER_weapons_uzi;
-	masterList[142] = MASTER_x;
-	masterList[143] = MASTER_zombie;
+	masterList[135] = MASTER_voltigore;
+	masterList[136] = MASTER_vox;
+	masterList[137] = MASTER_weapons;
+	masterList[138] = MASTER_weapons_afrikakorps;
+	masterList[139] = MASTER_weapons_cbe;
+	masterList[140] = MASTER_weapons_uzi;
+	masterList[141] = MASTER_x;
+	masterList[142] = MASTER_zombie;
 
-	masterSize[0] = 1;
-	masterSize[1] = 1;
+	masterSize[0] = 2;
+	masterSize[1] = 4;
 	masterSize[2] = 1;
 	masterSize[3] = 1;
 	masterSize[4] = 8;
 	masterSize[5] = 14;
-	masterSize[6] = 1;
-	masterSize[7] = 27;
-	masterSize[8] = 158;
-	masterSize[9] = 5;
-	masterSize[10] = 15;
-	masterSize[11] = 1;
-	masterSize[12] = 25;
-	masterSize[13] = 8;
-	masterSize[14] = 228;
-	masterSize[15] = 4;
-	masterSize[16] = 44;
-	masterSize[17] = 7;
-	masterSize[18] = 4;
-	masterSize[19] = 48;
-	masterSize[20] = 5;
-	masterSize[21] = 2;
-	masterSize[22] = 1;
-	masterSize[23] = 131;
-	masterSize[24] = 26;
-	masterSize[25] = 31;
-	masterSize[26] = 27;
-	masterSize[27] = 16;
-	masterSize[28] = 14;
-	masterSize[29] = 4;
-	masterSize[30] = 3;
-	masterSize[31] = 64;
-	masterSize[32] = 2;
-	masterSize[33] = 23;
-	masterSize[34] = 115;
-	masterSize[35] = 8;
-	masterSize[36] = 9;
-	masterSize[37] = 1;
-	masterSize[38] = 15;
-	masterSize[39] = 16;
-	masterSize[40] = 1;
-	masterSize[41] = 15;
-	masterSize[42] = 195;
-	masterSize[43] = 142;
-	masterSize[44] = 25;
-	masterSize[45] = 15;
+	masterSize[6] = 27;
+	masterSize[7] = 158;
+	masterSize[8] = 6;
+	masterSize[9] = 15;
+	masterSize[10] = 25;
+	masterSize[11] = 8;
+	masterSize[12] = 332;
+	masterSize[13] = 4;
+	masterSize[14] = 44;
+	masterSize[15] = 7;
+	masterSize[16] = 4;
+	masterSize[17] = 48;
+	masterSize[18] = 5;
+	masterSize[19] = 2;
+	masterSize[20] = 1;
+	masterSize[21] = 131;
+	masterSize[22] = 26;
+	masterSize[23] = 31;
+	masterSize[24] = 52;
+	masterSize[25] = 28;
+	masterSize[26] = 16;
+	masterSize[27] = 14;
+	masterSize[28] = 4;
+	masterSize[29] = 3;
+	masterSize[30] = 64;
+	masterSize[31] = 6;
+	masterSize[32] = 23;
+	masterSize[33] = 115;
+	masterSize[34] = 1;
+	masterSize[35] = 15;
+	masterSize[36] = 195;
+	masterSize[37] = 7;
+	masterSize[38] = 2;
+	masterSize[39] = 7;
+	masterSize[40] = 4;
+	masterSize[41] = 12;
+	masterSize[42] = 142;
+	masterSize[43] = 25;
+	masterSize[44] = 15;
+	masterSize[45] = 22;
 	masterSize[46] = 22;
-	masterSize[47] = 22;
-	masterSize[48] = 15;
-	masterSize[49] = 2;
-	masterSize[50] = 11;
-	masterSize[51] = 7;
-	masterSize[52] = 16;
-	masterSize[53] = 334;
+	masterSize[47] = 15;
+	masterSize[48] = 2;
+	masterSize[49] = 7;
+	masterSize[50] = 16;
+	masterSize[51] = 346;
+	masterSize[52] = 3;
+	masterSize[53] = 12;
 	masterSize[54] = 50;
 	masterSize[55] = 6;
 	masterSize[56] = 25;
 	masterSize[57] = 9;
-	masterSize[58] = 9;
+	masterSize[58] = 15;
 	masterSize[59] = 11;
 	masterSize[60] = 17;
 	masterSize[61] = 24;
@@ -5697,8 +5762,8 @@ static void initMasterList()
 	masterSize[66] = 11;
 	masterSize[67] = 28;
 	masterSize[68] = 16;
-	masterSize[69] = 11;
-	masterSize[70] = 78;
+	masterSize[69] = 15;
+	masterSize[70] = 83;
 	masterSize[71] = 22;
 	masterSize[72] = 13;
 	masterSize[73] = 6;
@@ -5707,71 +5772,70 @@ static void initMasterList()
 	masterSize[76] = 15;
 	masterSize[77] = 3;
 	masterSize[78] = 9;
-	masterSize[79] = 29;
-	masterSize[80] = 10;
+	masterSize[79] = 31;
+	masterSize[80] = 19;
 	masterSize[81] = 3;
-	masterSize[82] = 19;
-	masterSize[83] = 2;
-	masterSize[84] = 5;
-	masterSize[85] = 1;
-	masterSize[86] = 45;
-	masterSize[87] = 14;
-	masterSize[88] = 2;
-	masterSize[89] = 20;
-	masterSize[90] = 14;
-	masterSize[91] = 1;
-	masterSize[92] = 6;
-	masterSize[93] = 5;
-	masterSize[94] = 107;
-	masterSize[95] = 26;
-	masterSize[96] = 19;
-	masterSize[97] = 36;
-	masterSize[98] = 91;
-	masterSize[99] = 10;
-	masterSize[100] = 9;
-	masterSize[101] = 2;
-	masterSize[102] = 6;
-	masterSize[103] = 13;
-	masterSize[104] = 3;
-	masterSize[105] = 174;
-	masterSize[106] = 8;
-	masterSize[107] = 453;
-	masterSize[108] = 17;
-	masterSize[109] = 10;
-	masterSize[110] = 2;
-	masterSize[111] = 9;
-	masterSize[112] = 16;
+	masterSize[82] = 5;
+	masterSize[83] = 1;
+	masterSize[84] = 45;
+	masterSize[85] = 27;
+	masterSize[86] = 2;
+	masterSize[87] = 2;
+	masterSize[88] = 18;
+	masterSize[89] = 14;
+	masterSize[90] = 1;
+	masterSize[91] = 6;
+	masterSize[92] = 107;
+	masterSize[93] = 26;
+	masterSize[94] = 19;
+	masterSize[95] = 45;
+	masterSize[96] = 104;
+	masterSize[97] = 9;
+	masterSize[98] = 9;
+	masterSize[99] = 6;
+	masterSize[100] = 3;
+	masterSize[101] = 8;
+	masterSize[102] = 481;
+	masterSize[103] = 10;
+	masterSize[104] = 2;
+	masterSize[105] = 9;
+	masterSize[106] = 16;
+	masterSize[107] = 11;
+	masterSize[108] = 78;
+	masterSize[109] = 1;
+	masterSize[110] = 10;
+	masterSize[111] = 28;
+	masterSize[112] = 4;
 	masterSize[113] = 6;
-	masterSize[114] = 26;
-	masterSize[115] = 11;
-	masterSize[116] = 78;
-	masterSize[117] = 1;
-	masterSize[118] = 10;
-	masterSize[119] = 28;
-	masterSize[120] = 4;
-	masterSize[121] = 6;
-	masterSize[122] = 1;
-	masterSize[123] = 12;
-	masterSize[124] = 12;
-	masterSize[125] = 4;
-	masterSize[126] = 17;
-	masterSize[127] = 5;
+	masterSize[114] = 2;
+	masterSize[115] = 1;
+	masterSize[116] = 12;
+	masterSize[117] = 12;
+	masterSize[118] = 4;
+	masterSize[119] = 17;
+	masterSize[120] = 3;
+	masterSize[121] = 14;
+	masterSize[122] = 13;
+	masterSize[123] = 17;
+	masterSize[124] = 2;
+	masterSize[125] = 11;
+	masterSize[126] = 25;
+	masterSize[127] = 7;
 	masterSize[128] = 14;
 	masterSize[129] = 9;
 	masterSize[130] = 10;
 	masterSize[131] = 2;
 	masterSize[132] = 13;
-	masterSize[133] = 13;
+	masterSize[133] = 14;
 	masterSize[134] = 3;
-	masterSize[135] = 11;
-	masterSize[136] = 25;
-	masterSize[137] = 618;
-	masterSize[138] = 176;
-	masterSize[139] = 12;
-	masterSize[140] = 10;
-	masterSize[141] = 17;
+	masterSize[135] = 25;
+	masterSize[136] = 622;
+	masterSize[137] = 177;
+	masterSize[138] = 12;
+	masterSize[139] = 10;
+	masterSize[140] = 17;
+	masterSize[141] = 16;
 	masterSize[142] = 16;
-	masterSize[143] = 16;
 
 	masterDirs[0] = "";
 	masterDirs[1] = "adamr";
@@ -5779,54 +5843,54 @@ static void initMasterList()
 	masterDirs[3] = "adamr/music";
 	masterDirs[4] = "adamr/polar_rescue";
 	masterDirs[5] = "adamr/surround";
-	masterDirs[6] = "afrikakorps";
-	masterDirs[7] = "agrunt";
-	masterDirs[8] = "ambience";
-	masterDirs[9] = "apache";
-	masterDirs[10] = "aslave";
-	masterDirs[11] = "babygar";
-	masterDirs[12] = "babygarg";
-	masterDirs[13] = "barnacle";
-	masterDirs[14] = "barney";
-	masterDirs[15] = "ba_barney";
-	masterDirs[16] = "ba_holo";
-	masterDirs[17] = "ba_scientist";
-	masterDirs[18] = "blackmesaepf";
-	masterDirs[19] = "bodyguard";
-	masterDirs[20] = "boid";
-	masterDirs[21] = "bootcamp";
-	masterDirs[22] = "bshift/barney";
-	masterDirs[23] = "bshift/rosenberg";
-	masterDirs[24] = "bullchicken";
-	masterDirs[25] = "buttons";
-	masterDirs[26] = "common";
-	masterDirs[27] = "controller";
-	masterDirs[28] = "crystal";
-	masterDirs[29] = "crystal2";
-	masterDirs[30] = "deadsimpleneo";
-	masterDirs[31] = "debris";
-	masterDirs[32] = "demonprey";
-	masterDirs[33] = "doors";
-	masterDirs[34] = "drill";
-	masterDirs[35] = "escape_series";
-	masterDirs[36] = "escape_series/barney";
-	masterDirs[37] = "escape_series/escape2";
-	masterDirs[38] = "escape_series/escape3";
-	masterDirs[39] = "escape_series/fast_zombie";
-	masterDirs[40] = "extended";
-	masterDirs[41] = "fans";
-	masterDirs[42] = "fgrunt";
-	masterDirs[43] = "fvox";
-	masterDirs[44] = "garg";
-	masterDirs[45] = "geneworm";
-	masterDirs[46] = "gman";
-	masterDirs[47] = "gonarch";
-	masterDirs[48] = "gonome";
-	masterDirs[49] = "grunts2";
-	masterDirs[50] = "hammerhead";
-	masterDirs[51] = "hassault";
-	masterDirs[52] = "headcrab";
-	masterDirs[53] = "hgrunt";
+	masterDirs[6] = "agrunt";
+	masterDirs[7] = "ambience";
+	masterDirs[8] = "apache";
+	masterDirs[9] = "aslave";
+	masterDirs[10] = "babygarg";
+	masterDirs[11] = "barnacle";
+	masterDirs[12] = "barney";
+	masterDirs[13] = "ba_barney";
+	masterDirs[14] = "ba_holo";
+	masterDirs[15] = "ba_scientist";
+	masterDirs[16] = "blackmesaepf";
+	masterDirs[17] = "bodyguard";
+	masterDirs[18] = "boid";
+	masterDirs[19] = "bootcamp";
+	masterDirs[20] = "bshift/barney";
+	masterDirs[21] = "bshift/rosenberg";
+	masterDirs[22] = "bullchicken";
+	masterDirs[23] = "buttons";
+	masterDirs[24] = "cards";
+	masterDirs[25] = "common";
+	masterDirs[26] = "controller";
+	masterDirs[27] = "crystal";
+	masterDirs[28] = "crystal2";
+	masterDirs[29] = "deadsimpleneo";
+	masterDirs[30] = "debris";
+	masterDirs[31] = "descrcl";
+	masterDirs[32] = "doors";
+	masterDirs[33] = "drill";
+	masterDirs[34] = "extended";
+	masterDirs[35] = "fans";
+	masterDirs[36] = "fgrunt";
+	masterDirs[37] = "fortified";
+	masterDirs[38] = "fortified/cornet";
+	masterDirs[39] = "fortified/intro";
+	masterDirs[40] = "fortified/merkwurdiglust";
+	masterDirs[41] = "fortified/mrgeneral";
+	masterDirs[42] = "fvox";
+	masterDirs[43] = "garg";
+	masterDirs[44] = "geneworm";
+	masterDirs[45] = "gman";
+	masterDirs[46] = "gonarch";
+	masterDirs[47] = "gonome";
+	masterDirs[48] = "grunts2";
+	masterDirs[49] = "hassault";
+	masterDirs[50] = "headcrab";
+	masterDirs[51] = "hgrunt";
+	masterDirs[52] = "hl/items";
+	masterDirs[53] = "hl/weapons";
 	masterDirs[54] = "holo";
 	masterDirs[55] = "hornet";
 	masterDirs[56] = "houndeye";
@@ -5853,53 +5917,53 @@ static void initMasterList()
 	masterDirs[77] = "infested";
 	masterDirs[78] = "intro";
 	masterDirs[79] = "items";
-	masterDirs[80] = "it_has_leaks";
-	masterDirs[81] = "jumpers";
-	masterDirs[82] = "kingpin";
-	masterDirs[83] = "last";
-	masterDirs[84] = "leech";
-	masterDirs[85] = "minigun";
-	masterDirs[86] = "misc";
-	masterDirs[87] = "mommamesa";
-	masterDirs[88] = "mommamesa/gunshot";
-	masterDirs[89] = "mommamesa/music";
-	masterDirs[90] = "nihilanth";
-	masterDirs[91] = "omg";
-	masterDirs[92] = "ops";
-	masterDirs[93] = "osprey2";
-	masterDirs[94] = "otis";
-	masterDirs[95] = "pitdrone";
-	masterDirs[96] = "pitworm";
-	masterDirs[97] = "plats";
-	masterDirs[98] = "player";
-	masterDirs[99] = "puchi/spportal";
-	masterDirs[100] = "radio";
-	masterDirs[101] = "Rampage";
-	masterDirs[102] = "richard_boderman";
-	masterDirs[103] = "rng";
-	masterDirs[104] = "roach";
-	masterDirs[105] = "rosenberg";
-	masterDirs[106] = "sandstone";
-	masterDirs[107] = "scientist";
-	masterDirs[108] = "sc_activist";
-	masterDirs[109] = "sc_incoming";
-	masterDirs[110] = "sc_mazing";
-	masterDirs[111] = "sc_persia";
-	masterDirs[112] = "sc_psyko";
-	masterDirs[113] = "sc_robination";
-	masterDirs[114] = "sc_royals";
-	masterDirs[115] = "sc_tetris";
-	masterDirs[116] = "sectore";
-	masterDirs[117] = "sectore_3";
-	masterDirs[118] = "shockroach";
-	masterDirs[119] = "shocktrooper";
-	masterDirs[120] = "speech";
-	masterDirs[121] = "squeek";
-	masterDirs[122] = "stukabat";
-	masterDirs[123] = "svencoop1";
-	masterDirs[124] = "svencoop2";
-	masterDirs[125] = "svencoop3";
-	masterDirs[126] = "tentacle";
+	masterDirs[80] = "kingpin";
+	masterDirs[81] = "last";
+	masterDirs[82] = "leech";
+	masterDirs[83] = "minigun";
+	masterDirs[84] = "misc";
+	masterDirs[85] = "mommamesa";
+	masterDirs[86] = "mommamesa/gunshot";
+	masterDirs[87] = "mommamesa/megagauss";
+	masterDirs[88] = "mommamesa/music";
+	masterDirs[89] = "nihilanth";
+	masterDirs[90] = "omg";
+	masterDirs[91] = "ops";
+	masterDirs[92] = "otis";
+	masterDirs[93] = "pitdrone";
+	masterDirs[94] = "pitworm";
+	masterDirs[95] = "plats";
+	masterDirs[96] = "player";
+	masterDirs[97] = "puchi/spportal";
+	masterDirs[98] = "radio";
+	masterDirs[99] = "richard_boderman";
+	masterDirs[100] = "roach";
+	masterDirs[101] = "sandstone";
+	masterDirs[102] = "scientist";
+	masterDirs[103] = "sc_incoming";
+	masterDirs[104] = "sc_mazing";
+	masterDirs[105] = "sc_persia";
+	masterDirs[106] = "sc_psyko";
+	masterDirs[107] = "sc_tetris";
+	masterDirs[108] = "sectore";
+	masterDirs[109] = "sectore_3";
+	masterDirs[110] = "shockroach";
+	masterDirs[111] = "shocktrooper";
+	masterDirs[112] = "speech";
+	masterDirs[113] = "squeek";
+	masterDirs[114] = "stadium4";
+	masterDirs[115] = "stukabat";
+	masterDirs[116] = "svencoop1";
+	masterDirs[117] = "svencoop2";
+	masterDirs[118] = "svencoop3";
+	masterDirs[119] = "tentacle";
+	masterDirs[120] = "tfc/ambience";
+	masterDirs[121] = "tfc/items";
+	masterDirs[122] = "tfc/misc";
+	masterDirs[123] = "tfc/player";
+	masterDirs[124] = "tfc/speech";
+	masterDirs[125] = "tfc/vox";
+	masterDirs[126] = "tfc/weapons";
 	masterDirs[127] = "toonrun";
 	masterDirs[128] = "tor";
 	masterDirs[129] = "tram";
@@ -5908,13 +5972,12 @@ static void initMasterList()
 	masterDirs[132] = "turret";
 	masterDirs[133] = "turretfortress";
 	masterDirs[134] = "UI";
-	masterDirs[135] = "vger";
-	masterDirs[136] = "voltigore";
-	masterDirs[137] = "vox";
-	masterDirs[138] = "weapons";
-	masterDirs[139] = "weapons/afrikakorps";
-	masterDirs[140] = "weapons/cbe";
-	masterDirs[141] = "weapons/uzi";
-	masterDirs[142] = "x";
-	masterDirs[143] = "zombie";
+	masterDirs[135] = "voltigore";
+	masterDirs[136] = "vox";
+	masterDirs[137] = "weapons";
+	masterDirs[138] = "weapons/afrikakorps";
+	masterDirs[139] = "weapons/cbe";
+	masterDirs[140] = "weapons/uzi";
+	masterDirs[141] = "x";
+	masterDirs[142] = "zombie";
 }

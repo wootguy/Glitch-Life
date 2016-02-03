@@ -16,7 +16,9 @@ set(SOURCE_FILES
     src/sentences.h  src/sound_util.h
     src/soundlists.h src/spriteList.h
     src/studio.h     src/tex_util.h
-    src/Util.h       src/Wad.h )
+    src/Util.h       src/Wad.h 
+    src/default_model_list.h
+)
 
 if(MSVC)
     if(NOT MSVC_VERSION GREATER 1600) #MSVC 10

@@ -80,7 +80,7 @@ void getAllSounds()
 		for (uint i = 0, sz = user_sounds.size(); i < sz; ++i)
 		{
 			bool match = false;
-			if (user_sounds[i].find("thunder.wav") == 0) // the only default sound not in a folder
+			if (user_sounds[i].find("thunder.wav") == 0 || user_sounds[i].find("null.wav") == 0) // the only default sounds not in a folder
 				match = true;
 			if (skipUppercase && hasUppercaseLetters(user_sounds[i]))
 				continue;
@@ -89,10 +89,12 @@ void getAllSounds()
 				if (matchStr(user_sounds[i], default_sounds[d]))
 				{
 					match = true;
-					if (contentMode != CONTENT_CUSTOM)
-						filtered_sounds.push_back(user_sounds[i]);
+					break;
 				}
 			}
+			if (match && contentMode != CONTENT_CUSTOM)
+				filtered_sounds.push_back(user_sounds[i]);
+
 			if (!match && contentMode != CONTENT_DEFAULT) // must not have found a match
 			{
 				// check if custom sound is under the file size limit
@@ -133,7 +135,7 @@ void getAllSounds()
 		{
 			backspace(last_print.size());
 			int nFiltered = old_count - user_sounds.size();
-			print(str((int)user_sounds.size() - nFiltered) + " (" + str(nFiltered) + " excluded)");
+			print(str((int)user_sounds.size()) + " (" + str(nFiltered) + " excluded)");
 		}
 	}
 
