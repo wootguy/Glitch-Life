@@ -1,5 +1,12 @@
 glitch-life todo:
 
+no more super dense fog plz
+search svencoop_addon or svencoop, stop searching valve
+crash when just 1 wad and 1 map
+file extensions missing if they're turned off in windows
+crash when randomizing hlsp in 5.0
+hlsp maps changed
+
 animated textures don't work
 monsters getting super long names? (vinesauce ep.3)
 xentree not randomized (can it be?)

@@ -98,8 +98,8 @@ enum prefix_modes
 enum content_modes
 {
 	CONTENT_EVERYTHING, // anything the program can find
-	CONTENT_DEFAULT, // default SC 4.8 content only
-	CONTENT_CUSTOM, // only non-default SC 4.8 content
+	CONTENT_DEFAULT, // default SC 5.01 content only
+	CONTENT_CUSTOM, // only non-default SC 5.01 content
 	CONTENT_MODES,
 };
 

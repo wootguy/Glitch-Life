@@ -66,14 +66,15 @@ void get_all_skies()
 	user_skies.clear();
 	print("0");
 	find_all_skies("../valve/gfx/env/");
-	vector<string> temp_skies = user_skies;
+	vector<string> temp_skies(user_skies);
 	find_all_skies("gfx/env/");
-	insert_unique(temp_skies, user_skies);
+	insert_unique(user_skies, temp_skies);
 	if (!skipUppercase)
 	{
 		find_all_skies("../svencoop_downloads/gfx/env/");
-		insert_unique(temp_skies, user_skies);
+		insert_unique(user_skies, temp_skies);
 	}
+	user_skies = temp_skies;
 
 	vector<string> search_paths;
 
@@ -91,14 +92,16 @@ void get_all_skies()
 	println("");
 
 	/*
-	println("#define NUM_SKIES " + str(user_skies.size()));
-	println("static const char * SKIES[NUM_SKIES] =");
-	println("{");
-	for (uint s = 0; s < user_skies.size(); s++)
-		println("\t\"" + user_skies[s] + "\",");
-	println("};\n");
+	{
+		println("#define NUM_SKIES " + str(user_skies.size()));
+		println("static const char * SKIES[NUM_SKIES] =");
+		println("{");
+		for (uint s = 0; s < user_skies.size(); s++)
+			println("\t\"" + user_skies[s] + "\",");
+		println("};\n");
 
-	writeLog();
+		writeLog();
+	}
 	*/
 }
 
@@ -257,6 +260,22 @@ void create_tex_embed_wad(vector<Wad>& wads)
 		wads.push_back(output);
 }
 
+void gen_default_wad_list()
+{
+	vector<Wad> wads = getWads();
+
+	println("#define NUM_DEFAULT_WADS " + str(wads.size()));
+	println("static const char * default_wads[NUM_DEFAULT_WADS] =");
+	println("{");
+	for (uint s = 0; s < wads.size(); s++)
+	{
+		println("\t\"" + getSubStr(wads[s].filename, 0, wads[s].filename.length() - 4) + "\",");
+	}
+	println("};\n");
+
+	writeLog(); 
+}
+
 vector<Wad> getWads()
 {
 	vector<Wad> wads;
@@ -313,11 +332,6 @@ vector<Wad> getWads()
 	println(last_print);
 
 	return wads;
-}
-
-void make_grapple_textures(BSP * map)
-{
-	
 }
 
 WADTEX * load_random_texture(vector<Wad>& wads)

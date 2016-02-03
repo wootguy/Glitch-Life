@@ -58,7 +58,7 @@ int grapple_mode = GRAPPLE_HOOK;
 int tex_embed_mode = EMBED_NORMAL;
 string MAP_PREFIX = "gsrand_";
 string random_seed;
-int modelSafety = MODEL_SAFETY_TEX_LIMIT;
+int modelSafety = MODEL_SAFETY_NONE;
 bool cheatNoclip = false;
 bool cheatImpulse = false;
 bool cheatGodmode = false;
@@ -509,10 +509,6 @@ void init_default_content()
 
 	for (uint i = 0; i < NUM_DEFAULT_WADS; ++i)
 		default_content.push_back(string(default_wads[i]) + ".wad");
-	default_content.push_back("cached.wad");
-	default_content.push_back("gfx.wad");
-	default_content.push_back("decals.wad");
-	default_content.push_back("tempdecal.wad");
 
 	for (uint i = 0; i < NUM_SKIES; ++i)
 	{
@@ -2305,11 +2301,18 @@ int main(int argc, char* argv[])
 {
  	srand ( (uint)time(NULL) );
 	init_default_content();
-	//srand (1337);
+
+	// Make sure the following is set in gsrand_config.txt before generating:
+	// max_file_size = 0
+	// model_safety = 0
+	// skip_uppercase = 0
+	// otherwise you won't get a full list
+
 	//genSoundList();
 	//get_all_models();
-	//genSpriteList();
+	//get_all_sprites();
 	//get_all_skies();
+	//gen_default_wad_list();
 	//return 0;
 	
 	//getAllSounds();
@@ -2318,7 +2321,7 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system(CLEAR_COMMAND); // WINDOWS ONLY
-		cout << std::setw(80) << right << "version 4.1\n";
+		cout << std::setw(80) << right << "version 5\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
 		cout << "Options:\n\n";

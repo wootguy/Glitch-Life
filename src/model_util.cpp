@@ -158,6 +158,8 @@ void filter_default_model_content(vector<string>& unfiltered)
 					break;
 				}
 			}
+			if (!match && unfiltered[i] == "not_precached") // super sepcial thing
+				match = true;
 			if ((match && contentMode != CONTENT_CUSTOM) ||
 				(!match && contentMode != CONTENT_DEFAULT))
 			{
@@ -612,8 +614,9 @@ void get_all_models()
 		writeLog();
 		return;
 	}
-	
-	if (false)
+	*/
+	/*
+	if (true)
 	{
 		println("#define NUM_APACHE_MODELS " + str(user_apache_models.size()));
 		println("static const char * APACHE_MODELS[NUM_APACHE_MODELS] =");
@@ -751,11 +754,18 @@ void get_all_sprites()
 	}
 
 	find_all_sprites("sprites/", total_sprites);
-	insert_unique(temp_sprites, user_sprites);
-	insert_unique(temp_animated_sprites, user_animated_sprites);
+	insert_unique(user_sprites, temp_sprites);
+	insert_unique(user_animated_sprites, temp_animated_sprites);
+	user_sprites = temp_sprites;
+	user_animated_sprites = temp_animated_sprites;
 
 	// i'll be using this sprite to indicate replacement errors
 	vector<string>::iterator it = find(user_sprites.begin(), user_sprites.end(), "tile");
+	if (it != user_sprites.end())
+		user_sprites.erase(it);
+
+	// This one just shouldn't be used (it's empty)
+	it = find(user_sprites.begin(), user_sprites.end(), "null");
 	if (it != user_sprites.end())
 		user_sprites.erase(it);
 
@@ -783,7 +793,7 @@ void get_all_sprites()
 	println("");
 
 	/*
-	if (false)
+	if (true)
 	{
 		println("#define NUM_ANIMATED_SPRITES " + str(user_animated_sprites.size()));
 		println("static const char * ANIMATED_SPRITES[NUM_ANIMATED_SPRITES] =");
