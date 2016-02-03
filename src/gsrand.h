@@ -486,8 +486,48 @@ static const char * op4_maps[NUM_OP4_MAPS] =
 	"of6a5",
 };
 
-#define NUM_HLSP_MAPS 100
+#define NUM_HLSP_MAPS 35
 static const char * hlsp_maps[NUM_HLSP_MAPS] =
+{
+	"hl_c00",
+	"hl_c01_a1",
+	"hl_c01_a2",
+	"hl_c02_a1",
+	"hl_c02_a2",
+	"hl_c03",
+	"hl_c04",
+	"hl_c05_a1",
+	"hl_c05_a2",
+	"hl_c05_a3",
+	"hl_c06",
+	"hl_c07_a1",
+	"hl_c07_a2",
+	"hl_c08_a1",
+	"hl_c08_a2",
+	"hl_c09",
+	"hl_c10",
+	"hl_c11_a1",
+	"hl_c11_a2",
+	"hl_c11_a3",
+	"hl_c11_a4",
+	"hl_c11_a5",
+	"hl_c12",
+	"hl_c13_a1",
+	"hl_c13_a2",
+	"hl_c13_a3",
+	"hl_c13_a4",
+	"hl_c14",
+	"hl_c15",
+	"hl_c16_a1",
+	"hl_c16_a2",
+	"hl_c16_a3",
+	"hl_c16_a4",
+	"hl_c17",
+	"hl_c18"
+};
+
+#define NUM_HLSP_CLASSIC_MAPS 100
+static const char * hlsp_classic_maps[NUM_HLSP_CLASSIC_MAPS] =
 {
 	"c0a0",
 	"c0a0a",

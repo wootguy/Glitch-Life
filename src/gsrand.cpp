@@ -684,6 +684,11 @@ void parse_settings_file()
 					for (int i = 0; i < NUM_HLSP_MAPS; ++i)
 						user_maps.push_back(hlsp_maps[i] + string(".bsp"));
 				}
+				if (matchStr(line, "*hlsp_classic"))
+				{
+					for (int i = 0; i < NUM_HLSP_CLASSIC_MAPS; ++i)
+						user_maps.push_back(hlsp_classic_maps[i] + string(".bsp"));
+				}
 				else if (matchStr(line, "*op4"))
 				{
 					for (int i = 0; i < NUM_OP4_MAPS; ++i)
