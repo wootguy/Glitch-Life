@@ -191,12 +191,13 @@ texture_compression = 0
 // If this list is empty, then EVERY map will be randomized.
 //
 // There are a few special map names you can use to select all maps in a series:
-//     *hlsp = Half-Life      (c0a0 to c5a1)
+//     *hlsp = Half-Life      (hl_c00 to hl_c18)
 //     *op4  = Opposing Force (of0a0 to of6a5)
 //     *bs   = Blue Shift     (-blueshift to ba_outro)
 //     *they = They Hunger    (-They_Hunger_Ep1 to they29)
 //     *esc  = Escape Series  (escape_series_1a to escape_series_3e)
+//     *hlsp_classic = Classic (unmodified) Half-Life (c0a0 to c5a1)
 
 [maps]
-stadium3
+stadium4
 *hlsp
