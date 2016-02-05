@@ -18,7 +18,7 @@ void getAllSounds()
 	set<string> user_unique_sounds;
 	vector<string> sound_paths;
 	sound_paths.push_back("sound/");
-	sound_paths.push_back("../valve/sound/");
+	sound_paths.push_back("../svencoop/sound/");
 	if (!skipUppercase)
 		sound_paths.push_back("../svencoop_downloads/sound/");
 

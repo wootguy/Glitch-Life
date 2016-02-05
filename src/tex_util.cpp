@@ -65,7 +65,7 @@ void get_all_skies()
 {
 	user_skies.clear();
 	print("0");
-	find_all_skies("../valve/gfx/env/");
+	find_all_skies("../svencoop/gfx/env/");
 	vector<string> temp_skies(user_skies);
 	find_all_skies("gfx/env/");
 	insert_unique(user_skies, temp_skies);
@@ -117,7 +117,7 @@ void create_tex_embed_wad(vector<Wad>& wads)
 
 	vector<string> bsp_paths;
 	bsp_paths.push_back("maps/");
-	bsp_paths.push_back("../valve/maps/");
+	bsp_paths.push_back("../svencoop/maps/");
 	bsp_paths.push_back("../svencoop_downloads/maps/");
 
 	string last_print;
@@ -283,7 +283,7 @@ vector<Wad> getWads()
 	set<string> user_unique_wads;
 	vector<string> wad_paths;
 	wad_paths.push_back("");
-	wad_paths.push_back("../valve/");
+	wad_paths.push_back("../svencoop/");
 	wad_paths.push_back("../svencoop_downloads/");
 	string last_print;
 
@@ -908,9 +908,9 @@ void embedAllTextures(BSP * map, Entity ** ents)
 						w->readInfo();
 						map_wads.push_back(w);
 					}
-					else if (fileExists("../valve/" + wads[k]))
+					else if (fileExists("../svencoop/" + wads[k]))
 					{
-						Wad * w = new Wad("../valve/" + wads[k]);
+						Wad * w = new Wad("../svencoop/" + wads[k]);
 						w->readInfo();
 						map_wads.push_back(w);
 					}

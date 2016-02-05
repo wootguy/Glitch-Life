@@ -122,6 +122,12 @@ void ripent(BSP * map, Entity** entData, bool restore)
 	string filename = "maps/" + map->name + ".bsp";
 
 	ofstream fout(filename, ios::out | ios::binary | ios::trunc);
+	if (!fout.is_open()) 
+	{
+		println("Failed to open " + getWorkDir() + filename + " for writing");
+		return;
+	}
+
 	fout.write((char*)&map->header, sizeof(BSPHEADER));
 
 	for (int i = 0; i < HEADER_LUMPS; i++)
