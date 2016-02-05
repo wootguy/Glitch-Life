@@ -905,6 +905,7 @@ string getFilename(string filename)
 		if (!matchStr(testing, ".."))
 		{
 			info.szDisplayName[0] = 0;
+			// TODO: So uh, this doesn't work if the user has file extensions hidden (which is on by default). That sucks.
 			SHGetFileInfoA( filename.c_str(), 0, &info, sizeof(info), SHGFI_DISPLAYNAME );
 			components.push_back(info.szDisplayName);  
 		}
@@ -927,6 +928,8 @@ string getFilename(string filename)
     return result;
     #else
     //shouldn't do anything on *nix, if I understood the intention of this function correctly
+	// w00tguy: Yeah, this was meant to handle the case where mappers used the incorrect case and windows was ok with that.
+	//          On *nix, the map will just crash or be missing resources.
     return filename;
     #endif
 }
