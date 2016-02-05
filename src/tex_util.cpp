@@ -81,7 +81,7 @@ void get_all_skies()
 	int old_sz = user_skies.size();
 	int total_count = old_sz;
 	int exclude_count = 0;
-	string last_print = str(old_sz);
+	string last_print = "0";
 	filter_default_content(user_skies, SKIES, NUM_SKIES, search_paths, ".tga", total_count, exclude_count, last_print);
 	if (user_skies.size() != old_sz)
 	{
@@ -281,11 +281,13 @@ vector<Wad> getWads()
 	vector<Wad> wads;
 
 	set<string> user_unique_wads;
+	set<string> excluded_wads;
 	vector<string> wad_paths;
 	wad_paths.push_back("");
 	wad_paths.push_back("../svencoop/");
 	wad_paths.push_back("../svencoop_downloads/");
 	string last_print;
+	int excluded = 0;
 
 	for (uint k = 0; k < wad_paths.size(); k++)
 	{
@@ -304,7 +306,14 @@ vector<Wad> getWads()
 			}
 			if ((is_default && contentMode == CONTENT_CUSTOM) || 
 				(!is_default && contentMode == CONTENT_DEFAULT))
+			{
+				if (excluded_wads.find(wad) == excluded_wads.end())
+				{
+					excluded_wads.insert(wad);
+					excluded++;
+				}
 				continue;
+			}
 
 			if (user_unique_wads.find(wad) == user_unique_wads.end())
 			{
@@ -315,6 +324,8 @@ vector<Wad> getWads()
 					wads.push_back(w);
 					backspace(last_print.size());
 					last_print = str((int)wads.size());
+					if (contentMode != CONTENT_EVERYTHING)
+						last_print += " (" + str(excluded) + " excluded)";
 					print(last_print);
 				}
 				else if (printRejects)
@@ -329,6 +340,8 @@ vector<Wad> getWads()
 
 	backspace(last_print.size());
 	last_print = str((int)wads.size());
+	if (contentMode != CONTENT_EVERYTHING)
+		last_print += " (" + str(excluded) + " excluded)";
 	println(last_print);
 
 	return wads;
