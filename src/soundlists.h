@@ -1,7 +1,6 @@
 #pragma once
-// I think these are all the default sounds that come with SC 4.8
-// TODO: update this when SC 5.0 comes out and default sounds change.
-//       I don't think this was auto-generated...
+// These are default sounds (from Half-Life and SC) that are used for specific entities or talking characters
+// The only lists that might need updates are the ones specific to SC (like Tor or Kingpin)
 
 #include <string>
 using namespace std;

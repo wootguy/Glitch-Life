@@ -611,7 +611,12 @@ void writeWad(vector<string>& wadTextures, vector<Wad>& wads, string mapname)
 			entry.bCompression = false;
 			entry.nDummy = 0;
 			for (int k = 0; k < MAXTEXTURENAME; k++)
-				entry.szName[k] = tex_names[i][k];
+			{
+				if (k < tex_names[i].length())
+					entry.szName[k] = tex_names[i][k];
+				else
+					entry.szName[k] = '\0';
+			}
 			offset += tex_sizes[i] + sizeof(BSPMIPTEX);
 
 			fout.write ((char*)&entry, sizeof(WADDIRENTRY));
