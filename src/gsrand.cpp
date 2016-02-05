@@ -1214,10 +1214,16 @@ byte * loadTextureChunk(string filename, int& lump_len)
 
 BSP * loadBSP(string mapname, bool loadAll)
 {
-	string filename = "maps/" + mapname + ".bsp";
+	string bspname = mapname + ".bsp";
+	string filename = "maps/" + bspname;
+	bool exists = true;
+	if (!fileExists(filename))
+		filename = "../svencoop/maps/" + bspname;
+	if (!fileExists(filename))
+		filename = "../svencoop_downloads/maps/" + bspname;
 	if (!fileExists(filename))
 	{
-		err("file does not exist: " + filename);
+		println("map does not exist: " + bspname);
 		return NULL;
 	}
 
@@ -1457,7 +1463,7 @@ vector<string> create_res_list(Entity ** ents, string mapname)
 		if (is_default)
 			continue;
 
-		if (!fileExists(name) && !fileExists("../valve/" + name) && !fileExists("../svencoop_downloads/" + name))
+		if (!fileExists(name) && !fileExists("../svencoop/" + name) && !fileExists("../svencoop_downloads/" + name))
 		{
 			if (name.find(".wad") != string::npos && name.find("gsrand") != string::npos)
 				continue; // probably hasn't been generated yet
@@ -1470,12 +1476,12 @@ vector<string> create_res_list(Entity ** ents, string mapname)
 			string m_name = getSubStr(name, 0, name.length()-4);
 			
 			string t_model = m_name + "T.mdl";
-			if (fileExists(t_model) || fileExists("../valve/" + t_model) || fileExists("../svencoop_downloads/" + t_model))
+			if (fileExists(t_model) || fileExists("../svencoop/" + t_model) || fileExists("../svencoop_downloads/" + t_model))
 				filtered.push_back(t_model);
 
 			int id = 0;
 			string a_model = m_name + "01.mdl";
-			while (fileExists(a_model) || fileExists("../valve/" + a_model) || fileExists("../svencoop_downloads/" + a_model))
+			while (fileExists(a_model) || fileExists("../svencoop/" + a_model) || fileExists("../svencoop_downloads/" + a_model))
 			{
 				filtered.push_back(a_model);
 				a_model = m_name;
@@ -1611,17 +1617,23 @@ vector<Wad> wads;
 vector<string> maps;
 void find_user_content()
 {
-	string path = "maps/";
 	maps = user_maps;
 
 	int missing = 0;
 	if (user_maps.empty())
+	{
+		// user didn't specify any maps to randomize. I guess they want them all!
 		maps = getDirFiles("maps/","bsp");
+		vector<string> maps2 = getDirFiles("../svencoop/maps/", "bsp");
+		vector<string> maps3 = getDirFiles("../svencoop_downloads/maps/", "bsp");
+		insert_unique(maps2, maps);
+		insert_unique(maps3, maps);
+	}
 	else
 	{
 		for (uint i = 0; i < maps.size(); ++i)
 		{
-			if (!fileExists(path + maps[i]))
+			if (!fileExists("maps/" + maps[i]) && !fileExists("../svencoop/maps/" + maps[i]) && !fileExists("../svencoop_downloads/maps/" + maps[i]))
 			{
 				maps.erase(maps.begin() + i--);
 				missing++;
@@ -1769,6 +1781,13 @@ int randomize_maps()
 	int idx = 0;
 
 	system(CLEAR_COMMAND);
+
+	// create the maps directory if it doesn't exist
+	if (!dirExists("maps"))
+	{
+		string cmd = "mkdir maps 2> nul"; 
+		system(cmd.c_str());
+	}
 
 	every_random_replacement.clear();
 	super_res_list.clear();
@@ -2323,6 +2342,22 @@ int main(int argc, char* argv[])
 	//getAllSounds();
 	//return 0;
 
+	// make sure user didn't put this in their svencoop directory
+	string workdir = getWorkDir();
+	string badDir = "svencoop/";
+	int svendir = workdir.find(badDir);
+	if (svendir + badDir.length() == workdir.length()) 
+	{
+		println("Hey, you can't run this from your svencoop directory anymore.");
+		println("Move this program and its configs to svencoop_addon.");
+		println("\nIf this isn't actually your svencoop folder, then rename it");
+		println("to something else. I'm just trying to prevent people from");
+		println("adding clutter to their default content.");
+
+		_getch();
+		return 0;
+	}
+	
 	while (true)
 	{
 		system(CLEAR_COMMAND); // WINDOWS ONLY
@@ -2469,7 +2504,7 @@ int main(int argc, char* argv[])
 					fout.open ("gsrand_7zip_list.txt", ios::out | ios::trunc);
 					for (set<string>::iterator it = super_res_list.begin(); it != super_res_list.end(); ++it)
 					{
-						if (!fileExists(*it) && !fileExists("../valve/" + *it) && !fileExists("../svencoop_downloads/" + *it))
+						if (!fileExists(*it) && !fileExists("../svencoop/" + *it) && !fileExists("../svencoop_downloads/" + *it))
 							println("Warning: Unable to find " + *it);
 						else
 						{									
@@ -2477,8 +2512,8 @@ int main(int argc, char* argv[])
 							if (!fileExists(*it))
 							{
 								string old_path = path;
-								if (fileExists("../valve/" + *it))
-									old_path = "../valve/" + path;
+								if (fileExists("../svencoop/" + *it))
+									old_path = "../svencoop/" + path;
 								if (fileExists("../svencoop_downloads/" + *it))
 									old_path = "../svencoop_downloads/" + path;
 
@@ -2530,7 +2565,7 @@ int main(int argc, char* argv[])
 					if (fileExists(output_name))
 					{
 						println("\nThe archive was named '" + output_name + "' and is located here:");
-						println(output_name);
+						println(getWorkDir() + output_name);
 					}
 				}
 				else if (zip_action == 1) // just copy
@@ -2550,7 +2585,7 @@ int main(int argc, char* argv[])
 
 					for (set<string>::iterator it = super_res_list.begin(); it != super_res_list.end(); ++it)
 					{
-						if (!fileExists(*it) && !fileExists("../valve/" + *it) && !fileExists("../svencoop_downloads/" + *it))
+						if (!fileExists(*it) && !fileExists("../svencoop/" + *it) && !fileExists("../svencoop_downloads/" + *it))
 							println("Warning: Unable to find " + *it);
 						else
 						{									
@@ -2559,8 +2594,8 @@ int main(int argc, char* argv[])
 							string old_path = path;
 							if (!fileExists(*it))
 							{
-								if (fileExists("..\\valve\\" + *it))
-									old_path = "..\\valve\\" + path;
+								if (fileExists("..\\svencoop\\" + *it))
+									old_path = "..\\svencoop\\" + path;
 								if (fileExists("..\\svencoop_downloads\\" + *it))
 									old_path = "..\\svencoop_downloads\\" + path;
 							}
@@ -2583,7 +2618,7 @@ int main(int argc, char* argv[])
 					if (dirExists(output_name))
 					{
 						println("\nThe folder was named '" + output_name + "' and is located here:");
-						println(output_name);
+						println(getWorkDir() + output_name);
 					}
 				}
 

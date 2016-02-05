@@ -166,7 +166,7 @@ void filter_default_model_content(vector<string>& unfiltered)
 				if (!match && maxContentBytes)
 				{
 					// make sure custom content is under the file size limit
-					string model_paths[] = {"models/", "../svencoop_downloads/models/", "../valve/models/"};
+					string model_paths[] = {"models/", "../svencoop_downloads/models/", "../svencoop/models/"};
 					ifstream fin;
 					int pathIdx = -1;
 					for (int k = 0; k < 3; k++)
@@ -509,7 +509,7 @@ void get_all_models()
 
 	int total_models = 0;
 	print("0");
-	find_all_models("../valve/models/", total_models);
+	find_all_models("../svencoop/models/", total_models);
 	vector<string> temp_monster_models = user_monster_models;
 	vector<string> temp_prop_models = user_prop_models;
 	vector<string> temp_player_models = user_player_models;
@@ -742,7 +742,7 @@ void get_all_sprites()
 {
 	int total_sprites = 0;
 	print("0");
-	find_all_sprites("../valve/sprites/", total_sprites);
+	find_all_sprites("../svencoop/sprites/", total_sprites);
 	vector<string> temp_sprites = user_sprites;
 	vector<string> temp_animated_sprites = user_animated_sprites;
 
@@ -775,7 +775,7 @@ void get_all_sprites()
 	vector<string> search_paths;
 	search_paths.push_back("sprites/");
 	search_paths.push_back("../svencoop_downloads/sprites/");
-	search_paths.push_back("../valve/sprites/");
+	search_paths.push_back("../svencoop/sprites/");
 
 	last_print = str(print_total);
 	exclude_count = 0;
