@@ -8,14 +8,11 @@
 singleplayer = 1
 
 // sentence randomization (monster talking sounds) requires a ton of custom
-// sounds to be precached (somewhere around 1000). Sadly, Only about 500 
-// items can fit in map RES files. This means players joining your server
-// will likely be missing a lot of custom sounds when they join.
-// If sentence_mode is "0", then only default sounds will be used (safe).
-// If sentence_mode is "1", then all sounds will be used (players may be missing sounds).
-// This option is ignored if singleplayer is set to "1".
+// sounds to be precached (somewhere around 1000). In the past, this was 
+// a problem because only about 500 items could fit into .res files. In SC 5.0,
+// we have 8192 precache slots, so it should be ok to leave this on now.
 
-sentence_mode = 0
+sentence_mode = 1
 
 // The following settings allow you to use cheats without having to enable cheats
 // on the server (which has restrictions). Set to "1" to enable the cheat.
