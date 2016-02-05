@@ -649,16 +649,8 @@ void do_entity_randomization(Entity** ents, string mapname)
 			int range = 2048;
 			if (rand() % 3 == 0) // close range
 			{
-				if (rand() % 10 == 0) 
-				{
-					dist = 300; 
-					range = 304; // super close mega dense
-				}
-				else 
-				{
-					dist = 128;
-					range = 768; // kind of close
-				}
+				dist = 128;
+				range = 768;
 			}
 			ents[i]->keyvalues["iuser2"] = str(dist);
 			ents[i]->keyvalues["iuser3"] = str(range);
