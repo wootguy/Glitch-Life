@@ -3,9 +3,9 @@
 #include "gsrand.h"
 #include "bsp_util.h"
 
-void find_all_skies(string skyPath)
+void find_all_skies(string skyPath, int& total_skies)
 {
-	string last_print = str((int)user_skies.size());
+	string last_print = str(total_skies);
 
 	user_skies.clear();
 
@@ -46,9 +46,10 @@ void find_all_skies(string skyPath)
 			}
 			if (hasLF && hasRT && hasDN && hasFT && hasBK)
 			{
+				total_skies++;
 				user_skies.push_back(sky_name);	
 				backspace(last_print.size());
-				last_print = str((int)user_skies.size());
+				last_print = str(total_skies);
 				print(last_print);
 			}
 			else if (printRejects)
@@ -63,15 +64,16 @@ void find_all_skies(string skyPath)
 
 void get_all_skies()
 {
+	int total_skies = 0;
 	user_skies.clear();
 	print("0");
-	find_all_skies("../svencoop/gfx/env/");
+	find_all_skies("../svencoop/gfx/env/", total_skies);
 	vector<string> temp_skies(user_skies);
-	find_all_skies("gfx/env/");
+	find_all_skies("gfx/env/", total_skies);
 	insert_unique(user_skies, temp_skies);
 	if (!skipUppercase)
 	{
-		find_all_skies("../svencoop_downloads/gfx/env/");
+		find_all_skies("../svencoop_downloads/gfx/env/", total_skies);
 		insert_unique(user_skies, temp_skies);
 	}
 	user_skies = temp_skies;
@@ -81,14 +83,17 @@ void get_all_skies()
 	int old_sz = user_skies.size();
 	int total_count = old_sz;
 	int exclude_count = 0;
-	string last_print = "0";
+	string last_print = str(total_skies);
 	filter_default_content(user_skies, SKIES, NUM_SKIES, search_paths, ".tga", total_count, exclude_count, last_print);
+	
+	backspace(last_print.size());
 	if (user_skies.size() != old_sz)
 	{
-		backspace(last_print.size());
 		int nfiltered = old_sz - user_skies.size();
 		print(str((int)user_skies.size()) + " (" + str(nfiltered) + " excluded)");
-	}
+	} 
+	else
+		print(str((int)user_skies.size()));
 	println("");
 
 	/*

@@ -809,7 +809,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 						} 
 					}
 				}
-				int randSpeed = (int)pow(2.0,(rand()%5+7));
+				int randSpeed = (int)pow(2.0,(rand()%4+8));
 				int randSpeed2 = (int)pow(2.0,rand()%14);
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
 				ents[i]->keyvalues["yaw_speed"] = to_string((_Longlong)randSpeed);
@@ -850,7 +850,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			if (entMode == ENT_SUPER)
 			{
-				int rotation = (int)pow(2.0,rand()%7+7);
+				int rotation = (int)pow(2.0,rand()%6+7);
 				ents[i]->keyvalues["rotation"] = to_string((_Longlong)rotation);
 			}
 		}
@@ -878,7 +878,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			if (entMode == ENT_SUPER)
 			{
-				int randSpeed = (int)pow(2.0,rand()%7+5);
+				int randSpeed = (int)pow(2.0,rand()%6+6);
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
 
 				int flags = atoi(ents[i]->keyvalues["spawnflags"].c_str());
@@ -893,7 +893,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 		{
 			if (entMode == ENT_SUPER)
 			{
-				int randSpeed = (int)pow(2.0,rand()%6+5);
+				int randSpeed = (int)pow(2.0,rand()%6+6);
 				ents[i]->keyvalues["speed"] = to_string((_Longlong)randSpeed);
 
 				int flags = atoi(ents[i]->keyvalues["spawnflags"].c_str());
@@ -986,7 +986,7 @@ void do_entity_randomization(Entity** ents, string mapname)
 				continue;
 			if (entMode == ENT_SUPER)
 			{
-				int randSpeed = (int)pow(2.0,(rand()%8+4));
+				int randSpeed = (int)pow(2.0,(rand()%6+6));
 				int randMat = imaterials[rand() % imaterials.size()];
 				if (randMat == 7)
 					randMat = 0;
@@ -996,13 +996,13 @@ void do_entity_randomization(Entity** ents, string mapname)
 				
 				if (rand() % 4)
 				{
-					ents[i]->keyvalues["displayname"] = "Safe Door";
+					ents[i]->keyvalues["displayname"] = "Harmless Door";
 					ents[i]->keyvalues["dmg"] = "0";
 					ents[i]->keyvalues["health"] = "100";
 				}
 				else
 				{
-					ents[i]->keyvalues["displayname"] = "POTENTIAL MURDOOR\nDanger: Yes";
+					ents[i]->keyvalues["displayname"] = "Murder door";
 					ents[i]->keyvalues["dmg"] = "9999";
 					ents[i]->keyvalues["explodemagnitude"] = "100";
 					ents[i]->keyvalues["classify"] = "14";

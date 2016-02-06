@@ -964,7 +964,7 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 		// and levels tend to have a lot of doors
 
 		if (cname.find("monster_") == 0 || cname.find("ammo_") != string::npos 
-			|| cname.find("item_") != string::npos || cname.find("cycler") == 0
+			|| cname.find("item_") != string::npos || cname.find("cycler") == 0 || cname.find("xen_") == 0
 			|| matchStr(cname, "env_beverage") || matchStr(cname, "env_glow")
 			|| matchStr(cname, "env_sprite") || matchStr(cname, "env_spritetrain") || matchStr(cname, "weaponbox"))
 		{
@@ -976,12 +976,14 @@ int count_map_models(BSP * map, Entity** ents, string path, int& total_models, i
 			bool is_friendly = ents[i]->keyvalues[ally_key] == "1";
 			if (cname.find("item_") != string::npos)
 				defaults_hashmap = &default_item_models;
+			if (cname.find("xen_") != string::npos)
+				defaults_hashmap = &default_xen_models;
 			if (cname.find("monster_") == 0 && is_friendly)
 				defaults_hashmap = &default_friendly_monster_models;
 
 			if (ents[i]->keyvalues.find(custom_monster_model_key) != ents[i]->keyvalues.end())
 				ent_models[toLowerCase(ents[i]->keyvalues[custom_monster_model_key])] = cname;
-			else if (cname.find("monster_") != string::npos || cname.find("item_") != string::npos)
+			else if (cname.find("monster_") != string::npos || cname.find("item_") != string::npos || cname.find("xen_") != string::npos)
 			{
 				string m = (*defaults_hashmap)[getSubStr(cname, cname.find_first_of('_')+1)]; 
 				if (m.length() > 0)
@@ -1420,6 +1422,7 @@ string replace_entity_model(Entity * ent, string model_key, int model_type, int&
 		cname = toLowerCase(ent->keyvalues["monstertype"]);
 		ally_key = "respawn_as_playerally";
 	}
+	// TODO: Why did I disable this. Can I just get rid of it? It looks important...
 	if (modelSafety == MODEL_SAFETY_GLOBAL_ONLY && false)
 	{
 		if (ent->keyvalues.find(model_key) != ent->keyvalues.end() && ent->keyvalues[model_key].length())
@@ -1703,7 +1706,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 				else    it->second = get_random_sprite_safe(SPRITE_TYPE_GENERIC, it->first);
 			}
 			else if (cname.find("monster_") == 0 || cname.find("ammo_") == 0 || cname.find("item_") == 0 
-			    || cname.find("cycler") == 0 || cname.find("weapon_") == 0
+			    || cname.find("cycler") == 0 || cname.find("weapon_") == 0 || cname.find("xen_") == 0
 				||  matchStr(cname, "env_beverage") || matchStr(cname, "weaponbox"))
 			{
 				if (matchStr(cname, "monster_kingpin") || matchStr(cname, "monster_tentacle"))
@@ -1750,7 +1753,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 						raw_model_name = getSubStr(raw_model_name, 2);
 
 					bool is_player_model = it->second.find("player/") != string::npos || 
-					                       it->second.find("barnacle") != string::npos;
+						it->second.find("barnacle") != string::npos;
 
 					// find all monsters that will be using this replacement
 					for (int i = 0; i < MAX_MAP_ENTITIES; i++)
@@ -1782,6 +1785,13 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 								height = default_monster_heights[cname] - 36;
 							ents[i]->keyvalues["minhullsize"] = "-16 -16 -36";
 							ents[i]->keyvalues["maxhullsize"] = "16 16 " + str(height);
+						}
+
+						// Flip models for barnacles so they aren't clipped through the ceiling
+						// TODO: Don't flip if the custom model was actually meant for a barnacle, or if map is flipped
+						if (matchStr(ents[i]->keyvalues["classname"], "monster_barnacle"))
+						{
+							ents[i]->keyvalues["angles"] = "180 0 0";
 						}
 
 						// rename monster to "model_name monster_name"
@@ -1940,7 +1950,7 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 				if (!r) new_model = replace_entity_model(ents[i], "model", MODEL_TYPE_GENERIC, potential_additions);
 				else    new_model = replace_entity_sprite(ents[i], "model", SPRITE_TYPE_GENERIC, potential_additions);
 			}
-			else if (cname.find("monster_") == 0 || cname.find("ammo_") == 0 || cname.find("item_") == 0
+			else if (cname.find("monster_") == 0 || cname.find("ammo_") == 0 || cname.find("item_") == 0 || cname.find("xen_") == 0
 			    || cname.find("cycler") == 0 ||  matchStr(cname, "env_beverage") || matchStr(cname, "weaponbox"))
 			{
 				if (matchStr(cname, "monster_kingpin") || matchStr(cname, "monster_tentacle"))
@@ -2005,6 +2015,13 @@ void do_model_replacement(BSP * map, Entity** ents, string path, string original
 							height = default_monster_heights[cname] - 36;
 						ents[i]->keyvalues["minhullsize"] = "-16 -16 -36";
 						ents[i]->keyvalues["maxhullsize"] = "16 16 " + str(height);
+					}
+
+					// Flip models for barnacles so they aren't clipped through the ceiling
+					// TODO: Don't flip if the custom model was actually meant for a barnacle, or if map is flipped
+					if (matchStr(ents[i]->keyvalues["classname"], "monster_barnacle"))
+					{
+						ents[i]->keyvalues["angles"] = "180 0 0";
 					}
 
 					// rename monster to "model_name monster_name"
