@@ -1,9 +1,9 @@
 
 -------------------------- Quick Start Guide --------------------------
 
-1) Place the files in your 'svencoop' folder. That folder is located here:
-   /Steam/steamapps/common/Half-Life/svencoop/
-   Do not place the files in 'svencoop/maps' or any other subdirectory.
+1) Place the files in your 'svencoop_addon' folder. That folder is located here:
+   /Steam/steamapps/common/Sven Co-op/svencoop_addon/
+   Do not place the files in 'svencoop_addon/maps' or any other subdirectory.
    
 2) Open gsrand_config.txt and scroll all the way to the bottom. You will
    see "[maps]". This is where you specify which maps you want randomized.
@@ -114,11 +114,10 @@ The game keeps crashing! What can I do?
    You will still crash, but it should happen less often. "Appearances only"
    is also much safer to use than "Super random" as an Entity mode.
    
-Why don't I have any of the Half-Life/Blue Shift/Opposing Force maps?
-   These maps are installed with Sven Co-op 4.8, but you have to have these
-   games installed before you install Sven Co-op. It's not enough to copy
-   the maps over manually after you've installed Sven Co-op. The SC installer 
-   makes adjustments to the maps so that they work properly in SC.
+Why don't I have any of the Blue Shift/Opposing Force maps?
+   You need to run the installation scripts, which are located here:
+       Sven Co-op/svencoop/Install_bshift_Support.bat
+       Sven Co-op/svencoop/Install_OpFor_Support.bat
    
 It's not working :<
    Sorry about that. Ask a question on the forum and I'll try to help:

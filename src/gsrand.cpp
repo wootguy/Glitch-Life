@@ -685,7 +685,7 @@ void parse_settings_file()
 					for (int i = 0; i < NUM_HLSP_MAPS; ++i)
 						user_maps.push_back(hlsp_maps[i] + string(".bsp"));
 				}
-				if (matchStr(line, "*hlsp_classic"))
+				else if (matchStr(line, "*hlsp_classic"))
 				{
 					for (int i = 0; i < NUM_HLSP_CLASSIC_MAPS; ++i)
 						user_maps.push_back(hlsp_classic_maps[i] + string(".bsp"));
@@ -1643,6 +1643,7 @@ void find_user_content()
 		{
 			if (!fileExists("maps/" + maps[i]) && !fileExists("../svencoop/maps/" + maps[i]) && !fileExists("../svencoop_downloads/maps/" + maps[i]))
 			{
+				println("WARNING: Failed to find map " + maps[i]);
 				maps.erase(maps.begin() + i--);
 				missing++;
 			}
