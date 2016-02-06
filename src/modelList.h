@@ -18,6 +18,7 @@ extern string_hashmap default_p_weapon_models;
 extern string_hashmap default_v_weapon_models;
 extern string_hashmap default_ammo_models;
 extern string_hashmap default_item_models;
+extern string_hashmap default_xen_models;
 extern vector<string> default_gib_models;
 
 extern vector<string> gmr_replace_only; // models only replacable through GMR
@@ -118,6 +119,7 @@ static void init_default_model_lists()
 	default_item_models.clear();
 	weapon_types.clear();
 	monster_sprites.clear();
+	default_xen_models.clear();
 
 	monster_sprites.push_back("sprites/mommaspit.spr"); // momma spit
 	monster_sprites.push_back("sprites/mommaspout.spr"); // momma spit splash
@@ -316,14 +318,21 @@ static void init_default_model_lists()
 	default_item_models["airtank"] = "airtank";
 	default_item_models["antidote"] = "antidote";
 	default_item_models["armorvest"] = "armorvest";
-	default_item_models["battery"] = "battery";
+	default_item_models["battery"] = "w_battery";
 	default_item_models["healthcharger"] = "healthcharger";
-	default_item_models["healthkit"] = "healthkit";
+	default_item_models["healthkit"] = "w_medkit"; // or is it w_pmedkit?
 	default_item_models["helmet"] = "helmet";
-	default_item_models["longjump"] = "longjump";
+	default_item_models["longjump"] = "w_longjump";
 	default_item_models["recharge"] = "recharge";
 	default_item_models["security"] = "security";
-	default_item_models["suit"] = "suit";
+	default_item_models["suit"] = "w_suit";
+
+	default_xen_models["hair"] = "hair";
+	default_xen_models["plantlight"] = "light";
+	default_xen_models["spore_large"] = "fungus(large)";
+	default_xen_models["spore_medium"] = "fungus";
+	default_xen_models["spore_small"] = "fungus(small)";
+	default_xen_models["tree"] = "tree";
 
 	for (string_hashmap::iterator it = default_weapon_models.begin(); it != default_weapon_models.end(); ++it)
 		weapon_types.push_back(it->first);

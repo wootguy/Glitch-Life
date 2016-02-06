@@ -1,39 +1,31 @@
 glitch-life todo:
 
-no more super dense fog plz
-search svencoop_addon or svencoop, stop searching valve
 crash when just 1 wad and 1 map
-file extensions missing if they're turned off in windows
-crash when randomizing hlsp in 5.0
-hlsp maps changed
+impulse 101 cheat is leaving stuff behind
 
-animated textures don't work
 monsters getting super long names? (vinesauce ep.3)
-xentree not randomized (can it be?)
 GL_UPLOAD 16 error c1a0
 TEST: stadium3 monsters not renamed
 speedup res generation somehow?
 model replacement for random friendlies didnt work
-longjump module not randomized
 crashes from gibshooters (op4 boss)
 repariable breakables are just confusing/irritating
 black maps too likely? increase light brightness?
 some textures not BW in write to map mode? (looked like xeno_grapple)
-flip custom barnacle models so you can actually see them
-wads not saying "excluded X" when using content modes
 
 Nice-to-haves:
 
 detailtextures?
-bypass all players must be inside  c1a4b c2a5b (c3a1a?) c3a1b
-c1a2e (how did this changelevel ever work?)
-dont make spinning things and doors take forever
+c1a2e (changelevel if doors are broken)
+dont let spinning things and doors take forever
 better osprey replacements? Apache player model chance?
 entity randomization configuration (modify chances/value ranges)
 monster models aren't all actually monsters
-replace { textures with random { textures (or just rename?)
 weapon_strip for impulse 101?
 combinable texture corruption
+replace { textures with random { textures (xeno_grapple though...)
+random footstep sounds (won't work with xeno_grapple...)
+animated textures don't work (and probably won't with xeno_grapple in use)
 
 Flipping:
 door directions messed up a bit (c4a1a, others)

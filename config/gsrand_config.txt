@@ -196,5 +196,5 @@ texture_compression = 0
 //     *hlsp_classic = Classic (unmodified) Half-Life (c0a0 to c5a1)
 
 [maps]
-stadium4
+svencoop1
 *hlsp

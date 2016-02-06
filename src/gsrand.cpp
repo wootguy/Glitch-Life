@@ -143,6 +143,7 @@ string_hashmap default_friendly_monster_models;
 string_hashmap default_weapon_models;
 string_hashmap default_ammo_models;
 string_hashmap default_item_models;
+string_hashmap default_xen_models;
 vector<string> default_gib_models;
 vector<string> default_precache_models; // models that are precached by default
 vector<string> gmr_replace_only; // models only replacable through GMR
