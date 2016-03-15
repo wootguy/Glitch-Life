@@ -184,6 +184,11 @@ max_file_size = 0 KB
 
 texture_compression = 0
 
+// Uncomment force_player_models to force specific player models to be used in all
+// maps. Separate names with a semicolon and don't include the model path or extension.
+
+// force_player_models = sieni;sieni;sieni
+
 // [maps] is a list of maps that gsrand will randomize.
 // If this list is empty, then EVERY map will be randomized.
 //

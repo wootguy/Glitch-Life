@@ -189,21 +189,27 @@ bool needsRipent(BSP * map, Entity** ents)
 
 	newWadString += ".wad;zhlt.wad";
 
+	bool needsRip = false;
 	if (texMode != TEX_MAP && texMode != TEX_NONE)
 	{
 		if (!matchStr(ents[0]->keyvalues["wad"], newWadString))
 		{
 			ents[0]->keyvalues["wad"] = newWadString;
-			return true;
+			needsRip = true;
 		}
 	}
 	if (texMode == TEX_MAP)
 	{
 		ents[0]->keyvalues["wad"] = "";
-		return true;
+		needsRip = true;
+	}
+	if (force_player_models.length() > 0)
+	{
+		ents[0]->keyvalues["forcepmodels"] = force_player_models;
+		needsRip = true;
 	}
 
-	return false;
+	return needsRip;
 }
 
 int add_gsrand_ents(Entity ** ents)

@@ -2,6 +2,7 @@ glitch-life todo:
 
 crash when just 1 wad and 1 map
 impulse 101 cheat is leaving stuff behind
+CRASH: a texture was not 16 aligned on glitchsectore_1 (bad wad?)
 
 monsters getting super long names? (vinesauce ep.3)
 GL_UPLOAD 16 error c1a0

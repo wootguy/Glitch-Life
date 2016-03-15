@@ -81,6 +81,7 @@ int fogEnabled = 1;
 int gravityEnabled = 1;
 int maxContentBytes = 0;
 int textureCompression = 0;
+std::string force_player_models;
 
 int numOverflow = 0;
 bool sparks;
@@ -598,6 +599,7 @@ void parse_settings_file()
 				if (setting_name.find("random_fog") == 0) fogEnabled = atoi(setting_value.c_str());
 				if (setting_name.find("random_gravity") == 0) gravityEnabled = atoi(setting_value.c_str());
 				if (setting_name.find("texture_compression") == 0) textureCompression = atoi(setting_value.c_str());
+				if (setting_name.find("force_player_models") == 0) force_player_models = setting_value.c_str();
 				if (setting_name.find("max_file_size") == 0)
 				{
 					int sep = setting_value.find(" ");
@@ -1535,6 +1537,13 @@ void create_res_file(vector<string>& res_files, Entity ** ents, string path, str
 	if (!singleplayer)
 	{
 		res_files.push_back("maps/" + mapname + ".res");
+
+		if (force_player_models.length() > 0)
+		{
+			vector<string> plr_models = splitString(force_player_models, ";");
+			for (uint i = 0; i < plr_models.size(); i++)
+				res_files.push_back("models/player/" + plr_models[i] + ".mdl");
+		}
 
 		// make sure we have the correct case for these files
 		set<string> case_corrected_files;
