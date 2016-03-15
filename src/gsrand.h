@@ -322,6 +322,7 @@ extern int fogEnabled;
 extern int gravityEnabled;
 extern int maxContentBytes; // any files larger than this won't be used in randomization
 extern int textureCompression;
+extern std::string force_player_models;
 
 enum model_types
 {
