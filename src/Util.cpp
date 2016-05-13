@@ -958,3 +958,16 @@ string base36(int num)
 	}
 	return b36;
 }
+
+void sleepMsecs(int msecs)
+{
+    #if defined(WIN32) || defined(_WIN32)
+        Sleep(msecs);
+    #else
+        struct timespec spec;
+        spec.tv_sec = msecs / 1000;
+        spec.tv_nsec = 1000000 * (msecs % 1000);
+        
+        nanosleep(&spec, NULL);
+    #endif
+}

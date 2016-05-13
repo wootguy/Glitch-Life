@@ -202,6 +202,8 @@ uint64 getSystemTime();
 
 string base36(int num);
 
+void sleepMsecs(int msecs);
+
 struct DateTime
 {
 	int year, month, day;

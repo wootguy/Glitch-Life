@@ -394,7 +394,7 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 				print(last_print);
 				last_print_time = getSystemTime();
 			}
-			Sleep(5);
+			sleepMsecs(5);
 
 			bool match = false;
 			for (int k = 0; k < num_default; k++)
