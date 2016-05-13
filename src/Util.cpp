@@ -114,78 +114,14 @@ void writeLog()
 	fout.close();
 }
 
-string str(int value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(unsigned int value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(char value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(long value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(long long value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(float value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
 string str(double value)
 {
-    stringstream ss;
-    ss.precision(16);
-    ss << value;
-    return ss.str();
-}
-
-string str(double value, int precision)
-{
-    stringstream ss;
-    ss.precision(precision);
-    ss << fixed << value;
-    return ss.str();
-}
-
-string str(float value, int precision)
-{
-	stringstream ss;
-	ss.precision(precision);
-	ss << fixed << value;
-	return ss.str();
+    return str(value, 16);
 }
 
 string str(long double value)
 {
-    stringstream ss;
-    ss.precision(16);
-    ss << value;
-    return ss.str();
+    return str(value, 16);
 }
 
 string getWorkDir()
@@ -957,4 +893,17 @@ string base36(int num)
 		num /= 36; 
 	}
 	return b36;
+}
+
+void sleepMsecs(int msecs)
+{
+    #if defined(WIN32) || defined(_WIN32)
+        Sleep(msecs);
+    #else
+        struct timespec spec;
+        spec.tv_sec = msecs / 1000;
+        spec.tv_nsec = 1000000 * (msecs % 1000);
+        
+        nanosleep(&spec, NULL);
+    #endif
 }
