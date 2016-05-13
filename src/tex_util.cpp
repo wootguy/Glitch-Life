@@ -389,7 +389,7 @@ WADTEX * load_random_texture(vector<Wad>& wads)
 			{
 				WADTEX * tex = wads[i].readTexture(r);
 
-				int maxDim = max(256 >> textureCompression, 16);
+				int maxDim = max((unsigned)256 >> textureCompression, (unsigned)16);
 				if (textureCompression && tex->nWidth * tex->nWidth > maxDim*maxDim)
 				{
 					WADTEX * ctex = new WADTEX;
@@ -397,8 +397,8 @@ WADTEX * load_random_texture(vector<Wad>& wads)
 					ctex->nWidth = (float)tex->nWidth * scale;
 					ctex->nHeight = (float)tex->nHeight * scale;
 					// round to multiple of 16
-					ctex->nWidth = max( ((ctex->nWidth >> 4) << 4), 16);
-					ctex->nHeight = max( ((ctex->nHeight >> 4) << 4), 16);
+					ctex->nWidth = max( ((ctex->nWidth >> 4) << 4), (unsigned)16);
+					ctex->nHeight = max( ((ctex->nHeight >> 4) << 4), (unsigned)16);
 
 					float xScale = (float)tex->nWidth / (float)ctex->nWidth;
 					float yScale = (float)tex->nHeight / (float)ctex->nHeight;
