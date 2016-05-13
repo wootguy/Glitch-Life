@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -47,23 +48,26 @@ void writeLog();
 	Convert the specified value to a string
 	value - value to convert
 */
-string str(int value);
+template<typename Type>
+string str(Type value, int precision)
+{
+	stringstream ss;
+	
+	if(precision > 0)
+		ss.precision(precision);
+	
+	ss << value;
+	
+	return ss.str();
+}
 
-string str(unsigned int value);
-
-string str(char value);
-
-string str(long value);
-
-string str(long long value);
-
-string str(float value);
+template<typename Type>
+string str(Type value)
+{
+	return str(value, -1);
+}
 
 string str(double value);
-
-string str(double value, int precision);
-
-string str(float value, int precision);
 
 string str(long double value);
 

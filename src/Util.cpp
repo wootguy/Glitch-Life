@@ -114,78 +114,14 @@ void writeLog()
 	fout.close();
 }
 
-string str(int value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(unsigned int value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(char value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(long value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(long long value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
-string str(float value)
-{
-    stringstream ss;
-    ss << value;
-    return ss.str();
-}
-
 string str(double value)
 {
-    stringstream ss;
-    ss.precision(16);
-    ss << value;
-    return ss.str();
-}
-
-string str(double value, int precision)
-{
-    stringstream ss;
-    ss.precision(precision);
-    ss << fixed << value;
-    return ss.str();
-}
-
-string str(float value, int precision)
-{
-	stringstream ss;
-	ss.precision(precision);
-	ss << fixed << value;
-	return ss.str();
+    return str(value, 16);
 }
 
 string str(long double value)
 {
-    stringstream ss;
-    ss.precision(16);
-    ss << value;
-    return ss.str();
+    return str(value, 16);
 }
 
 string getWorkDir()
