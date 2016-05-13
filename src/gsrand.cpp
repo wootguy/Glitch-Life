@@ -381,7 +381,7 @@ void filter_default_content(vector<string>& unfiltered, const char ** default_li
 							vector<string>& search_paths, string ext, int& total_count, int& exclude_count, string& last_print)
 {
 	uint64 last_print_time = 0;
-	if (contentMode != CONTENT_EVERYTHING || maxContentBytes && search_paths.size() || skipUppercase)
+	if ((contentMode != CONTENT_EVERYTHING || maxContentBytes) && (search_paths.size() || skipUppercase))
 	{
 		vector<string> filtered;
 		for (uint i = 0, sz = unfiltered.size(); i < sz; ++i)
