@@ -5693,7 +5693,7 @@ static void initMasterList()
 	masterList[141] = MASTER_x;
 	masterList[142] = MASTER_zombie;
 
-	masterSize[0] = 2;
+	masterSize[0] = 1;
 	masterSize[1] = 4;
 	masterSize[2] = 1;
 	masterSize[3] = 1;
