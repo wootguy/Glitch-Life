@@ -519,6 +519,7 @@ vector<string> getDirFiles( string path, string extension )
 		FindClose(hFind);
 	}
     #else
+    extension = toLowerCase(extension);
     DIR *dir = opendir(path.c_str());
     
     if(!dir)
@@ -535,11 +536,12 @@ vector<string> getDirFiles( string path, string extension )
             continue;
         
         string name = string(entry->d_name);
+        string lowerName = toLowerCase(name);
         
         if(extension.size() > name.size())
             continue;
         
-        if(std::equal(extension.rbegin(), extension.rend(), name.rbegin()))
+        if(std::equal(extension.rbegin(), extension.rend(), lowerName.rbegin()))
             results.push_back(name);
     }
     
