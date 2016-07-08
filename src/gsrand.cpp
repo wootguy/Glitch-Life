@@ -796,7 +796,17 @@ bool createSKL(string path, string mapname)
 	vector<string> text;
 	string line;
 
-	ifstream myfile (path + mapname + "_skl.cfg");
+	// read contents of old CFG
+	string oldcfg = mapname + "_skl.cfg";
+	string testPath = "maps/" + oldcfg;
+	if (!fileExists(testPath))
+		testPath = "../svencoop/maps/" + oldcfg;
+	if (!fileExists(testPath))
+		testPath = "../svencoop_downloads/maps/" + oldcfg;
+	if (fileExists(testPath))
+		oldcfg = testPath;
+
+	ifstream myfile (oldcfg);
 	if (myfile.is_open())
 	{
 		while ( !myfile.eof() )
@@ -884,7 +894,17 @@ bool createCFG(string path, string mapname)
 	vector<string> text;
 	string line;
 
-	ifstream myfile (path + mapname + ".cfg");
+	// read contents of old CFG
+	string oldcfg = mapname + ".cfg";
+	string testPath = "maps/" + oldcfg;
+	if (!fileExists(testPath))
+		testPath = "../svencoop/maps/" + oldcfg;
+	if (!fileExists(testPath))
+		testPath = "../svencoop_downloads/maps/" + oldcfg;
+	if (fileExists(testPath))
+		oldcfg = testPath;
+
+	ifstream myfile (oldcfg);
 	if (myfile.is_open())
 	{
 		while ( !myfile.eof() )
@@ -900,7 +920,7 @@ bool createCFG(string path, string mapname)
 				gmr = relative_path_to_absolute("models/" + mapname, gmr);
 				res_list.insert(gmr);
 			}
-			if (sndMode == MDL_NONE && line.find("globalsoundlist") != string::npos)
+			if (sndMode == SND_NONE && line.find("globalsoundlist") != string::npos)
 			{
 				string gmr = getSubStr(line, line.find("globalsoundlist")+15);
 				gmr = getSubStr(gmr, gmr.find_first_not_of(' '));
@@ -933,6 +953,7 @@ bool createCFG(string path, string mapname)
 	if (prefixMode != PREFIX_NONE)
 		mapname = MAP_PREFIX + mapname;
 
+	// write in the new CFG
 	res_list.insert("maps/" + mapname + ".cfg");
 	fout.open (path + mapname + ".cfg", ios::out | ios::trunc);
 	if (text.size() > 0)
