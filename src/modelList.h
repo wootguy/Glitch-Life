@@ -283,6 +283,7 @@ static void init_default_model_lists()
 	default_weapon_models["uzi_gold"]      = "uzi_gold"; 
 	default_weapon_models["uziakimbo_gold"]= "2uzis_gold";
 	default_weapon_models["satchel_radio"] = "satchel_radio";
+	default_weapon_models["displacer"]	   = "displacer";
 
 	for (string_hashmap::iterator it = default_weapon_models.begin(); it != default_weapon_models.end(); ++it)
 	{
@@ -341,7 +342,7 @@ static void init_default_model_lists()
 }
 
 // weapons are precached too but we handle those differently
-#define NUM_DEFAULT_PRECACHE 42
+#define NUM_DEFAULT_PRECACHE 44
 static const char * DEFAULT_PRECACHE[NUM_DEFAULT_PRECACHE] =
 {
 	"models/shotgunshell.mdl",
@@ -387,4 +388,6 @@ static const char * DEFAULT_PRECACHE[NUM_DEFAULT_PRECACHE] =
 	"sprites/saveme.spr",
 	"sprites/grenade.spr",
 	"sprites/muzzleflash_saw.spr",
+	"sprites/exit1.spr",
+	"sprites/disp_ring.spr",
 };
