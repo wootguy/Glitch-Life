@@ -1616,7 +1616,7 @@ void create_res_file(vector<string>& res_files, Entity ** ents, string path, str
 				res_files[i].find(".txt") != string::npos || res_files[i].find(".res") != string::npos)
 				continue; // clients don't need these
 			written++;
-			if (written > 506)
+			if (written > 5060)
 				toomany++;
 			else
 				fout << res_files[i] << endl;
@@ -2400,7 +2400,7 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		system(CLEAR_COMMAND); // WINDOWS ONLY
-		cout << std::setw(80) << right << "version 5\n";
+		cout << std::setw(80) << right << "version 5.1\n";
 		cout << "Welcome to w00tguy's map randomizer!\n\n";
 
 		cout << "Options:\n\n";

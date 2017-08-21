@@ -50,6 +50,9 @@ models/bmt/aqua/bullsquid.mdl
 models/snwcam.mdl
 models/keen/hungerzombieblack.mdl
 
+[monster_scientist_dead & monster_hevsuit_dead & monster_hgrunt_dead & monster_human_grunt_ally_dead & monster_otis_dead]
+models/sat_globe.mdl // causes "Backwards mins/maxs" error for some reason
+
 [monster_barney]
 models/hq/hev_barn.mdl // non-default, causes crash with scripted_sequences
 
