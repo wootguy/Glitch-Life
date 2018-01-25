@@ -257,7 +257,7 @@ void genSoundList()
 	println("static const char ** masterList[NUM_MASTER_DIRS];");
 	println("static int           masterSize[NUM_MASTER_DIRS];");
 	println("static const char *  masterDirs[NUM_MASTER_DIRS];");
-	println("void initMasterList()\n{");
+	println("static void initMasterList()\n{");
 	for (uint i = 0; i < validDirs.size(); i++)
 	{
 		println("\tmasterList[" + str(i) + "] = " + codeDirs[i] + ';');

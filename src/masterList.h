@@ -1,7 +1,7 @@
 #pragma once
 // this is auto-generated (thank god)
 // the commented out code in sound_util.cpp can make this
-// Remove "null.wav" from MASTER_sound since it's not a fun sound.
+// Remove "null.wav" from MASTER_sound since it's not a fun sound (also reduce masterSize[0] by 1).
 
 // Last updated 2/2/16 for SC 5.01
 // TODO: Load this stuff from a file instead of hard-coding it
@@ -750,7 +750,7 @@ static const char * MASTER_blackmesaepf[NUM_MASTER_blackmesaepf] =
 	"track7.mp3",
 };
 
-#define NUM_MASTER_bodyguard 48
+#define NUM_MASTER_bodyguard 49
 static const char * MASTER_bodyguard[NUM_MASTER_bodyguard] =
 {
 	"ashestoashes.ogg",
@@ -801,6 +801,7 @@ static const char * MASTER_bodyguard[NUM_MASTER_bodyguard] =
 	"wounded1.ogg",
 	"wounded2.ogg",
 	"yougotit.ogg",
+	"_comma.wav",
 };
 
 #define NUM_MASTER_boid 5
@@ -1243,6 +1244,12 @@ static const char * MASTER_debris[NUM_MASTER_debris] =
 	"zap6.wav",
 	"zap7.wav",
 	"zap8.wav",
+};
+
+#define NUM_MASTER_demonprey 1
+static const char * MASTER_demonprey[NUM_MASTER_demonprey] =
+{
+	"funkymusicshort.mp3",
 };
 
 #define NUM_MASTER_descrcl 6
@@ -2374,6 +2381,99 @@ static const char * MASTER_hl_weapons[NUM_MASTER_hl_weapons] =
 	"scock1.wav",
 };
 
+#define NUM_MASTER_hlclassic_hgrunt 2
+static const char * MASTER_hlclassic_hgrunt[NUM_MASTER_hlclassic_hgrunt] =
+{
+	"gr_mgun1.wav",
+	"gr_mgun2.wav",
+};
+
+#define NUM_MASTER_hlclassic_items 5
+static const char * MASTER_hlclassic_items[NUM_MASTER_hlclassic_items] =
+{
+	"9mmclip1.wav",
+	"9mmclip2.wav",
+	"clipinsert1.wav",
+	"cliprelease1.wav",
+	"weapondrop1.wav",
+};
+
+#define NUM_MASTER_hlclassic_weapons 71
+static const char * MASTER_hlclassic_weapons[NUM_MASTER_hlclassic_weapons] =
+{
+	"357_cock1.wav",
+	"357_reload1.wav",
+	"357_shot1.wav",
+	"357_shot2.wav",
+	"bullet_hit1.wav",
+	"bullet_hit2.wav",
+	"cbar_hit1.wav",
+	"cbar_hit2.wav",
+	"cbar_hitbod1.wav",
+	"cbar_hitbod2.wav",
+	"cbar_hitbod3.wav",
+	"cbar_miss1.wav",
+	"dbarrel1.wav",
+	"debris1.wav",
+	"debris2.wav",
+	"debris3.wav",
+	"dryfire1.wav",
+	"egon_off1.wav",
+	"egon_run3.wav",
+	"egon_windup2.wav",
+	"electro4.wav",
+	"electro5.wav",
+	"electro6.wav",
+	"explode3.wav",
+	"explode4.wav",
+	"explode5.wav",
+	"gauss2.wav",
+	"glauncher.wav",
+	"glauncher2.wav",
+	"grenade_hit1.wav",
+	"grenade_hit2.wav",
+	"grenade_hit3.wav",
+	"gren_cock1.wav",
+	"g_bounce1.wav",
+	"g_bounce2.wav",
+	"g_bounce3.wav",
+	"g_bounce4.wav",
+	"g_bounce5.wav",
+	"hks1.wav",
+	"hks2.wav",
+	"hks3.wav",
+	"mine_activate.wav",
+	"mine_charge.wav",
+	"mine_deploy.wav",
+	"mortar.wav",
+	"mortarhit.wav",
+	"pl_gun1.wav",
+	"pl_gun2.wav",
+	"pl_gun3.wav",
+	"reload1.wav",
+	"reload2.wav",
+	"reload3.wav",
+	"ric1.wav",
+	"ric2.wav",
+	"ric3.wav",
+	"ric4.wav",
+	"ric5.wav",
+	"rocket1.wav",
+	"rocketfire1.wav",
+	"sbarrel1.wav",
+	"scock1.wav",
+	"sshell1.wav",
+	"sshell2.wav",
+	"sshell3.wav",
+	"xbow_fire1.wav",
+	"xbow_fly1.wav",
+	"xbow_hit1.wav",
+	"xbow_hit2.wav",
+	"xbow_hitbod1.wav",
+	"xbow_hitbod2.wav",
+	"xbow_reload1.wav",
+};
+
 #define NUM_MASTER_holo 50
 static const char * MASTER_holo[NUM_MASTER_holo] =
 {
@@ -2470,6 +2570,12 @@ static const char * MASTER_houndeye[NUM_MASTER_houndeye] =
 	"he_pain5.wav",
 };
 
+#define NUM_MASTER_hunger 1
+static const char * MASTER_hunger[NUM_MASTER_hunger] =
+{
+	"checkpointjingle.mp3",
+};
+
 #define NUM_MASTER_hunger_alfred 9
 static const char * MASTER_hunger_alfred[NUM_MASTER_hunger_alfred] =
 {
@@ -2484,9 +2590,85 @@ static const char * MASTER_hunger_alfred[NUM_MASTER_hunger_alfred] =
 	"_period.wav",
 };
 
-#define NUM_MASTER_hunger_franklin 15
+#define NUM_MASTER_hunger_apache 1
+static const char * MASTER_hunger_apache[NUM_MASTER_hunger_apache] =
+{
+	"ap_rotor3.wav",
+};
+
+#define NUM_MASTER_hunger_babyslave 15
+static const char * MASTER_hunger_babyslave[NUM_MASTER_hunger_babyslave] =
+{
+	"slv_alert1.wav",
+	"slv_alert3.wav",
+	"slv_alert4.wav",
+	"slv_die1.wav",
+	"slv_die2.wav",
+	"slv_pain1.wav",
+	"slv_pain2.wav",
+	"slv_word1.wav",
+	"slv_word2.wav",
+	"slv_word3.wav",
+	"slv_word4.wav",
+	"slv_word5.wav",
+	"slv_word6.wav",
+	"slv_word7.wav",
+	"slv_word8.wav",
+};
+
+#define NUM_MASTER_hunger_bull 25
+static const char * MASTER_hunger_bull[NUM_MASTER_hunger_bull] =
+{
+	"bull_extra.wav",
+	"bu_alert1.wav",
+	"bu_alert2.wav",
+	"bu_alert3.wav",
+	"bu_alert4.wav",
+	"bu_die1.wav",
+	"bu_die2.wav",
+	"bu_die3.wav",
+	"bu_gore1.wav",
+	"bu_gore2.wav",
+	"bu_gore3.wav",
+	"bu_idle1.wav",
+	"bu_idle2.wav",
+	"bu_idle3.wav",
+	"bu_pain1.wav",
+	"bu_pain2.wav",
+	"bu_pain3.wav",
+	"bu_paw1.wav",
+	"bu_runstep1.wav",
+	"bu_runstep2.wav",
+	"bu_walkstep1.wav",
+	"bu_walkstep2.wav",
+	"bu_whip1.wav",
+	"bu_whip2.wav",
+	"bu_whip3.wav",
+};
+
+#define NUM_MASTER_hunger_chicken 10
+static const char * MASTER_hunger_chicken[NUM_MASTER_hunger_chicken] =
+{
+	"ch_alert1.wav",
+	"ch_alert2.wav",
+	"ch_attack1.wav",
+	"ch_attack2.wav",
+	"ch_die1.wav",
+	"ch_die2.wav",
+	"ch_idle1.wav",
+	"ch_idle2.wav",
+	"ch_pain1.wav",
+	"ch_pain2.wav",
+};
+
+#define NUM_MASTER_hunger_franklin 23
 static const char * MASTER_hunger_franklin[NUM_MASTER_hunger_franklin] =
 {
+	"alert1.wav",
+	"attack1.wav",
+	"death1.wav",
+	"death2.wav",
+	"death3.wav",
 	"frank1.wav",
 	"frank2.wav",
 	"frank3.wav",
@@ -2497,11 +2679,49 @@ static const char * MASTER_hunger_franklin[NUM_MASTER_hunger_franklin] =
 	"franklin4.wav",
 	"franklin4_2_2.wav",
 	"franklin5.wav",
+	"franklin_step.wav",
 	"frank_die.wav",
 	"frank_run.wav",
+	"pain1.wav",
+	"pain2.wav",
 	"standback.wav",
 	"wav.wav",
 	"_period.wav",
+};
+
+#define NUM_MASTER_hunger_hgrunt 19
+static const char * MASTER_hunger_hgrunt[NUM_MASTER_hunger_hgrunt] =
+{
+	"die_th3.wav",
+	"gr_die1.wav",
+	"gr_die2.wav",
+	"gr_die3.wav",
+	"gr_pain1.wav",
+	"gr_pain2.wav",
+	"gr_pain3.wav",
+	"gr_pain4.wav",
+	"gr_pain5.wav",
+	"kill_zombies.wav",
+	"mil_another.wav",
+	"mil_time.wav",
+	"search_th3.wav",
+	"thatcivilian!.wav",
+	"thatcivilian.wav",
+	"zombie!.wav",
+	"zombie.wav",
+	"zombies!.wav",
+	"zombies.wav",
+};
+
+#define NUM_MASTER_hunger_hornet 6
+static const char * MASTER_hunger_hornet[NUM_MASTER_hunger_hornet] =
+{
+	"ag_buzz1.wav",
+	"ag_buzz2.wav",
+	"ag_buzz3.wav",
+	"ag_hornethit1.wav",
+	"ag_hornethit2.wav",
+	"ag_hornethit3.wav",
 };
 
 #define NUM_MASTER_hunger_hungerbarney 11
@@ -2605,7 +2825,7 @@ static const char * MASTER_hunger_hungerslave[NUM_MASTER_hunger_hungerslave] =
 	"slv_word8.wav",
 };
 
-#define NUM_MASTER_hunger_hungerzombie 16
+#define NUM_MASTER_hunger_hungerzombie 17
 static const char * MASTER_hunger_hungerzombie[NUM_MASTER_hunger_hungerzombie] =
 {
 	"claw_miss1.wav",
@@ -2624,6 +2844,7 @@ static const char * MASTER_hunger_hungerzombie[NUM_MASTER_hunger_hungerzombie] =
 	"zo_idle4.wav",
 	"zo_pain1.wav",
 	"zo_pain2.wav",
+	"zo_pain3.wav",
 };
 
 #define NUM_MASTER_hunger_hungerzombiecop 11
@@ -2712,11 +2933,15 @@ static const char * MASTER_hunger_recorder[NUM_MASTER_hunger_recorder] =
 	"tape_machine.wav",
 };
 
-#define NUM_MASTER_hunger_sheriff 15
+#define NUM_MASTER_hunger_sheriff 19
 static const char * MASTER_hunger_sheriff[NUM_MASTER_hunger_sheriff] =
 {
+	"chopper.wav",
+	"coverme.wav",
 	"cussfranklin.wav",
+	"killemall.wav",
 	"rayward.wav",
+	"sawplayer.wav",
 	"sherif1.wav",
 	"sherif2.wav",
 	"sherif3.wav",
@@ -2732,9 +2957,16 @@ static const char * MASTER_hunger_sheriff[NUM_MASTER_hunger_sheriff] =
 	"_period.wav",
 };
 
-#define NUM_MASTER_hunger_thambs 83
+#define NUM_MASTER_hunger_song 1
+static const char * MASTER_hunger_song[NUM_MASTER_hunger_song] =
+{
+	"you_are.wav",
+};
+
+#define NUM_MASTER_hunger_thambs 90
 static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 {
+	"amb_3hit.wav",
 	"ap_rotor3new.wav",
 	"bat.wav",
 	"bell2.wav",
@@ -2744,6 +2976,7 @@ static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 	"bubble2.wav",
 	"bubble3.wav",
 	"burning1.wav",
+	"bustconcrete2.wav",
 	"catyowl.wav",
 	"cop1.wav",
 	"cop2.wav",
@@ -2763,6 +2996,8 @@ static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 	"dogamb1.wav",
 	"frog.wav",
 	"helldream1.wav",
+	"incoming.wav",
+	"lantern.wav",
 	"lava.wav",
 	"lava2.wav",
 	"leaves1.wav",
@@ -2773,8 +3008,10 @@ static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 	"message_00.wav",
 	"message_01.wav",
 	"message_02.wav",
+	"mgboat.wav",
 	"mygod.wav",
 	"owl1.wav",
+	"projector.wav",
 	"quake1_loop.wav",
 	"radio1.wav",
 	"radio2.wav",
@@ -2797,6 +3034,7 @@ static const char * MASTER_hunger_thambs[NUM_MASTER_hunger_thambs] =
 	"static.wav",
 	"steamtrain2.wav",
 	"steamtrain6.wav",
+	"telephone.wav",
 	"they14_ambush.wav",
 	"thunder1.wav",
 	"toilet.wav",
@@ -2847,6 +3085,45 @@ static const char * MASTER_hunger_thambs2[NUM_MASTER_hunger_thambs2] =
 	"_period.wav",
 };
 
+#define NUM_MASTER_hunger_thambs3 28
+static const char * MASTER_hunger_thambs3[NUM_MASTER_hunger_thambs3] =
+{
+	"anotherz_onspkr.wav",
+	"chopper.wav",
+	"commando.wav",
+	"crowd1.wav",
+	"crowd2.wav",
+	"dying_guy.wav",
+	"fem_helpme.wav",
+	"jerry1.wav",
+	"jerry2.wav",
+	"pilot1.wav",
+	"pilot10.wav",
+	"pilot1_muffle.wav",
+	"pilot2.wav",
+	"pilot3.wav",
+	"pilot4.wav",
+	"pilot5.wav",
+	"pilot6.wav",
+	"pilot7.wav",
+	"pilot8.wav",
+	"pilot9.wav",
+	"priest_radio1.wav",
+	"priest_radio2.wav",
+	"shortmonster.wav",
+	"timetodiez_onspkr.wav",
+	"wagon.wav",
+	"zo_radio.wav",
+	"zscientist1a.wav",
+	"zscientist2a.wav",
+};
+
+#define NUM_MASTER_hunger_thsurvival 1
+static const char * MASTER_hunger_thsurvival[NUM_MASTER_hunger_thsurvival] =
+{
+	"heartbeat.ogg",
+};
+
 #define NUM_MASTER_hunger_thweapons 13
 static const char * MASTER_hunger_thweapons[NUM_MASTER_hunger_thweapons] =
 {
@@ -2863,6 +3140,135 @@ static const char * MASTER_hunger_thweapons[NUM_MASTER_hunger_thweapons] =
 	"tau_clipout.wav",
 	"tau_fire.wav",
 	"tau_release.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_colt 6
+static const char * MASTER_hunger_weapons_colt[NUM_MASTER_hunger_weapons_colt] =
+{
+	"1911_magin.wav",
+	"1911_magout.wav",
+	"1911_slideforward.wav",
+	"colt_empty.wav",
+	"colt_fire1.wav",
+	"colt_fire2.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_dbarrel 8
+static const char * MASTER_hunger_weapons_dbarrel[NUM_MASTER_hunger_weapons_dbarrel] =
+{
+	"doublefire.wav",
+	"fire.wav",
+	"TOZ_close.wav",
+	"TOZ_open.wav",
+	"TOZ_shell1.wav",
+	"TOZ_shell2.wav",
+	"TOZ_shell_out.wav",
+	"TOZ_shels_eject.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_greasegun 4
+static const char * MASTER_hunger_weapons_greasegun[NUM_MASTER_hunger_weapons_greasegun] =
+{
+	"M3_boltpull.wav",
+	"M3_magin.wav",
+	"M3_magout.wav",
+	"M3_shoot1.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_m14 6
+static const char * MASTER_hunger_weapons_m14[NUM_MASTER_hunger_weapons_m14] =
+{
+	"m14_boltrelease.wav",
+	"m14_magin.wav",
+	"m14_magout.wav",
+	"m14_shot1.wav",
+	"m14_shot2.wav",
+	"m14_zoom.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_m16a1 8
+static const char * MASTER_hunger_weapons_m16a1[NUM_MASTER_hunger_weapons_m16a1] =
+{
+	"m16_boltcatch.wav",
+	"m16_burst.wav",
+	"m16_fire1.wav",
+	"m16_fire2.wav",
+	"m16_fire3.wav",
+	"m16_magin.wav",
+	"m16_magout.wav",
+	"m16_safety.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_Mk2 2
+static const char * MASTER_hunger_weapons_Mk2[NUM_MASTER_hunger_weapons_Mk2] =
+{
+	"mk2_pinpull.wav",
+	"mk2_spoon.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_tesla 6
+static const char * MASTER_hunger_weapons_tesla[NUM_MASTER_hunger_weapons_tesla] =
+{
+	"tesla_bigcharge.ogg",
+	"tesla_bigrelease.ogg",
+	"tesla_chargehold.ogg",
+	"tesla_draw.ogg",
+	"tesla_fire.ogg",
+	"tesla_spinup.ogg",
+};
+
+#define NUM_MASTER_hunger_weapons_TNT 1
+static const char * MASTER_hunger_weapons_TNT[NUM_MASTER_hunger_weapons_TNT] =
+{
+	"zip_flint_burn.wav",
+};
+
+#define NUM_MASTER_hunger_weapons_tommygun 4
+static const char * MASTER_hunger_weapons_tommygun[NUM_MASTER_hunger_weapons_tommygun] =
+{
+	"fire.wav",
+	"M1921_boltback.wav",
+	"M1921_magin.wav",
+	"M1921_magout.wav",
+};
+
+#define NUM_MASTER_hunger_znurse 15
+static const char * MASTER_hunger_znurse[NUM_MASTER_hunger_znurse] =
+{
+	"nightmare.wav",
+	"scream1.wav",
+	"scream2.wav",
+	"scream3.wav",
+	"zo_alert10.wav",
+	"zo_alert20.wav",
+	"zo_alert30.wav",
+	"zo_attack1.wav",
+	"zo_attack2.wav",
+	"zo_idle1.wav",
+	"zo_idle2.wav",
+	"zo_idle3.wav",
+	"zo_idle4.wav",
+	"zo_pain1.wav",
+	"zo_pain2.wav",
+};
+
+#define NUM_MASTER_hunger_zombienew 14
+static const char * MASTER_hunger_zombienew[NUM_MASTER_hunger_zombienew] =
+{
+	"wav.wav",
+	"zo_alert10.wav",
+	"zo_alert20.wav",
+	"zo_alert30.wav",
+	"zo_attack1.wav",
+	"zo_attack2.wav",
+	"zo_idle1.wav",
+	"zo_idle2.wav",
+	"zo_idle3.wav",
+	"zo_idle4.wav",
+	"zo_pain1.wav",
+	"zo_pain2.wav",
+	"zo_pain3.wav",
+	"_period.wav",
 };
 
 #define NUM_MASTER_hunger_zombierat 6
@@ -2935,10 +3341,11 @@ static const char * MASTER_incoming[NUM_MASTER_incoming] =
 	"s.wav",
 };
 
-#define NUM_MASTER_infested 3
+#define NUM_MASTER_infested 4
 static const char * MASTER_infested[NUM_MASTER_infested] =
 {
 	"i1.wav",
+	"i1_4min.wav",
 	"i2.wav",
 	"i3.wav",
 };
@@ -2991,6 +3398,13 @@ static const char * MASTER_items[NUM_MASTER_items] =
 	"suitchargeok1.wav",
 	"weapondrop1.wav",
 	"weapondrop2.wav",
+};
+
+#define NUM_MASTER_judgement 2
+static const char * MASTER_judgement[NUM_MASTER_judgement] =
+{
+	"crossingthechasm2.mp3",
+	"wholesomeactivities.wav",
 };
 
 #define NUM_MASTER_kingpin 19
@@ -3548,17 +3962,6 @@ static const char * MASTER_radio[NUM_MASTER_radio] =
 	"of4a3_rd01.wav",
 	"of6a2_rd01.wav",
 	"static.wav",
-};
-
-#define NUM_MASTER_richard_boderman 6
-static const char * MASTER_richard_boderman[NUM_MASTER_richard_boderman] =
-{
-	"wagner.mp3",
-	"hueytimer1.wav",
-	"hueytimer2.wav",
-	"hueytimer3.wav",
-	"huey_rotor.wav",
-	"null.wav",
 };
 
 #define NUM_MASTER_roach 3
@@ -4125,6 +4528,17 @@ static const char * MASTER_sc_psyko[NUM_MASTER_sc_psyko] =
 	"tympani.WAV",
 };
 
+#define NUM_MASTER_sc_robination 6
+static const char * MASTER_sc_robination[NUM_MASTER_sc_robination] =
+{
+	"alarm001.wav",
+	"arc_welder_long.wav",
+	"crash.wav",
+	"cuboos_alien_horn2.wav",
+	"item_respawn.wav",
+	"petardo1.wav",
+};
+
 #define NUM_MASTER_sc_tetris 11
 static const char * MASTER_sc_tetris[NUM_MASTER_sc_tetris] =
 {
@@ -4139,95 +4553,6 @@ static const char * MASTER_sc_tetris[NUM_MASTER_sc_tetris] =
 	"tetris-music3x.wav",
 	"tetris-music4.wav",
 	"tetris-music4x.wav",
-};
-
-#define NUM_MASTER_sectore 78
-static const char * MASTER_sectore[NUM_MASTER_sectore] =
-{
-	"bossa.it",
-	"83257-space_walk.mod",
-	"dust_raiders.mod",
-	"laber.mod",
-	"labrece.mod",
-	"278161_Gravitational_Pull_2_.mp3",
-	"278161_Gravitational_Pull_2_once.mp3",
-	"341422_Iysis__HighTreson_.mp3",
-	"eleup.mp3",
-	"eleup2.mp3",
-	"gruntchat_once.mp3",
-	"grunttalk_once.mp3",
-	"hlcoolmusic_once.mp3",
-	"spaceambient.mp3",
-	"xenop4music_once.mp3",
-	"captured.s3m",
-	"jazz_jackrabbit_2_-_labratory_level.s3m",
-	"alienmessage.wav",
-	"alienmessage2.wav",
-	"boss.wav",
-	"burn.wav",
-	"doompickup.wav",
-	"eleup.wav",
-	"eleup2.wav",
-	"elevatormusic.wav",
-	"elevatorrise.wav",
-	"flowerget.wav",
-	"gman_cya.wav",
-	"goodwork.wav",
-	"hks1.wav",
-	"hks2.wav",
-	"hks3.wav",
-	"jetout.wav",
-	"pit_drone_alert1.wav",
-	"pit_drone_alert2.wav",
-	"pit_drone_alert3.wav",
-	"pit_drone_attack_spike1.wav",
-	"pit_drone_attack_spike2.wav",
-	"pit_drone_communicate1.wav",
-	"pit_drone_communicate2.wav",
-	"pit_drone_communicate3.wav",
-	"pit_drone_communicate4.wav",
-	"pit_drone_die1.wav",
-	"pit_drone_die2.wav",
-	"pit_drone_die3.wav",
-	"pit_drone_eat.wav",
-	"pit_drone_hunt1.wav",
-	"pit_drone_hunt2.wav",
-	"pit_drone_hunt3.wav",
-	"pit_drone_idle1.wav",
-	"pit_drone_idle2.wav",
-	"pit_drone_idle3.wav",
-	"pit_drone_melee_attack1.wav",
-	"pit_drone_melee_attack2.wav",
-	"pit_drone_pain1.wav",
-	"pit_drone_pain2.wav",
-	"pit_drone_pain3.wav",
-	"pit_drone_pain4.wav",
-	"pl_gun1.wav",
-	"pl_gun2.wav",
-	"pl_gun3.wav",
-	"p_alert1.wav",
-	"p_alert2.wav",
-	"p_alert3.wav",
-	"p_die1.wav",
-	"p_die2.wav",
-	"p_idle1.wav",
-	"p_idle2.wav",
-	"p_idle3.wav",
-	"p_pain1.wav",
-	"p_pain2.wav",
-	"screamweird.wav",
-	"screamweird2.wav",
-	"shieldoff.wav",
-	"spaceambient.wav",
-	"supb.wav",
-	"teleport.wav",
-	"battleofsteel.xm",
-};
-
-#define NUM_MASTER_sectore_3 1
-static const char * MASTER_sectore_3[NUM_MASTER_sectore_3] =
-{
-	"allflowers.wav",
 };
 
 #define NUM_MASTER_shockroach 10
@@ -4496,6 +4821,26 @@ static const char * MASTER_tfc_weapons[NUM_MASTER_tfc_weapons] =
 	"turrspot.wav",
 };
 
+#define NUM_MASTER_th_escape 15
+static const char * MASTER_th_escape[NUM_MASTER_th_escape] =
+{
+	"diesel_idle_loop.flac",
+	"diesel_ignition-rev-idle.flac",
+	"diesel_ignition-rev.flac",
+	"diesel_rev.flac",
+	"repairsnd01.flac",
+	"repairsnd02.flac",
+	"repairsnd03.flac",
+	"repairsnd04.flac",
+	"repairsnd05.flac",
+	"repairsnd06.flac",
+	"bavarian_seascape.mp3",
+	"flutey_jazz.mp3",
+	"jp_enginecooling.ogg",
+	"moody_hit.ogg",
+	"fluorescent.wav",
+};
+
 #define NUM_MASTER_toonrun 7
 static const char * MASTER_toonrun[NUM_MASTER_toonrun] =
 {
@@ -4554,6 +4899,23 @@ static const char * MASTER_tride[NUM_MASTER_tride] =
 	"c0a0_tr_noeat.wav",
 	"c0a0_tr_time.wav",
 	"c0a0_tr_tourn.wav",
+};
+
+#define NUM_MASTER_tu3sday 12
+static const char * MASTER_tu3sday[NUM_MASTER_tu3sday] =
+{
+	"bcry.wav",
+	"ctf_getflag.wav",
+	"desert_wind.wav",
+	"forest_noise.wav",
+	"f_pain2.wav",
+	"losegame.wav",
+	"pain2.wav",
+	"rock.wav",
+	"scitel_in.wav",
+	"scitel_out.wav",
+	"turrset.wav",
+	"wingame.wav",
 };
 
 #define NUM_MASTER_tur 2
@@ -5543,7 +5905,7 @@ static const char * MASTER_zombie[NUM_MASTER_zombie] =
 	"zo_pain2.wav",
 };
 
-#define NUM_MASTER_DIRS 143
+#define NUM_MASTER_DIRS 169
 static const char ** masterList[NUM_MASTER_DIRS];
 static int           masterSize[NUM_MASTER_DIRS];
 static const char *  masterDirs[NUM_MASTER_DIRS];
@@ -5580,118 +5942,144 @@ static void initMasterList()
 	masterList[28] = MASTER_crystal2;
 	masterList[29] = MASTER_deadsimpleneo;
 	masterList[30] = MASTER_debris;
-	masterList[31] = MASTER_descrcl;
-	masterList[32] = MASTER_doors;
-	masterList[33] = MASTER_drill;
-	masterList[34] = MASTER_extended;
-	masterList[35] = MASTER_fans;
-	masterList[36] = MASTER_fgrunt;
-	masterList[37] = MASTER_fortified;
-	masterList[38] = MASTER_fortified_cornet;
-	masterList[39] = MASTER_fortified_intro;
-	masterList[40] = MASTER_fortified_merkwurdiglust;
-	masterList[41] = MASTER_fortified_mrgeneral;
-	masterList[42] = MASTER_fvox;
-	masterList[43] = MASTER_garg;
-	masterList[44] = MASTER_geneworm;
-	masterList[45] = MASTER_gman;
-	masterList[46] = MASTER_gonarch;
-	masterList[47] = MASTER_gonome;
-	masterList[48] = MASTER_grunts2;
-	masterList[49] = MASTER_hassault;
-	masterList[50] = MASTER_headcrab;
-	masterList[51] = MASTER_hgrunt;
-	masterList[52] = MASTER_hl_items;
-	masterList[53] = MASTER_hl_weapons;
-	masterList[54] = MASTER_holo;
-	masterList[55] = MASTER_hornet;
-	masterList[56] = MASTER_houndeye;
-	masterList[57] = MASTER_hunger_alfred;
-	masterList[58] = MASTER_hunger_franklin;
-	masterList[59] = MASTER_hunger_hungerbarney;
-	masterList[60] = MASTER_hunger_hungercrab;
-	masterList[61] = MASTER_hunger_hungerhound;
-	masterList[62] = MASTER_hunger_hungerplats;
-	masterList[63] = MASTER_hunger_hungerslave;
-	masterList[64] = MASTER_hunger_hungerzombie;
-	masterList[65] = MASTER_hunger_hungerzombiecop;
-	masterList[66] = MASTER_hunger_hungerzombiefem;
-	masterList[67] = MASTER_hunger_hungerzork;
-	masterList[68] = MASTER_hunger_recorder;
-	masterList[69] = MASTER_hunger_sheriff;
-	masterList[70] = MASTER_hunger_thambs;
-	masterList[71] = MASTER_hunger_thambs2;
-	masterList[72] = MASTER_hunger_thweapons;
-	masterList[73] = MASTER_hunger_zombierat;
-	masterList[74] = MASTER_hungerhound;
-	masterList[75] = MASTER_ichy;
-	masterList[76] = MASTER_incoming;
-	masterList[77] = MASTER_infested;
-	masterList[78] = MASTER_intro;
-	masterList[79] = MASTER_items;
-	masterList[80] = MASTER_kingpin;
-	masterList[81] = MASTER_last;
-	masterList[82] = MASTER_leech;
-	masterList[83] = MASTER_minigun;
-	masterList[84] = MASTER_misc;
-	masterList[85] = MASTER_mommamesa;
-	masterList[86] = MASTER_mommamesa_gunshot;
-	masterList[87] = MASTER_mommamesa_megagauss;
-	masterList[88] = MASTER_mommamesa_music;
-	masterList[89] = MASTER_nihilanth;
-	masterList[90] = MASTER_omg;
-	masterList[91] = MASTER_ops;
-	masterList[92] = MASTER_otis;
-	masterList[93] = MASTER_pitdrone;
-	masterList[94] = MASTER_pitworm;
-	masterList[95] = MASTER_plats;
-	masterList[96] = MASTER_player;
-	masterList[97] = MASTER_puchi_spportal;
-	masterList[98] = MASTER_radio;
-	masterList[99] = MASTER_richard_boderman;
-	masterList[100] = MASTER_roach;
-	masterList[101] = MASTER_sandstone;
-	masterList[102] = MASTER_scientist;
-	masterList[103] = MASTER_sc_incoming;
-	masterList[104] = MASTER_sc_mazing;
-	masterList[105] = MASTER_sc_persia;
-	masterList[106] = MASTER_sc_psyko;
-	masterList[107] = MASTER_sc_tetris;
-	masterList[108] = MASTER_sectore;
-	masterList[109] = MASTER_sectore_3;
-	masterList[110] = MASTER_shockroach;
-	masterList[111] = MASTER_shocktrooper;
-	masterList[112] = MASTER_speech;
-	masterList[113] = MASTER_squeek;
-	masterList[114] = MASTER_stadium4;
-	masterList[115] = MASTER_stukabat;
-	masterList[116] = MASTER_svencoop1;
-	masterList[117] = MASTER_svencoop2;
-	masterList[118] = MASTER_svencoop3;
-	masterList[119] = MASTER_tentacle;
-	masterList[120] = MASTER_tfc_ambience;
-	masterList[121] = MASTER_tfc_items;
-	masterList[122] = MASTER_tfc_misc;
-	masterList[123] = MASTER_tfc_player;
-	masterList[124] = MASTER_tfc_speech;
-	masterList[125] = MASTER_tfc_vox;
-	masterList[126] = MASTER_tfc_weapons;
-	masterList[127] = MASTER_toonrun;
-	masterList[128] = MASTER_tor;
-	masterList[129] = MASTER_tram;
-	masterList[130] = MASTER_tride;
-	masterList[131] = MASTER_tur;
-	masterList[132] = MASTER_turret;
-	masterList[133] = MASTER_turretfortress;
-	masterList[134] = MASTER_UI;
-	masterList[135] = MASTER_voltigore;
-	masterList[136] = MASTER_vox;
-	masterList[137] = MASTER_weapons;
-	masterList[138] = MASTER_weapons_afrikakorps;
-	masterList[139] = MASTER_weapons_cbe;
-	masterList[140] = MASTER_weapons_uzi;
-	masterList[141] = MASTER_x;
-	masterList[142] = MASTER_zombie;
+	masterList[31] = MASTER_demonprey;
+	masterList[32] = MASTER_descrcl;
+	masterList[33] = MASTER_doors;
+	masterList[34] = MASTER_drill;
+	masterList[35] = MASTER_extended;
+	masterList[36] = MASTER_fans;
+	masterList[37] = MASTER_fgrunt;
+	masterList[38] = MASTER_fortified;
+	masterList[39] = MASTER_fortified_cornet;
+	masterList[40] = MASTER_fortified_intro;
+	masterList[41] = MASTER_fortified_merkwurdiglust;
+	masterList[42] = MASTER_fortified_mrgeneral;
+	masterList[43] = MASTER_fvox;
+	masterList[44] = MASTER_garg;
+	masterList[45] = MASTER_geneworm;
+	masterList[46] = MASTER_gman;
+	masterList[47] = MASTER_gonarch;
+	masterList[48] = MASTER_gonome;
+	masterList[49] = MASTER_grunts2;
+	masterList[50] = MASTER_hassault;
+	masterList[51] = MASTER_headcrab;
+	masterList[52] = MASTER_hgrunt;
+	masterList[53] = MASTER_hl_items;
+	masterList[54] = MASTER_hl_weapons;
+	masterList[55] = MASTER_hlclassic_hgrunt;
+	masterList[56] = MASTER_hlclassic_items;
+	masterList[57] = MASTER_hlclassic_weapons;
+	masterList[58] = MASTER_holo;
+	masterList[59] = MASTER_hornet;
+	masterList[60] = MASTER_houndeye;
+	masterList[61] = MASTER_hunger;
+	masterList[62] = MASTER_hunger_alfred;
+	masterList[63] = MASTER_hunger_apache;
+	masterList[64] = MASTER_hunger_babyslave;
+	masterList[65] = MASTER_hunger_bull;
+	masterList[66] = MASTER_hunger_chicken;
+	masterList[67] = MASTER_hunger_franklin;
+	masterList[68] = MASTER_hunger_hgrunt;
+	masterList[69] = MASTER_hunger_hornet;
+	masterList[70] = MASTER_hunger_hungerbarney;
+	masterList[71] = MASTER_hunger_hungercrab;
+	masterList[72] = MASTER_hunger_hungerhound;
+	masterList[73] = MASTER_hunger_hungerplats;
+	masterList[74] = MASTER_hunger_hungerslave;
+	masterList[75] = MASTER_hunger_hungerzombie;
+	masterList[76] = MASTER_hunger_hungerzombiecop;
+	masterList[77] = MASTER_hunger_hungerzombiefem;
+	masterList[78] = MASTER_hunger_hungerzork;
+	masterList[79] = MASTER_hunger_recorder;
+	masterList[80] = MASTER_hunger_sheriff;
+	masterList[81] = MASTER_hunger_song;
+	masterList[82] = MASTER_hunger_thambs;
+	masterList[83] = MASTER_hunger_thambs2;
+	masterList[84] = MASTER_hunger_thambs3;
+	masterList[85] = MASTER_hunger_thsurvival;
+	masterList[86] = MASTER_hunger_thweapons;
+	masterList[87] = MASTER_hunger_weapons_colt;
+	masterList[88] = MASTER_hunger_weapons_dbarrel;
+	masterList[89] = MASTER_hunger_weapons_greasegun;
+	masterList[90] = MASTER_hunger_weapons_m14;
+	masterList[91] = MASTER_hunger_weapons_m16a1;
+	masterList[92] = MASTER_hunger_weapons_Mk2;
+	masterList[93] = MASTER_hunger_weapons_tesla;
+	masterList[94] = MASTER_hunger_weapons_TNT;
+	masterList[95] = MASTER_hunger_weapons_tommygun;
+	masterList[96] = MASTER_hunger_znurse;
+	masterList[97] = MASTER_hunger_zombienew;
+	masterList[98] = MASTER_hunger_zombierat;
+	masterList[99] = MASTER_hungerhound;
+	masterList[100] = MASTER_ichy;
+	masterList[101] = MASTER_incoming;
+	masterList[102] = MASTER_infested;
+	masterList[103] = MASTER_intro;
+	masterList[104] = MASTER_items;
+	masterList[105] = MASTER_judgement;
+	masterList[106] = MASTER_kingpin;
+	masterList[107] = MASTER_last;
+	masterList[108] = MASTER_leech;
+	masterList[109] = MASTER_minigun;
+	masterList[110] = MASTER_misc;
+	masterList[111] = MASTER_mommamesa;
+	masterList[112] = MASTER_mommamesa_gunshot;
+	masterList[113] = MASTER_mommamesa_megagauss;
+	masterList[114] = MASTER_mommamesa_music;
+	masterList[115] = MASTER_nihilanth;
+	masterList[116] = MASTER_omg;
+	masterList[117] = MASTER_ops;
+	masterList[118] = MASTER_otis;
+	masterList[119] = MASTER_pitdrone;
+	masterList[120] = MASTER_pitworm;
+	masterList[121] = MASTER_plats;
+	masterList[122] = MASTER_player;
+	masterList[123] = MASTER_puchi_spportal;
+	masterList[124] = MASTER_radio;
+	masterList[125] = MASTER_roach;
+	masterList[126] = MASTER_sandstone;
+	masterList[127] = MASTER_scientist;
+	masterList[128] = MASTER_sc_incoming;
+	masterList[129] = MASTER_sc_mazing;
+	masterList[130] = MASTER_sc_persia;
+	masterList[131] = MASTER_sc_psyko;
+	masterList[132] = MASTER_sc_robination;
+	masterList[133] = MASTER_sc_tetris;
+	masterList[134] = MASTER_shockroach;
+	masterList[135] = MASTER_shocktrooper;
+	masterList[136] = MASTER_speech;
+	masterList[137] = MASTER_squeek;
+	masterList[138] = MASTER_stadium4;
+	masterList[139] = MASTER_stukabat;
+	masterList[140] = MASTER_svencoop1;
+	masterList[141] = MASTER_svencoop2;
+	masterList[142] = MASTER_svencoop3;
+	masterList[143] = MASTER_tentacle;
+	masterList[144] = MASTER_tfc_ambience;
+	masterList[145] = MASTER_tfc_items;
+	masterList[146] = MASTER_tfc_misc;
+	masterList[147] = MASTER_tfc_player;
+	masterList[148] = MASTER_tfc_speech;
+	masterList[149] = MASTER_tfc_vox;
+	masterList[150] = MASTER_tfc_weapons;
+	masterList[151] = MASTER_th_escape;
+	masterList[152] = MASTER_toonrun;
+	masterList[153] = MASTER_tor;
+	masterList[154] = MASTER_tram;
+	masterList[155] = MASTER_tride;
+	masterList[156] = MASTER_tu3sday;
+	masterList[157] = MASTER_tur;
+	masterList[158] = MASTER_turret;
+	masterList[159] = MASTER_turretfortress;
+	masterList[160] = MASTER_UI;
+	masterList[161] = MASTER_voltigore;
+	masterList[162] = MASTER_vox;
+	masterList[163] = MASTER_weapons;
+	masterList[164] = MASTER_weapons_afrikakorps;
+	masterList[165] = MASTER_weapons_cbe;
+	masterList[166] = MASTER_weapons_uzi;
+	masterList[167] = MASTER_x;
+	masterList[168] = MASTER_zombie;
 
 	masterSize[0] = 1;
 	masterSize[1] = 4;
@@ -5710,7 +6098,7 @@ static void initMasterList()
 	masterSize[14] = 44;
 	masterSize[15] = 7;
 	masterSize[16] = 4;
-	masterSize[17] = 48;
+	masterSize[17] = 49;
 	masterSize[18] = 5;
 	masterSize[19] = 2;
 	masterSize[20] = 1;
@@ -5724,118 +6112,144 @@ static void initMasterList()
 	masterSize[28] = 4;
 	masterSize[29] = 3;
 	masterSize[30] = 64;
-	masterSize[31] = 6;
-	masterSize[32] = 23;
-	masterSize[33] = 115;
-	masterSize[34] = 1;
-	masterSize[35] = 15;
-	masterSize[36] = 195;
-	masterSize[37] = 7;
-	masterSize[38] = 2;
-	masterSize[39] = 7;
-	masterSize[40] = 4;
-	masterSize[41] = 12;
-	masterSize[42] = 142;
-	masterSize[43] = 25;
-	masterSize[44] = 15;
-	masterSize[45] = 22;
+	masterSize[31] = 1;
+	masterSize[32] = 6;
+	masterSize[33] = 23;
+	masterSize[34] = 115;
+	masterSize[35] = 1;
+	masterSize[36] = 15;
+	masterSize[37] = 195;
+	masterSize[38] = 7;
+	masterSize[39] = 2;
+	masterSize[40] = 7;
+	masterSize[41] = 4;
+	masterSize[42] = 12;
+	masterSize[43] = 142;
+	masterSize[44] = 25;
+	masterSize[45] = 15;
 	masterSize[46] = 22;
-	masterSize[47] = 15;
-	masterSize[48] = 2;
-	masterSize[49] = 7;
-	masterSize[50] = 16;
-	masterSize[51] = 346;
-	masterSize[52] = 3;
-	masterSize[53] = 12;
-	masterSize[54] = 50;
-	masterSize[55] = 6;
-	masterSize[56] = 25;
-	masterSize[57] = 9;
-	masterSize[58] = 15;
-	masterSize[59] = 11;
-	masterSize[60] = 17;
-	masterSize[61] = 24;
+	masterSize[47] = 22;
+	masterSize[48] = 15;
+	masterSize[49] = 2;
+	masterSize[50] = 7;
+	masterSize[51] = 16;
+	masterSize[52] = 346;
+	masterSize[53] = 3;
+	masterSize[54] = 12;
+	masterSize[55] = 2;
+	masterSize[56] = 5;
+	masterSize[57] = 71;
+	masterSize[58] = 50;
+	masterSize[59] = 6;
+	masterSize[60] = 25;
+	masterSize[61] = 1;
 	masterSize[62] = 9;
-	masterSize[63] = 15;
-	masterSize[64] = 16;
-	masterSize[65] = 11;
-	masterSize[66] = 11;
-	masterSize[67] = 28;
-	masterSize[68] = 16;
-	masterSize[69] = 15;
-	masterSize[70] = 83;
-	masterSize[71] = 22;
-	masterSize[72] = 13;
-	masterSize[73] = 6;
-	masterSize[74] = 10;
-	masterSize[75] = 19;
-	masterSize[76] = 15;
-	masterSize[77] = 3;
-	masterSize[78] = 9;
-	masterSize[79] = 31;
+	masterSize[63] = 1;
+	masterSize[64] = 15;
+	masterSize[65] = 25;
+	masterSize[66] = 10;
+	masterSize[67] = 23;
+	masterSize[68] = 19;
+	masterSize[69] = 6;
+	masterSize[70] = 11;
+	masterSize[71] = 17;
+	masterSize[72] = 24;
+	masterSize[73] = 9;
+	masterSize[74] = 15;
+	masterSize[75] = 17;
+	masterSize[76] = 11;
+	masterSize[77] = 11;
+	masterSize[78] = 28;
+	masterSize[79] = 16;
 	masterSize[80] = 19;
-	masterSize[81] = 3;
-	masterSize[82] = 5;
-	masterSize[83] = 1;
-	masterSize[84] = 45;
-	masterSize[85] = 27;
-	masterSize[86] = 2;
-	masterSize[87] = 2;
-	masterSize[88] = 18;
-	masterSize[89] = 14;
-	masterSize[90] = 1;
-	masterSize[91] = 6;
-	masterSize[92] = 107;
-	masterSize[93] = 26;
-	masterSize[94] = 19;
-	masterSize[95] = 45;
-	masterSize[96] = 104;
-	masterSize[97] = 9;
-	masterSize[98] = 9;
-	masterSize[99] = 6;
-	masterSize[100] = 3;
-	masterSize[101] = 8;
-	masterSize[102] = 481;
-	masterSize[103] = 10;
-	masterSize[104] = 2;
-	masterSize[105] = 9;
-	masterSize[106] = 16;
-	masterSize[107] = 11;
-	masterSize[108] = 78;
+	masterSize[81] = 1;
+	masterSize[82] = 90;
+	masterSize[83] = 22;
+	masterSize[84] = 28;
+	masterSize[85] = 1;
+	masterSize[86] = 13;
+	masterSize[87] = 6;
+	masterSize[88] = 8;
+	masterSize[89] = 4;
+	masterSize[90] = 6;
+	masterSize[91] = 8;
+	masterSize[92] = 2;
+	masterSize[93] = 6;
+	masterSize[94] = 1;
+	masterSize[95] = 4;
+	masterSize[96] = 15;
+	masterSize[97] = 14;
+	masterSize[98] = 6;
+	masterSize[99] = 10;
+	masterSize[100] = 19;
+	masterSize[101] = 15;
+	masterSize[102] = 4;
+	masterSize[103] = 9;
+	masterSize[104] = 31;
+	masterSize[105] = 2;
+	masterSize[106] = 19;
+	masterSize[107] = 3;
+	masterSize[108] = 5;
 	masterSize[109] = 1;
-	masterSize[110] = 10;
-	masterSize[111] = 28;
-	masterSize[112] = 4;
-	masterSize[113] = 6;
-	masterSize[114] = 2;
-	masterSize[115] = 1;
-	masterSize[116] = 12;
-	masterSize[117] = 12;
-	masterSize[118] = 4;
-	masterSize[119] = 17;
-	masterSize[120] = 3;
-	masterSize[121] = 14;
-	masterSize[122] = 13;
-	masterSize[123] = 17;
-	masterSize[124] = 2;
-	masterSize[125] = 11;
-	masterSize[126] = 25;
-	masterSize[127] = 7;
-	masterSize[128] = 14;
-	masterSize[129] = 9;
-	masterSize[130] = 10;
-	masterSize[131] = 2;
-	masterSize[132] = 13;
-	masterSize[133] = 14;
-	masterSize[134] = 3;
-	masterSize[135] = 25;
-	masterSize[136] = 622;
-	masterSize[137] = 177;
-	masterSize[138] = 12;
-	masterSize[139] = 10;
-	masterSize[140] = 17;
-	masterSize[141] = 16;
-	masterSize[142] = 16;
+	masterSize[110] = 45;
+	masterSize[111] = 27;
+	masterSize[112] = 2;
+	masterSize[113] = 2;
+	masterSize[114] = 18;
+	masterSize[115] = 14;
+	masterSize[116] = 1;
+	masterSize[117] = 6;
+	masterSize[118] = 107;
+	masterSize[119] = 26;
+	masterSize[120] = 19;
+	masterSize[121] = 45;
+	masterSize[122] = 104;
+	masterSize[123] = 9;
+	masterSize[124] = 9;
+	masterSize[125] = 3;
+	masterSize[126] = 8;
+	masterSize[127] = 481;
+	masterSize[128] = 10;
+	masterSize[129] = 2;
+	masterSize[130] = 9;
+	masterSize[131] = 16;
+	masterSize[132] = 6;
+	masterSize[133] = 11;
+	masterSize[134] = 10;
+	masterSize[135] = 28;
+	masterSize[136] = 4;
+	masterSize[137] = 6;
+	masterSize[138] = 2;
+	masterSize[139] = 1;
+	masterSize[140] = 12;
+	masterSize[141] = 12;
+	masterSize[142] = 4;
+	masterSize[143] = 17;
+	masterSize[144] = 3;
+	masterSize[145] = 14;
+	masterSize[146] = 13;
+	masterSize[147] = 17;
+	masterSize[148] = 2;
+	masterSize[149] = 11;
+	masterSize[150] = 25;
+	masterSize[151] = 15;
+	masterSize[152] = 7;
+	masterSize[153] = 14;
+	masterSize[154] = 9;
+	masterSize[155] = 10;
+	masterSize[156] = 12;
+	masterSize[157] = 2;
+	masterSize[158] = 13;
+	masterSize[159] = 14;
+	masterSize[160] = 3;
+	masterSize[161] = 25;
+	masterSize[162] = 622;
+	masterSize[163] = 177;
+	masterSize[164] = 12;
+	masterSize[165] = 10;
+	masterSize[166] = 17;
+	masterSize[167] = 16;
+	masterSize[168] = 16;
 
 	masterDirs[0] = "";
 	masterDirs[1] = "adamr";
@@ -5868,116 +6282,142 @@ static void initMasterList()
 	masterDirs[28] = "crystal2";
 	masterDirs[29] = "deadsimpleneo";
 	masterDirs[30] = "debris";
-	masterDirs[31] = "descrcl";
-	masterDirs[32] = "doors";
-	masterDirs[33] = "drill";
-	masterDirs[34] = "extended";
-	masterDirs[35] = "fans";
-	masterDirs[36] = "fgrunt";
-	masterDirs[37] = "fortified";
-	masterDirs[38] = "fortified/cornet";
-	masterDirs[39] = "fortified/intro";
-	masterDirs[40] = "fortified/merkwurdiglust";
-	masterDirs[41] = "fortified/mrgeneral";
-	masterDirs[42] = "fvox";
-	masterDirs[43] = "garg";
-	masterDirs[44] = "geneworm";
-	masterDirs[45] = "gman";
-	masterDirs[46] = "gonarch";
-	masterDirs[47] = "gonome";
-	masterDirs[48] = "grunts2";
-	masterDirs[49] = "hassault";
-	masterDirs[50] = "headcrab";
-	masterDirs[51] = "hgrunt";
-	masterDirs[52] = "hl/items";
-	masterDirs[53] = "hl/weapons";
-	masterDirs[54] = "holo";
-	masterDirs[55] = "hornet";
-	masterDirs[56] = "houndeye";
-	masterDirs[57] = "hunger/alfred";
-	masterDirs[58] = "hunger/franklin";
-	masterDirs[59] = "hunger/hungerbarney";
-	masterDirs[60] = "hunger/hungercrab";
-	masterDirs[61] = "hunger/hungerhound";
-	masterDirs[62] = "hunger/hungerplats";
-	masterDirs[63] = "hunger/hungerslave";
-	masterDirs[64] = "hunger/hungerzombie";
-	masterDirs[65] = "hunger/hungerzombiecop";
-	masterDirs[66] = "hunger/hungerzombiefem";
-	masterDirs[67] = "hunger/hungerzork";
-	masterDirs[68] = "hunger/recorder";
-	masterDirs[69] = "hunger/sheriff";
-	masterDirs[70] = "hunger/thambs";
-	masterDirs[71] = "hunger/thambs2";
-	masterDirs[72] = "hunger/thweapons";
-	masterDirs[73] = "hunger/zombierat";
-	masterDirs[74] = "hungerhound";
-	masterDirs[75] = "ichy";
-	masterDirs[76] = "incoming";
-	masterDirs[77] = "infested";
-	masterDirs[78] = "intro";
-	masterDirs[79] = "items";
-	masterDirs[80] = "kingpin";
-	masterDirs[81] = "last";
-	masterDirs[82] = "leech";
-	masterDirs[83] = "minigun";
-	masterDirs[84] = "misc";
-	masterDirs[85] = "mommamesa";
-	masterDirs[86] = "mommamesa/gunshot";
-	masterDirs[87] = "mommamesa/megagauss";
-	masterDirs[88] = "mommamesa/music";
-	masterDirs[89] = "nihilanth";
-	masterDirs[90] = "omg";
-	masterDirs[91] = "ops";
-	masterDirs[92] = "otis";
-	masterDirs[93] = "pitdrone";
-	masterDirs[94] = "pitworm";
-	masterDirs[95] = "plats";
-	masterDirs[96] = "player";
-	masterDirs[97] = "puchi/spportal";
-	masterDirs[98] = "radio";
-	masterDirs[99] = "richard_boderman";
-	masterDirs[100] = "roach";
-	masterDirs[101] = "sandstone";
-	masterDirs[102] = "scientist";
-	masterDirs[103] = "sc_incoming";
-	masterDirs[104] = "sc_mazing";
-	masterDirs[105] = "sc_persia";
-	masterDirs[106] = "sc_psyko";
-	masterDirs[107] = "sc_tetris";
-	masterDirs[108] = "sectore";
-	masterDirs[109] = "sectore_3";
-	masterDirs[110] = "shockroach";
-	masterDirs[111] = "shocktrooper";
-	masterDirs[112] = "speech";
-	masterDirs[113] = "squeek";
-	masterDirs[114] = "stadium4";
-	masterDirs[115] = "stukabat";
-	masterDirs[116] = "svencoop1";
-	masterDirs[117] = "svencoop2";
-	masterDirs[118] = "svencoop3";
-	masterDirs[119] = "tentacle";
-	masterDirs[120] = "tfc/ambience";
-	masterDirs[121] = "tfc/items";
-	masterDirs[122] = "tfc/misc";
-	masterDirs[123] = "tfc/player";
-	masterDirs[124] = "tfc/speech";
-	masterDirs[125] = "tfc/vox";
-	masterDirs[126] = "tfc/weapons";
-	masterDirs[127] = "toonrun";
-	masterDirs[128] = "tor";
-	masterDirs[129] = "tram";
-	masterDirs[130] = "tride";
-	masterDirs[131] = "tur";
-	masterDirs[132] = "turret";
-	masterDirs[133] = "turretfortress";
-	masterDirs[134] = "UI";
-	masterDirs[135] = "voltigore";
-	masterDirs[136] = "vox";
-	masterDirs[137] = "weapons";
-	masterDirs[138] = "weapons/afrikakorps";
-	masterDirs[139] = "weapons/cbe";
-	masterDirs[140] = "weapons/uzi";
-	masterDirs[141] = "x";
-	masterDirs[142] = "zombie";
+	masterDirs[31] = "demonprey";
+	masterDirs[32] = "descrcl";
+	masterDirs[33] = "doors";
+	masterDirs[34] = "drill";
+	masterDirs[35] = "extended";
+	masterDirs[36] = "fans";
+	masterDirs[37] = "fgrunt";
+	masterDirs[38] = "fortified";
+	masterDirs[39] = "fortified/cornet";
+	masterDirs[40] = "fortified/intro";
+	masterDirs[41] = "fortified/merkwurdiglust";
+	masterDirs[42] = "fortified/mrgeneral";
+	masterDirs[43] = "fvox";
+	masterDirs[44] = "garg";
+	masterDirs[45] = "geneworm";
+	masterDirs[46] = "gman";
+	masterDirs[47] = "gonarch";
+	masterDirs[48] = "gonome";
+	masterDirs[49] = "grunts2";
+	masterDirs[50] = "hassault";
+	masterDirs[51] = "headcrab";
+	masterDirs[52] = "hgrunt";
+	masterDirs[53] = "hl/items";
+	masterDirs[54] = "hl/weapons";
+	masterDirs[55] = "hlclassic/hgrunt";
+	masterDirs[56] = "hlclassic/items";
+	masterDirs[57] = "hlclassic/weapons";
+	masterDirs[58] = "holo";
+	masterDirs[59] = "hornet";
+	masterDirs[60] = "houndeye";
+	masterDirs[61] = "hunger";
+	masterDirs[62] = "hunger/alfred";
+	masterDirs[63] = "hunger/apache";
+	masterDirs[64] = "hunger/babyslave";
+	masterDirs[65] = "hunger/bull";
+	masterDirs[66] = "hunger/chicken";
+	masterDirs[67] = "hunger/franklin";
+	masterDirs[68] = "hunger/hgrunt";
+	masterDirs[69] = "hunger/hornet";
+	masterDirs[70] = "hunger/hungerbarney";
+	masterDirs[71] = "hunger/hungercrab";
+	masterDirs[72] = "hunger/hungerhound";
+	masterDirs[73] = "hunger/hungerplats";
+	masterDirs[74] = "hunger/hungerslave";
+	masterDirs[75] = "hunger/hungerzombie";
+	masterDirs[76] = "hunger/hungerzombiecop";
+	masterDirs[77] = "hunger/hungerzombiefem";
+	masterDirs[78] = "hunger/hungerzork";
+	masterDirs[79] = "hunger/recorder";
+	masterDirs[80] = "hunger/sheriff";
+	masterDirs[81] = "hunger/song";
+	masterDirs[82] = "hunger/thambs";
+	masterDirs[83] = "hunger/thambs2";
+	masterDirs[84] = "hunger/thambs3";
+	masterDirs[85] = "hunger/thsurvival";
+	masterDirs[86] = "hunger/thweapons";
+	masterDirs[87] = "hunger/weapons/colt";
+	masterDirs[88] = "hunger/weapons/dbarrel";
+	masterDirs[89] = "hunger/weapons/greasegun";
+	masterDirs[90] = "hunger/weapons/m14";
+	masterDirs[91] = "hunger/weapons/m16a1";
+	masterDirs[92] = "hunger/weapons/Mk2";
+	masterDirs[93] = "hunger/weapons/tesla";
+	masterDirs[94] = "hunger/weapons/TNT";
+	masterDirs[95] = "hunger/weapons/tommygun";
+	masterDirs[96] = "hunger/znurse";
+	masterDirs[97] = "hunger/zombienew";
+	masterDirs[98] = "hunger/zombierat";
+	masterDirs[99] = "hungerhound";
+	masterDirs[100] = "ichy";
+	masterDirs[101] = "incoming";
+	masterDirs[102] = "infested";
+	masterDirs[103] = "intro";
+	masterDirs[104] = "items";
+	masterDirs[105] = "judgement";
+	masterDirs[106] = "kingpin";
+	masterDirs[107] = "last";
+	masterDirs[108] = "leech";
+	masterDirs[109] = "minigun";
+	masterDirs[110] = "misc";
+	masterDirs[111] = "mommamesa";
+	masterDirs[112] = "mommamesa/gunshot";
+	masterDirs[113] = "mommamesa/megagauss";
+	masterDirs[114] = "mommamesa/music";
+	masterDirs[115] = "nihilanth";
+	masterDirs[116] = "omg";
+	masterDirs[117] = "ops";
+	masterDirs[118] = "otis";
+	masterDirs[119] = "pitdrone";
+	masterDirs[120] = "pitworm";
+	masterDirs[121] = "plats";
+	masterDirs[122] = "player";
+	masterDirs[123] = "puchi/spportal";
+	masterDirs[124] = "radio";
+	masterDirs[125] = "roach";
+	masterDirs[126] = "sandstone";
+	masterDirs[127] = "scientist";
+	masterDirs[128] = "sc_incoming";
+	masterDirs[129] = "sc_mazing";
+	masterDirs[130] = "sc_persia";
+	masterDirs[131] = "sc_psyko";
+	masterDirs[132] = "sc_robination";
+	masterDirs[133] = "sc_tetris";
+	masterDirs[134] = "shockroach";
+	masterDirs[135] = "shocktrooper";
+	masterDirs[136] = "speech";
+	masterDirs[137] = "squeek";
+	masterDirs[138] = "stadium4";
+	masterDirs[139] = "stukabat";
+	masterDirs[140] = "svencoop1";
+	masterDirs[141] = "svencoop2";
+	masterDirs[142] = "svencoop3";
+	masterDirs[143] = "tentacle";
+	masterDirs[144] = "tfc/ambience";
+	masterDirs[145] = "tfc/items";
+	masterDirs[146] = "tfc/misc";
+	masterDirs[147] = "tfc/player";
+	masterDirs[148] = "tfc/speech";
+	masterDirs[149] = "tfc/vox";
+	masterDirs[150] = "tfc/weapons";
+	masterDirs[151] = "th_escape";
+	masterDirs[152] = "toonrun";
+	masterDirs[153] = "tor";
+	masterDirs[154] = "tram";
+	masterDirs[155] = "tride";
+	masterDirs[156] = "tu3sday";
+	masterDirs[157] = "tur";
+	masterDirs[158] = "turret";
+	masterDirs[159] = "turretfortress";
+	masterDirs[160] = "UI";
+	masterDirs[161] = "voltigore";
+	masterDirs[162] = "vox";
+	masterDirs[163] = "weapons";
+	masterDirs[164] = "weapons/afrikakorps";
+	masterDirs[165] = "weapons/cbe";
+	masterDirs[166] = "weapons/uzi";
+	masterDirs[167] = "x";
+	masterDirs[168] = "zombie";
 }

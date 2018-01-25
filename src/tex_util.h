@@ -25,7 +25,7 @@ vector<string> unEmbedAllTextures(BSP * map, int& grapple_id, int& global_id);
 
 void embedAllTextures(BSP * map, Entity ** ents);
 
-#define NUM_DEFAULT_WADS 57
+#define NUM_DEFAULT_WADS 58
 static const char * default_wads[NUM_DEFAULT_WADS] =
 {
 	"barney",
@@ -41,10 +41,10 @@ static const char * default_wads[NUM_DEFAULT_WADS] =
 	"extension",
 	"gmantowers",
 	"halflife",
-	"halflifemerged",
 	"jailbreak2",
 	"jp_dev",
 	"jp_security",
+	"judgement",
 	"kk1",
 	"kk2",
 	"last",
@@ -83,14 +83,16 @@ static const char * default_wads[NUM_DEFAULT_WADS] =
 	"svencoop_training",
 	"tfc",
 	"tfc2",
+	"th_escape",
 	"xeno",
 	"zhlt",
 };
 
-#define NUM_SKIES 43
+#define NUM_SKIES 45
 static const char * SKIES[NUM_SKIES] =
 {
 	"2desert",
+	"2vs",
 	"ac_",
 	"alien1",
 	"alien2",
@@ -98,6 +100,7 @@ static const char * SKIES[NUM_SKIES] =
 	"arcn",
 	"black",
 	"carnival",
+	"cgs",
 	"city",
 	"cliff",
 	"coliseum",
