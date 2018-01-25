@@ -288,7 +288,7 @@ vector<Wad> getWads()
 	set<string> user_unique_wads;
 	set<string> excluded_wads;
 	vector<string> wad_paths;
-	wad_paths.push_back("");
+	wad_paths.push_back("./");
 	wad_paths.push_back("../svencoop/");
 	wad_paths.push_back("../svencoop_downloads/");
 	string last_print;
