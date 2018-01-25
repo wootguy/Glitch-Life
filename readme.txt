@@ -100,6 +100,11 @@ I keep crashing with "Bad Surface Extents". Why?
    To fix this, disable "singleplayer" in the config or remove "blend" from the
    list of "corruptions" (also in the config). 
 
+Some maps crash on start with "SZ_GetSpace: overflow without FSB_ALLOWOVERFLOW". Why?
+   This has multiple causes, but most likely there are too many files being precached
+   for the map. If the .res file has more than about 1000 items in it then that's 
+   probably the issue. Set sentence_mode to 0 in the config file if it isn't already.
+
 The game keeps crashing! What can I do?
    This is how unstable each randomization option is (on a scale from 1-10):
        Texture = 0

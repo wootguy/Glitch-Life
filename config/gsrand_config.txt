@@ -11,8 +11,10 @@ singleplayer = 1
 // sounds to be precached (somewhere around 1000). In the past, this was 
 // a problem because only about 500 items could fit into .res files. In SC 5.0,
 // we have 8192 precache slots, so it should be ok to leave this on now.
+// Update (1/24/2018): This is actually still a problem and the game crashes
+//                     when about 1k files are precached.
 
-sentence_mode = 1
+sentence_mode = 0
 
 // The following settings allow you to use cheats without having to enable cheats
 // on the server (which has restrictions). Set to "1" to enable the cheat.
