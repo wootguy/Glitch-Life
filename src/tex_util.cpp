@@ -752,7 +752,7 @@ int makeMapWad(BSP * map, string map_name, vector<Wad>& wads)
 
 	//println("bsp has " + str(wadTextures.size()) + " replacable textures");
 
-	if (texMode == TEX_MAP)
+	if (numTextures > 0 && texMode == TEX_MAP)
 	{
 		delete [] map->lumps[LUMP_TEXTURES];
 		BSPTEXDATA * tex_lump = genTexLump(wadTextures,wads,map);

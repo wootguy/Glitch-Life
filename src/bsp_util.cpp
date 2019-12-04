@@ -349,6 +349,11 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 			BSPCLIPNODE& m = ((BSPCLIPNODE*)clip_lump)[i];
 			BSPPLANE& p = ((BSPPLANE*)planes_lump)[m.iPlane];
 			
+			if (m.iPlane < 0 || m.iPlane >= planes) {
+				println("Got a bad plane index. The BSP is probably invalid/corrupted. Aborting flip corruption.");
+				return;
+			}
+
 			if (!flips[m.iPlane])
 			{
 				flips[m.iPlane] = 1;
@@ -373,6 +378,11 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 			m.nMaxs[1] = -tempy;
 			m.nMaxs[2] = -tempz;
 
+			if (m.iPlane < 0 || m.iPlane >= planes) {
+				println("Got a bad plane index. The BSP is probably invalid/corrupted. Aborting flip corruption.");
+				return;
+			}
+
 			if (!flips[m.iPlane])
 			{
 				flips[m.iPlane] = 1;
@@ -391,6 +401,11 @@ void corrupt_map_verts(BSP * map, Entity ** ents)
 		{
 			BSPFACE& m = ((BSPFACE*)faces_lump)[i];
 			BSPPLANE& p = ((BSPPLANE*)planes_lump)[m.iPlane];
+
+			if (m.iPlane < 0 || m.iPlane >= planes) {
+				println("Got a bad plane index. The BSP is probably invalid/corrupted. Aborting flip corruption.");
+				return;
+			}
 
 			if (!flips[m.iPlane])
 			{
